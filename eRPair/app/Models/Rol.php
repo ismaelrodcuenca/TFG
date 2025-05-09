@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Rol extends Model
 {
@@ -30,19 +30,12 @@ class Rol extends Model
     protected $fillable = ['name'];
 
     /**
-     * Propiedad protegida que define los atributos que deben ser convertidos a tipos específicos.
-     * 
-     * @var array $casts Atributos con conversiones de tipo.
-     */
-    protected $casts = [];
-
-    /**
      * Relación muchos a muchos entre el modelo Rol y el modelo User.
      * 
-     * @return BelongsToMany Relación de usuarios asociados al rol.
+     * @return HasMany Relación de usuarios asociados al rol.
      */
-    public function users(): BelongsToMany
+    public function users(): HasMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(User::class);
     }
 }

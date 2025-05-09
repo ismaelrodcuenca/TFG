@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Device extends Model
@@ -27,16 +28,16 @@ class Device extends Model
      * 
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
-    protected $fillable = ['has_no_serial_or_imei','serial_number','IMEI', 'colour', 'unlock_code', 'device_model_id', 'client_id'];
+    protected $fillable = ['has_no_serial_or_imei', 'serial_number', 'IMEI', 'colour', 'unlock_code', 'device_model_id', 'client_id'];
 
     /**
      * Propiedad protegida que define los atributos que deben ser convertidos a tipos específicos.
      * 
      * @var array $casts Atributos con conversiones de tipo.
      */
-    protected $casts = ['has_no_serial_or_imei'=> 'boolean'];
-    
-    
+    protected $casts = ['has_no_serial_or_imei' => 'boolean'];
+
+
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
@@ -44,12 +45,17 @@ class Device extends Model
 
     public function model(): BelongsTo
     {
-        return $this->belongsTo(DeviceModel::class);
+        return $this->belongsTo(DeviceModel::class, 'device_model_id');
     }
 
-    
+
     public function brand(): HasOneThrough
     {
-        return $this->hasOneThrough(Brand::class, DeviceModel::class);
+        return $this->hasOneThrough(Brand::class, DeviceModel::class, 'brand_id', 'device_mode_id');
+    }
+
+    public function workOrders(): HasMany
+    {
+        return $this->hasMany(WorkOrder::class);
     }
 }

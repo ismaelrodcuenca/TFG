@@ -13,17 +13,25 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\EditAction;
+use constants;
 class RolResource extends Resource
 {
     protected static ?string $model = Rol::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Roles';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')->label(constants::NAME)->required(),
             ]);
     }
 
@@ -31,13 +39,17 @@ class RolResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                ->label(constants::MODELO)
+                ->sortable()
+                ->searchable(),
             ])
             ->filters([
-                //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -45,6 +57,7 @@ class RolResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {

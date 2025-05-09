@@ -5,27 +5,36 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BrandResource\Pages;
 use App\Filament\Resources\BrandResource\RelationManagers;
 use App\Models\Brand;
+use constants;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Resources\RelationManagers\RelationManager;
+use App\Filament\Resources\BrandResource\RelationManagers\DeviceModelsRelationManager;
+use Filament\Tables\Actions\EditAction;
 
 class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'Marcas';
+    protected static ?string $label = constants::MARCAS;
 
+    public $translatable = ['name'];
+    public static ?string $navigationGroup = 'Gestiones ERP';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')->required()
             ]);
     }
 
@@ -33,25 +42,22 @@ class BrandResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')->searchable()->translateLabel(true)->sortable()->label('Nombre')
             ])
             ->filters([
-                //
+                //Tables\Filters\Filter::make('name')
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                ViewAction::make(),
+                EditAction::make(),
+                
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            DeviceModelsRelationManager::class,
         ];
     }
 

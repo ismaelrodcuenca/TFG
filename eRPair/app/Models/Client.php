@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model
 {
@@ -26,10 +27,20 @@ class Client extends Model
      * 
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
-    protected $fillable = ['document','name','surname','surname2','phone_number','phone_number2','postal_code','address','document_type_id'];
-    
-    public function document_type(): BelongsTo
+    protected $fillable = ['document', 'name', 'surname', 'surname2', 'phone_number', 'phone_number_2', 'postal_code', 'address', 'document_type_id'];
+
+    public function documentType(): BelongsTo
     {
         return $this->belongsTo(DocumentType::class);
+    }
+
+    public function devices(): HasMany
+    {
+        return $this->hasMany(Device::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 }

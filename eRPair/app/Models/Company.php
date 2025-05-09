@@ -3,17 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
+
     /**
      * Especifica la tabla de la base de datos asociada con el modelo.
      *
      * @var string $table El nombre de la tabla de la base de datos.
      */
     protected $table = "companies";
-
     /**
      * Propiedad protegida que define los atributos que no pueden ser asignados masivamente.
      * 
@@ -26,18 +26,10 @@ class Company extends Model
      * 
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
-    protected $fillable = ['document','name','surname','surname2','phone_number','phone_number2','postal_code','address','document_type_id'];
+    protected $fillable = ['cif', 'name', 'corporate_name', 'address', 'postal_code', 'locality', 'province', 'discount'];
 
-    /**
-     * Propiedad protegida que define los atributos que deben ser convertidos a tipos específicos.
-     * 
-     * @var array $casts Atributos con conversiones de tipo.
-     */
-    protected $casts = [];
-    
-    
-    public function invoices(): BelongsToMany
+    public function invoices(): HasMany
     {
-        return $this->belongsToMany(Invoice::class);
+        return $this->hasMany(Invoice::class);
     }
 }

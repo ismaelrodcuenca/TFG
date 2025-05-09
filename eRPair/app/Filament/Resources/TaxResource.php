@@ -13,18 +13,28 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\EditAction;
+use constants;
+
 class TaxResource extends Resource
 {
     protected static ?string $model = Tax::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $label = 'Impuestos';
+    public static ?string $navigationGroup = 'Gestiones ERP';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-
+                TextInput::make('name')->label(constants::NAME)->required(),
+                TextInput::make('percentage')->label(constants::PERCENTAJE)->required()->numeric()->prefix('%'),
             ]);
     }
 
@@ -32,13 +42,21 @@ class TaxResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                ->label(constants::NAME_TYPO)
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('percentage')
+                ->label(constants::PERCENTAJE)
+                ->sortable()
+                ->searchable(),
             ])
             ->filters([
-                //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -46,6 +64,7 @@ class TaxResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {

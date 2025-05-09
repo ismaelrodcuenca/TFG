@@ -18,31 +18,37 @@ class StoreResource extends Resource
     protected static ?string $model = Store::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Tiendas';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
+                    ->required(),
+                Forms\Components\TextInput::make('address')
+                    ->label('Dirección')
+                    ->required(),
             ]);
     }
-
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
-            ])
-            ->filters([
-                //
+            Tables\Columns\TextColumn::make('name')
+                ->label('Nombre')
+                ->searchable()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('address')
+                ->label('Dirección')
+                ->searchable()
+                ->sortable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

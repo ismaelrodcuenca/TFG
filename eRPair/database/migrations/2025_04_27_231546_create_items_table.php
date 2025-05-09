@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->double('cost');
-            $table->double('PVP');
+            $table->double('price');
+            $table->string('distributor');
             $table->foreignId('type_id')->constrained('types');
+            $table->foreignId('category_id')->constrained('categories');
             $table->timestamps();
         });
     }

@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use 
-Illuminate\Database\Eloquent\Relations\HasMany;
+use
+    Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Brand extends Model
 {
-    
-
     /**
      * Especifica la tabla de la base de datos asociada con el modelo.
      *
@@ -31,8 +29,14 @@ class Brand extends Model
      */
     protected $fillable = ['name'];
 
-    public function models(): hasMany
+    public function device_models(): HasMany
     {
         return $this->hasMany(DeviceModel::class);
+    }
+
+    public function setNameAttribute($value)
+    {
+        // Asignar el valor a mayúsculas antes de guardarlo en la base de datos
+        $this->attributes['name'] = strtoupper($value);
     }
 }

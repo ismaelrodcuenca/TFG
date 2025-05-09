@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DeviceModelResource\Pages;
 use App\Filament\Resources\DeviceModelResource\RelationManagers;
 use App\Models\DeviceModel;
+use constants;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,11 +20,20 @@ class DeviceModelResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $label = 'Modelo';
+
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->label(constants::NAME_TYPO)
+                    ->required(),
+                Forms\Components\Select::make('brand_id')
+                    ->label(constants::MARCA)
+                    ->relationship('brand', 'name')
+                    ->required(),
             ]);
     }
 
@@ -31,7 +41,14 @@ class DeviceModelResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->label(constants::NAME_TYPO)
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make( 'brand.name')
+                    ->label(constants::MARCA)
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //

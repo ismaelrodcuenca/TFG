@@ -14,16 +14,17 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('invoice_number');
-            $table->double('taxes');
+            $table->double('taxes_full_amount');
+            $table->integer('store_order_number');
             $table->double('full_amount');
             $table->double('down_payment_amount')->nullable();
             $table->string('comment');
             $table->boolean('is_down_payment');
             $table->foreignId('work_order_id')->nullable()->constrained('work_orders');
             $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->foreignId('company_id')->nullable()->constrained('companies');
+            $table->foreignId('company_id')->constrained('companies');
             $table->foreignId('payment_method_id')->constrained('payment_methods');
-            
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
