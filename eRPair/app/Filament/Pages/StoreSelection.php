@@ -26,17 +26,17 @@ class StoreSelection extends Page implements HasForms
     }
     protected function getFormSchema(): array
     {
-        
+
 
         $stores = DB::table('stores')
-    ->join('store_user', 'stores.id', '=', 'store_user.store_id')
-    ->where('store_user.user_id', auth()->user()->id)
-    ->select(DB::raw('`stores`.`name`, `stores`.`id`'))
-    ->get();
+            ->join('store_user', 'stores.id', '=', 'store_user.store_id')
+            ->where('store_user.user_id', auth()->user()->id)
+            ->select(DB::raw('`stores`.`name`, `stores`.`id`'))
+            ->get();
 
-// $stores es una colección de Eloquent models (StdClass)
+        // $stores es una colección de Eloquent models (StdClass)
 
-    
+
         ////LOS PUTOS MUERTOS DE LA PUTA QUE PARIO A MYSQL
         return [
             Select::make('store_id')
@@ -45,7 +45,7 @@ class StoreSelection extends Page implements HasForms
                 ->required(),
         ];
     }
-    
+
 
     public function submit(): void
     {
