@@ -27,7 +27,16 @@ class Client extends Model
      * 
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
-    protected $fillable = ['document', 'name', 'surname', 'surname2', 'phone_number', 'phone_number_2', 'postal_code', 'address', 'document_type_id'];
+    protected $fillable = [
+        'document', 
+        'name', 
+        'surname', 
+        'surname2', 
+        'phone_number', 
+        'phone_number_2', 
+        'postal_code', 
+        'address',
+        'document_type_id'];
 
     public function documentType(): BelongsTo
     {

@@ -50,4 +50,8 @@ class constants{
     const COLOUR = "Color";
     const UNLOCK_CODE = "Código";
     const CLIENT = "Cliente";
+    const COST = "Costo";
+    const DISTRIBUTOR = "Distribuidor";
+    const TYPE = "Tipo";
+    const CATEGORY = "Categoría";
  }

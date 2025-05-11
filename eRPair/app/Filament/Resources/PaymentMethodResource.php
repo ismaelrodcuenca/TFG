@@ -22,8 +22,7 @@ use Filament\Forms\Components\TextInput;
 class PaymentMethodResource extends Resource
 {
     protected static ?string $model = PaymentMethod::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
     protected static ?string $label = 'Métodos de Pagos';
 
     public static ?string $navigationGroup = 'Gestiones ERP';

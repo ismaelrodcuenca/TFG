@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_number');
             $table->double('taxes_full_amount');
-            $table->integer('store_order_number');
+            $table->integer('store_order_number')->nullable();
             $table->double('full_amount');
             $table->double('down_payment_amount')->nullable();
-            $table->string('comment');
-            $table->boolean('is_down_payment');
+            $table->string('comment')->nullable();
+            $table->boolean('is_down_payment')->default(0);
             $table->foreignId('work_order_id')->nullable()->constrained('work_orders');
             $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->foreignId('company_id')->constrained('companies');
+            $table->foreignId('company_id')->nullable()->constrained('companies');
             $table->foreignId('payment_method_id')->constrained('payment_methods');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();

@@ -11,10 +11,10 @@ class EnsureStoreSelected
     {
         if (auth()->check()) {
             $isStoreSet = session()->has('store_id');
-            $isOnStoreSelectionPage = $request->routeIs('select-store');
+            $isOnStoreSelectionPage = $request->fullUrlIs(url('/dashboard/store-selection'));
 
             if (!$isStoreSet && !$isOnStoreSelectionPage) {
-                return redirect("select-store");
+                return redirect('/dashboard/store-selection');
             }
         }
 

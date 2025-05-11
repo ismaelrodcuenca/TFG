@@ -1,27 +1,21 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\TypeResource\RelationManagers;
 
-use App\Filament\Resources\ItemResource\Pages;
-use App\Filament\Resources\ItemResource\RelationManagers;
-use App\Models\Item;
 use constants;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ItemResource extends Resource
+class ItemsRelationManager extends RelationManager
 {
-    protected static ?string $model = Item::class;
+    protected static string $relationship = 'items';
 
-    protected static ?string $navigationIcon = 'heroicon-o-battery-0';
-    public static ?string $navigationGroup = 'Catálogo';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -41,7 +35,7 @@ class ItemResource extends Resource
                     ->label(constants::DISTRIBUTOR),
                 Forms\Components\Select::make('type_id')
                     ->relationship('type', 'name')
-                    ->default('8')
+                    ->required()
                     ->label(constants::TYPE),
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name')
@@ -50,7 +44,7 @@ class ItemResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -81,21 +75,5 @@ class ItemResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListItems::route('/'),
-            'create' => Pages\CreateItem::route('/create'),
-            'edit' => Pages\EditItem::route('/{record}/edit'),
-        ];
     }
 }

@@ -30,6 +30,10 @@ class TypeResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')->label(constants::NAME)->required(),
+                Forms\Components\Select::make('tax_id')
+                    ->label('Tax')
+                    ->relationship('tax', 'name')
+                    ->required(),
             ]);
     }
 
@@ -59,7 +63,7 @@ class TypeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 

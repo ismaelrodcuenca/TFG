@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DeviceModelResource\Pages;
 use App\Filament\Resources\DeviceModelResource\RelationManagers;
+use App\Filament\Resources\DeviceModelResource\RelationManagers\ItemsRelationManager;
 use App\Models\DeviceModel;
 use constants;
 use Filament\Forms;
@@ -18,10 +19,11 @@ class DeviceModelResource extends Resource
 {
     protected static ?string $model = DeviceModel::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cube-transparent';
 
     protected static ?string $label = 'Modelo';
-
+    
+    public static ?string $navigationGroup = 'Catálogo';
 
     public static function form(Form $form): Form
     {
@@ -66,7 +68,7 @@ class DeviceModelResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ItemsRelationManager::class,
         ];
     }
 

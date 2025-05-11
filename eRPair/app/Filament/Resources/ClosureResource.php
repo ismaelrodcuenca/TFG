@@ -17,7 +17,7 @@ class ClosureResource extends Resource
 {
     protected static ?string $model = Closure::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $label = 'Cierres';
 
     public static function form(Form $form): Form

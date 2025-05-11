@@ -17,6 +17,6 @@ class LoginResponse implements LoginResponseContract
         // return whatever you want as url
         $url = '/store-select';
  
-        return redirect()->intended($url);
+        return redirect($url);
     }
 }

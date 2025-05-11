@@ -27,7 +27,7 @@ class RepairTimeResource extends Resource
 {
     protected static ?string $model = RepairTime::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
     protected static ?string $label = 'Tiempos De Reparación ';
 
     public static ?string $navigationGroup = 'Gestiones ERP';

@@ -22,8 +22,7 @@ use Filament\Forms\Components\TextInput;
 class DocumentTypeResource extends Resource
 {
     protected static ?string $model = DocumentType::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
     public static ?string $navigationGroup = 'Gestiones ERP';
     protected static ?string $label = 'Tipos De Documentos';
 

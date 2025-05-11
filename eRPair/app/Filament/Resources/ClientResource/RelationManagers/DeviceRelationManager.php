@@ -21,7 +21,11 @@ class DeviceRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
+        /**
+         * Formulario para creacion de dispositivo, con condiciones para determinados campos en funcion de lo que esté relleno o activo.
+         */
         return $form
+        
             ->schema([
                 Forms\Components\Toggle::make('has_no_serial_or_imei')
                     ->label('No Serial or IMEI')
@@ -76,11 +80,11 @@ class DeviceRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->columns([/**
+            ->columns([
                 Tables\Columns\TextColumn::make('brand.name')
-                    ->label('Marca'), */
+                    ->label(constants::NAME_TYPO),
                 Tables\Columns\TextColumn::make('model.name')
-                ->label(constants::MARCA),
+                ->label(constants::MODELO),
                 Tables\Columns\TextColumn::make('IMEI'),
             ])
             ->filters([
@@ -91,12 +95,6 @@ class DeviceRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

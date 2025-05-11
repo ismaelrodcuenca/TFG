@@ -28,7 +28,7 @@ class BrandResource extends Resource
     protected static ?string $label = constants::MARCAS;
 
     public $translatable = ['name'];
-    public static ?string $navigationGroup = 'Gestiones ERP';
+    public static ?string $navigationGroup = 'Catálogo';
 
     public static function form(Form $form): Form
     {
@@ -49,7 +49,7 @@ class BrandResource extends Resource
             ])
             ->actions([
                 ViewAction::make(),
-                EditAction::make(),
+                Tables\Actions\EditAction::make(),
                 
             ]);
     }

@@ -1,11 +1,9 @@
 <?php
-
 namespace App\Filament\Pages;
 
-use DB;
+use App\Http\Controllers\StoreController;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
-use Filament\Forms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
@@ -16,48 +14,64 @@ class StoreSelection extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static string $view = 'filament.pages.store-selection';
-    protected static bool $shouldRegisterNavigation = true; // No mostrar en menú
+    protected static bool $shouldRegisterNavigation = false;
+
+    protected static ?string $title = "";
+    protected ?string $heading = 'Seleccionar Tienda';
+    protected static ?string $routePath = 'store-selection';
 
     public ?string $store_id = null;
+    public ?string $rol_id = null;
+    
 
     public function mount(): void
     {
         $this->form->fill();
     }
+
+    public function getHeading(): string
+    {
+        $this->userName = auth()->user()->name;
+        return "Bienvenido, " . $this->userName;
+    }
+
+
     protected function getFormSchema(): array
     {
-
-
-        $stores = DB::table('stores')
-            ->join('store_user', 'stores.id', '=', 'store_user.store_id')
-            ->where('store_user.user_id', auth()->user()->id)
-            ->select(DB::raw('`stores`.`name`, `stores`.`id`'))
-            ->get();
-
-        // $stores es una colección de Eloquent models (StdClass)
-
-
-        ////LOS PUTOS MUERTOS DE LA PUTA QUE PARIO A MYSQL
+        $stores = auth()->user()->stores()->pluck('stores.name', 'stores.id')->toArray();
+        $roles = auth()->user()->roles()->pluck('roles.name', 'roles.id')->toArray();
         return [
             Select::make('store_id')
-                ->label('Selecciona una tienda')
+                ->label('Tienda')
+                ->placeholder('Selecciones una tienda')
                 ->options($stores)
+                ->required(),
+            Select::make('rol_id')
+                ->placeholder('Selecciones un rol')
+                ->label('Rol')
+                ->options($roles)
                 ->required(),
         ];
     }
 
-
     public function submit(): void
     {
-        $data = $this->form->getState();
+        $storeId = $this->form->getState()['store_id'];
+        $rolId = $this->form->getState()['rol_id'];
+        $notificationString = null;
+        session(['store_id' => $storeId]);
+        session(['rol_id' => $rolId]);
 
-        session(['store_id' => $data['store_id']]);
-
+        if (!session('store_id') || !session('rol_id')) {
+            $notificationString = 'Seleccion requerida';
+        }
+        $notificationString = 'Bienvenido, '.auth()->user()->name;
+        // Redirigir al dashboard o la página principal de tu app
         Notification::make()
             ->title('Tienda seleccionada correctamente')
             ->success()
             ->send();
 
-        redirect()->intended(filament()->getUrl());
+        $this->redirect('/dashboard');
     }
 }

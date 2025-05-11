@@ -30,6 +30,7 @@ class WorkOrder extends Model
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
     protected $fillable = [
+        'work_order_number',
         'failure',
         'private_comment',
         'comment',

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DeviceResource\Pages;
 use App\Filament\Resources\DeviceResource\RelationManagers;
+use App\Filament\Resources\DeviceResource\RelationManagers\ItemsRelationManager;
 use App\Models\Device;
 use DragonCode\Support\Facades\Helpers\Boolean;
 use Filament\Forms;
@@ -21,8 +22,9 @@ class DeviceResource extends Resource
 {
     protected static ?string $model = Device::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'Dispositivos';
+    protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
+
+    protected static ?string $label = 'Dispositivo';
 
     public static function form(Form $form): Form
     {
@@ -60,11 +62,20 @@ class DeviceResource extends Resource
     
                         return \App\Models\DeviceModel::where('brand_id', $brandId)->pluck('name', 'id');
                     })
+                    ->default(function (callable $get) {
+                        $brandId = $get('brand');
+                        if (!$brandId) return [
+                            ''=> "Seleccione una marca",
+                        ];
+                        
+                        return \App\Models\DeviceModel::where('brand_id', $brandId)->pluck('name', 'id');
+                    })
                     ->required(),
                 Forms\Components\Select::make('client_id')
                     ->label(constants::CLIENT)
                     ->relationship('client', 'document')
-                    ->required(),
+                    ->required()
+                    ->hidden(),
             ]);
     }
 
@@ -132,7 +143,7 @@ class DeviceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            
+            //
         ];
     }
 

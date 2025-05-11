@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     public static ?string $navigationGroup = 'Gestiones ERP';
 
@@ -71,7 +71,7 @@ class CategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('work_orders', function (Blueprint $table) {
             $table->id();
+            $table->integer('work_order_number');
             $table->text('failure');
             $table->text('private_comment')->nullable();
             $table->text('comment')->nullable();

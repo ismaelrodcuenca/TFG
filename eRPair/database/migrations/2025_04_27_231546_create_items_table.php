@@ -17,7 +17,7 @@ return new class extends Migration
             $table->double('cost');
             $table->double('price');
             $table->string('distributor');
-            $table->foreignId('type_id')->constrained('types');
+            $table->foreignId('type_id')->nullable()->constrained('types');
             $table->foreignId('category_id')->constrained('categories');
             $table->timestamps();
         });

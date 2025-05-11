@@ -60,7 +60,6 @@ class DatabaseSeeder extends Seeder
             ['name' => 'ADMIN'],
             ['name' => 'DEPENDIENTE'],
             ['name' => 'TÉCNICO'],
-            ['name' => 'TÉCNICO + DEPENDIENTE'],
             ['name' => 'ENCARGADO'],
         ]);
 
@@ -72,6 +71,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'FLEX'],
             ['name' => 'LENTE'],
             ['name' => 'TAPA'],
+            ['name'=> 'ACCESORIO'],
         ]);
 
         DB::table('categories')->insert([
@@ -806,6 +806,27 @@ class DatabaseSeeder extends Seeder
             [
             'user_id' => 1,
             'store_id' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+        ]);
+
+        DB::table('rol_user')->insert([
+            [
+            'user_id' => 1,
+            'rol_id' => 1, // ADMIN
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+            [
+            'user_id' => 1,
+            'rol_id' => 2, // DEPENDIENTE
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+            [
+            'user_id' => 1,
+            'rol_id' => 3, // TÉCNICO
             'created_at' => now(),
             'updated_at' => now(),
             ],
