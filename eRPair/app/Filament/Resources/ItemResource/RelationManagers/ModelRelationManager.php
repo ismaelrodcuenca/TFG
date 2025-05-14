@@ -1,23 +1,27 @@
 <?php
 
-namespace App\Filament\Resources\DeviceModelResource\RelationManagers;
+namespace App\Filament\Resources\ItemResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ItemsRelationManager extends RelationManager
+class ModelRelationManager extends RelationManager
 {
-    protected static string $relationship = 'items';
+    protected static string $relationship = 'models';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -35,9 +39,8 @@ class ItemsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                AttachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

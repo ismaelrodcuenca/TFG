@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DeviceResource\Pages;
 use App\Filament\Resources\DeviceResource\RelationManagers;
 use App\Filament\Resources\DeviceResource\RelationManagers\ItemsRelationManager;
+use App\Filament\Resources\DeviceResource\RelationManagers\WorkOrdersRelationManager;
 use App\Models\Device;
 use DragonCode\Support\Facades\Helpers\Boolean;
 use Filament\Forms;
@@ -75,7 +76,9 @@ class DeviceResource extends Resource
                     ->label(constants::CLIENT)
                     ->relationship('client', 'document')
                     ->required()
-                    ->hidden(),
+                    ->placeholder('Documento Cliente')
+                    ->searchable(),
+                    
             ]);
     }
 
@@ -143,7 +146,7 @@ class DeviceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            WorkOrdersRelationManager::class,
         ];
     }
 

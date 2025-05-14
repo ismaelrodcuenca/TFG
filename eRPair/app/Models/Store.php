@@ -53,4 +53,9 @@ class Store extends Model
     {
         return $this->hasMany(WorkOrder::class);
     }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }

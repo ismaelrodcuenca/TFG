@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use File;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -21,6 +22,57 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@admin.com',
             'password' => bcrypt('12345admin'),
         ]);
+        
+        $path = database_path('seeders\data\import.csv');
+
+        if (!File::exists($path)) {
+            $this->command->error("Archivo CSV no encontrado: $path");
+            return;
+        }
+
+        $csv = array_map('str_getcsv', file($path));
+        $header = array_map('strtolower', array_shift($csv)); // ['brand_name', 'model']
+
+        foreach ($csv as $row) {
+            $data = array_combine($header, $row);
+
+            if (!isset($data['brand'], $data['model'])) {
+                continue;
+            }
+
+            // Normalizar y limpiar
+            $brandName = strtoupper(trim($data['brand']));
+
+            $rawModel = $data['model'];
+
+            // Quitar texto entre paréntesis
+            $cleanModel = preg_replace('/\s*\(.*?\)\s*/', '', $rawModel);
+
+            // Quitar espacios múltiples
+            $cleanModel = preg_replace('/\s+/', ' ', $cleanModel);
+
+            // Convertir a mayúsculas
+            $modelName = strtoupper(trim($cleanModel));
+
+            // Obtener o crear la marca
+            $brand = DB::table('brands')->where('name', $brandName)->first();
+
+            if (!$brand) {
+                $brandId = DB::table('brands')->insertGetId([
+                    'name' => $brandName,
+                ]);
+            } else {
+                $brandId = $brand->id;
+            }
+
+            // Insertar modelo si no existe
+            DB::table('device_models')->updateOrInsert(
+                ['name' => $modelName, 'brand_id' => $brandId],
+                ['name' => $modelName, 'brand_id' => $brandId]
+            );
+        }
+
+        $this->command->info("Modelos de dispositivos importados correctamente.");
         DB::table('taxes')->insert([
             ['name' => 'IVA', 'percentage' => 10],
             ['name' => 'IVA', 'percentage' => 21],
@@ -35,6 +87,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'OPPO'],
         ]);
 
+        
         DB::table('payment_methods')->insert([
             ['name' => 'TARJETA'],
             ['name' => 'EFECTIVO'],
@@ -72,6 +125,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'LENTE'],
             ['name' => 'TAPA'],
             ['name'=> 'ACCESORIO'],
+            ['name'=> 'OTRO'],
         ]);
 
         DB::table('categories')->insert([
@@ -82,149 +136,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'PROPINAS', 'tax_id' => 3],
         ]);
 
-        DB::table('device_models')->insert([
-            // Apple iPhone models
-            ['brand_id' => 1, 'name' => 'IPHONE 16'],
-            ['brand_id' => 1, 'name' => 'IPHONE 16 PLUS'],
-            ['brand_id' => 1, 'name' => 'IPHONE 16 PRO'],
-            ['brand_id' => 1, 'name' => 'IPHONE 16 PRO MAX'],
-            ['brand_id' => 1, 'name' => 'IPHONE 15'],
-            ['brand_id' => 1, 'name' => 'IPHONE 15 PLUS'],
-            ['brand_id' => 1, 'name' => 'IPHONE 15 PRO'],
-            ['brand_id' => 1, 'name' => 'IPHONE 15 PRO MAX'],
-            ['brand_id' => 1, 'name' => 'IPHONE 14'],
-            ['brand_id' => 1, 'name' => 'IPHONE 14 PRO'],
-            ['brand_id' => 1, 'name' => 'IPHONE 14 PRO MAX'],
-            ['brand_id' => 1, 'name' => 'IPHONE 14 MINI'],
-            ['brand_id' => 1, 'name' => 'IPHONE 13'],
-            ['brand_id' => 1, 'name' => 'IPHONE 13 PRO'],
-            ['brand_id' => 1, 'name' => 'IPHONE 13 PRO MAX'],
-            ['brand_id' => 1, 'name' => 'IPHONE 13 MINI'],
-            ['brand_id' => 1, 'name' => 'IPHONE 12'],
-            ['brand_id' => 1, 'name' => 'IPHONE 12 PRO'],
-            ['brand_id' => 1, 'name' => 'IPHONE 12 PRO MAX'],
-            ['brand_id' => 1, 'name' => 'IPHONE 12 MINI'],
-            ['brand_id' => 1, 'name' => 'IPHONE 11'],
-            ['brand_id' => 1, 'name' => 'IPHONE 11 PRO'],
-            ['brand_id' => 1, 'name' => 'IPHONE 11 PRO MAX'],
-            ['brand_id' => 1, 'name' => 'IPHONE SE (2020)'],
-            ['brand_id' => 1, 'name' => 'IPHONE XR'],
-            ['brand_id' => 1, 'name' => 'IPHONE XS'],
-            ['brand_id' => 1, 'name' => 'IPHONE XS MAX'],
-            ['brand_id' => 1, 'name' => 'IPHONE X'],
-            ['brand_id' => 1, 'name' => 'IPHONE 8'],
-            ['brand_id' => 1, 'name' => 'IPHONE 8 PLUS'],
-            ['brand_id' => 1, 'name' => 'IPHONE 7'],
-            ['brand_id' => 1, 'name' => 'IPHONE 7 PLUS'],
-            ['brand_id' => 1, 'name' => 'IPHONE 6S'],
-            ['brand_id' => 1, 'name' => 'IPHONE 6S PLUS'],
-            ['brand_id' => 1, 'name' => 'IPHONE 6'],
-            ['brand_id' => 1, 'name' => 'IPHONE 6 PLUS'],
-            ['brand_id' => 1, 'name' => 'IPHONE SE (1ST GENERATION)'],
-            ['brand_id' => 1, 'name' => 'IPHONE 5S'],
-            ['brand_id' => 1, 'name' => 'IPHONE 5C'],
-            ['brand_id' => 1, 'name' => 'IPHONE 5'],
-            ['brand_id' => 1, 'name' => 'IPHONE 4S'],
-            ['brand_id' => 1, 'name' => 'IPHONE 4'],
-            ['brand_id' => 1, 'name' => 'IPHONE 3GS'],
-            ['brand_id' => 1, 'name' => 'IPHONE 3G'],
-            ['brand_id' => 1, 'name' => 'IPHONE (1ST GENERATION)'],
-
-            // Apple iPad models
-            ['brand_id' => 1, 'name' => 'IPAD PRO 12.9-INCH (5TH GENERATION)'],
-            ['brand_id' => 1, 'name' => 'IPAD PRO 11-INCH (3RD GENERATION)'],
-            ['brand_id' => 1, 'name' => 'IPAD AIR (4TH GENERATION)'],
-            ['brand_id' => 1, 'name' => 'IPAD (9TH GENERATION)'],
-            ['brand_id' => 1, 'name' => 'IPAD MINI (6TH GENERATION)'],
-
-            // Samsung models
-            ['brand_id' => 2, 'name' => 'GALAXY S21'],
-            ['brand_id' => 2, 'name' => 'GALAXY S21 ULTRA'],
-            ['brand_id' => 2, 'name' => 'GALAXY S20'],
-            ['brand_id' => 2, 'name' => 'GALAXY S20 FE'],
-            ['brand_id' => 2, 'name' => 'GALAXY NOTE 20'],
-            ['brand_id' => 2, 'name' => 'GALAXY NOTE 20 ULTRA'],
-            ['brand_id' => 2, 'name' => 'GALAXY A72'],
-            ['brand_id' => 2, 'name' => 'GALAXY A52'],
-            ['brand_id' => 2, 'name' => 'GALAXY Z FOLD 3'],
-            ['brand_id' => 2, 'name' => 'GALAXY Z FLIP 3'],
-            ['brand_id' => 2, 'name' => 'GALAXY M32'],
-            ['brand_id' => 2, 'name' => 'GALAXY M12'],
-            ['brand_id' => 2, 'name' => 'GALAXY TAB S7'],
-            ['brand_id' => 2, 'name' => 'GALAXY TAB A7'],
-            ['brand_id' => 2, 'name' => 'GALAXY S10'],
-            ['brand_id' => 2, 'name' => 'GALAXY S10+'],
-            ['brand_id' => 2, 'name' => 'GALAXY S9'],
-            ['brand_id' => 2, 'name' => 'GALAXY S9+'],
-            ['brand_id' => 2, 'name' => 'GALAXY A50'],
-            ['brand_id' => 2, 'name' => 'GALAXY A30'],
-
-            // Xiaomi models
-            ['brand_id' => 3, 'name' => 'MI 11'],
-            ['brand_id' => 3, 'name' => 'MI 11 ULTRA'],
-            ['brand_id' => 3, 'name' => 'REDMI NOTE 10'],
-            ['brand_id' => 3, 'name' => 'REDMI NOTE 10 PRO'],
-            ['brand_id' => 3, 'name' => 'REDMI 9'],
-            ['brand_id' => 3, 'name' => 'REDMI 9A'],
-            ['brand_id' => 3, 'name' => 'REDMI 9C'],
-            ['brand_id' => 3, 'name' => 'POCO X3 PRO'],
-            ['brand_id' => 3, 'name' => 'POCO F3'],
-            ['brand_id' => 3, 'name' => 'MI 10'],
-            ['brand_id' => 3, 'name' => 'MI 10T'],
-            ['brand_id' => 3, 'name' => 'MI 10T PRO'],
-            ['brand_id' => 3, 'name' => 'REDMI NOTE 9'],
-            ['brand_id' => 3, 'name' => 'REDMI NOTE 9 PRO'],
-            ['brand_id' => 3, 'name' => 'REDMI NOTE 8'],
-            ['brand_id' => 3, 'name' => 'REDMI NOTE 8 PRO'],
-            ['brand_id' => 3, 'name' => 'MI 9'],
-            ['brand_id' => 3, 'name' => 'MI 9T'],
-            ['brand_id' => 3, 'name' => 'MI 9T PRO'],
-            ['brand_id' => 3, 'name' => 'POCO M3'],
-
-            // Huawei models
-            ['brand_id' => 4, 'name' => 'P50 PRO'],
-            ['brand_id' => 4, 'name' => 'P40 PRO'],
-            ['brand_id' => 4, 'name' => 'P40'],
-            ['brand_id' => 4, 'name' => 'MATE 40 PRO'],
-            ['brand_id' => 4, 'name' => 'MATE 30 PRO'],
-            ['brand_id' => 4, 'name' => 'MATE 30'],
-            ['brand_id' => 4, 'name' => 'NOVA 9'],
-            ['brand_id' => 4, 'name' => 'NOVA 8'],
-            ['brand_id' => 4, 'name' => 'NOVA 7'],
-            ['brand_id' => 4, 'name' => 'Y9A'],
-            ['brand_id' => 4, 'name' => 'Y8P'],
-            ['brand_id' => 4, 'name' => 'Y7A'],
-            ['brand_id' => 4, 'name' => 'P30 PRO'],
-            ['brand_id' => 4, 'name' => 'P30'],
-            ['brand_id' => 4, 'name' => 'P20 PRO'],
-            ['brand_id' => 4, 'name' => 'P20'],
-            ['brand_id' => 4, 'name' => 'MATE 20 PRO'],
-            ['brand_id' => 4, 'name' => 'MATE 20'],
-            ['brand_id' => 4, 'name' => 'Y6P'],
-            ['brand_id' => 4, 'name' => 'Y5P'],
-
-            // Oppo models
-            ['brand_id' => 5, 'name' => 'FIND X3 PRO'],
-            ['brand_id' => 5, 'name' => 'FIND X2 PRO'],
-            ['brand_id' => 5, 'name' => 'RENO 6 PRO'],
-            ['brand_id' => 5, 'name' => 'RENO 6'],
-            ['brand_id' => 5, 'name' => 'RENO 5 PRO'],
-            ['brand_id' => 5, 'name' => 'RENO 5'],
-            ['brand_id' => 5, 'name' => 'A94'],
-            ['brand_id' => 5, 'name' => 'A74'],
-            ['brand_id' => 5, 'name' => 'A54'],
-            ['brand_id' => 5, 'name' => 'A53'],
-            ['brand_id' => 5, 'name' => 'A15'],
-            ['brand_id' => 5, 'name' => 'A12'],
-            ['brand_id' => 5, 'name' => 'F19 PRO'],
-            ['brand_id' => 5, 'name' => 'F19'],
-            ['brand_id' => 5, 'name' => 'F17 PRO'],
-            ['brand_id' => 5, 'name' => 'F17'],
-            ['brand_id' => 5, 'name' => 'K9'],
-            ['brand_id' => 5, 'name' => 'K7X'],
-            ['brand_id' => 5, 'name' => 'RENO 4 PRO'],
-            ['brand_id' => 5, 'name' => 'RENO 4'],
-        ]);
+        
         DB::table('clients')->insert([
             [
             'document' => '12345678A',
@@ -304,209 +216,7 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
             ],
         ]);
-        DB::table('items')->insert([
-            [
-            'name' => 'PROTECTOR DE PANTALLA',
-            'cost' => 2.5,
-            'price' => 10.0,
-            'distributor' => 'SUMINISTROS TÉCNICOS S.L.',
-            'type_id' => 1,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'BATERÍA IPHONE',
-            'cost' => 15.0,
-            'price' => 50.0,
-            'distributor' => 'MUNDO BATERÍAS',
-            'type_id' => 2,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'CABLE DE CARGA',
-            'cost' => 3.0,
-            'price' => 15.0,
-            'distributor' => 'SOLUCIONES DE CABLES',
-            'type_id' => 3,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'CARGADOR INALÁMBRICO',
-            'cost' => 20.0,
-            'price' => 60.0,
-            'distributor' => 'CENTRO DE CARGADORES',
-            'type_id' => 4,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'LENTE DE CÁMARA',
-            'cost' => 25.0,
-            'price' => 80.0,
-            'distributor' => 'EXPERTOS EN LENTES',
-            'type_id' => 6,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'FUNDA PARA TELÉFONO',
-            'cost' => 5.0,
-            'price' => 20.0,
-            'distributor' => 'FÁBRICA DE FUNDAS',
-            'type_id' => 7,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'PANTALLA PARA TABLET',
-            'cost' => 50.0,
-            'price' => 150.0,
-            'distributor' => 'MAESTROS DE PANTALLAS',
-            'type_id' => 1,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'BATERÍA PARA SMARTWATCH',
-            'cost' => 10.0,
-            'price' => 40.0,
-            'distributor' => 'MUNDO BATERÍAS',
-            'type_id' => 2,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'CABLE USB-C',
-            'cost' => 4.0,
-            'price' => 12.0,
-            'distributor' => 'SOLUCIONES DE CABLES',
-            'type_id' => 3,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'BATERÍA PORTÁTIL',
-            'cost' => 25.0,
-            'price' => 70.0,
-            'distributor' => 'CENTRO DE CARGADORES',
-            'type_id' => 4,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'LENTE TRASERA DE CÁMARA',
-            'cost' => 30.0,
-            'price' => 90.0,
-            'distributor' => 'EXPERTOS EN LENTES',
-            'type_id' => 6,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'AURICULARES INALÁMBRICOS',
-            'cost' => 40.0,
-            'price' => 120.0,
-            'distributor' => 'TECNOLOGÍA DE AUDIO',
-            'type_id' => 7,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'PANTALLA PARA PORTÁTIL',
-            'cost' => 100.0,
-            'price' => 300.0,
-            'distributor' => 'MAESTROS DE PANTALLAS',
-            'type_id' => 1,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'BATERÍA PARA SMARTPHONE',
-            'cost' => 12.0,
-            'price' => 45.0,
-            'distributor' => 'MUNDO BATERÍAS',
-            'type_id' => 2,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'CABLE HDMI',
-            'cost' => 6.0,
-            'price' => 18.0,
-            'distributor' => 'SOLUCIONES DE CABLES',
-            'type_id' => 3,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'CARGADOR PORTÁTIL',
-            'cost' => 30.0,
-            'price' => 90.0,
-            'distributor' => 'CENTRO DE CARGADORES',
-            'type_id' => 4,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'LENTE FRONTAL DE CÁMARA',
-            'cost' => 20.0,
-            'price' => 70.0,
-            'distributor' => 'EXPERTOS EN LENTES',
-            'type_id' => 6,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'ALTAVOZ BLUETOOTH',
-            'cost' => 35.0,
-            'price' => 100.0,
-            'distributor' => 'TECNOLOGÍA DE AUDIO',
-            'type_id' => 7,
-            'category_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'PANTALLA PARA MONITOR',
-            'cost' => 80.0,
-            'price' => 250.0,
-            'distributor' => 'MAESTROS DE PANTALLAS',
-            'type_id' => 1,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'BATERÍA PARA TABLET',
-            'cost' => 18.0,
-            'price' => 60.0,
-            'distributor' => 'MUNDO BATERÍAS',
-            'type_id' => 2,
-            'category_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-        ]);
-
+        
         DB::table('stores')->insert([
             [
             'name' => 'PLAZA MAYOR',
@@ -831,5 +541,33 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
             ],
         ]);
+
+        $deviceModels = DB::table('device_models')->get();
+        $parts = ['Pantalla', 'Batería', 'Conector de carga', 'Cámara', 'Reparación de placa'];
+        $distributors = ['KF', 'PA', 'SS'];
+        $typeId = DB::table('types')->where('name', 'PIEZA')->value('id');
+        $categoryId = DB::table('categories')->where('name', 'PIEZAS')->value('id');
+
+        foreach ($deviceModels as $deviceModel) {
+            foreach ($parts as $part) {
+            DB::table('items')->insert([
+                'name' => "{$part} para {$deviceModel->name}",
+                'cost' => rand(10, 100), // Random cost
+                'price' => rand(150, 300), // Random price
+                'distributor' => $distributors[array_rand($distributors)],
+                'type_id' => match ($part) {
+                    'Pantalla' => 1,
+                    'Batería' => 2,
+                    'Conector de carga' => 3,
+                    'Cámara' => 6,
+                    'Reparación de placa' => 9,
+                    default => $typeId,
+                },
+                'category_id' => $categoryId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            }
+        }
     }
 }

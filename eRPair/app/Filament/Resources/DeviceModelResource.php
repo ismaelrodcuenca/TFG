@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DeviceModelResource\Pages;
 use App\Filament\Resources\DeviceModelResource\RelationManagers;
-use App\Filament\Resources\DeviceModelResource\RelationManagers\ItemsRelationManager;
+use App\Filament\Resources\DeviceModelResource\RelationManagers\ItemRelationManager;
 use App\Models\DeviceModel;
 use constants;
 use Filament\Forms;
@@ -43,15 +43,17 @@ class DeviceModelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label(constants::NAME_TYPO)
-                    ->searchable()
-                    ->sortable(),
+                
                 Tables\Columns\TextColumn::make( 'brand.name')
                     ->label(constants::MARCA)
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(constants::NAME_TYPO)
+                    ->searchable()
+                    ->sortable(),
             ])
+            ->defaultSort('brand.name', 'asc')
             ->filters([
                 //
             ])
@@ -62,13 +64,14 @@ class DeviceModelResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ;
     }
 
     public static function getRelations(): array
     {
         return [
-            ItemsRelationManager::class,
+            ItemRelationManager::class,
         ];
     }
 

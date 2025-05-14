@@ -45,7 +45,6 @@ class DeviceModelsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
             ]);
     }
 }

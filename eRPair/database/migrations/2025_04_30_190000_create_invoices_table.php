@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_number');
             $table->double('taxes_full_amount');
-            $table->integer('store_order_number')->nullable();
+            $table->integer('work_order_number')->nullable();
             $table->double('full_amount');
             $table->double('down_payment_amount')->nullable();
             $table->string('comment')->nullable();
@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignId('company_id')->nullable()->constrained('companies');
             $table->foreignId('payment_method_id')->constrained('payment_methods');
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('store_id')->constrained('stores');
             $table->timestamps();
         });
     }

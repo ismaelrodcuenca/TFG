@@ -46,7 +46,7 @@ class Item extends Model
         return $this->hasOneThrough(Tax::class, Category::class);
     }
 
-    public function models(): BelongsToMany
+    public function deviceModels(): BelongsToMany
     {
         return $this->belongsToMany(DeviceModel::class);
     }

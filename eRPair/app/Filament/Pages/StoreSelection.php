@@ -68,7 +68,7 @@ class StoreSelection extends Page implements HasForms
         $notificationString = 'Bienvenido, '.auth()->user()->name;
         // Redirigir al dashboard o la página principal de tu app
         Notification::make()
-            ->title('Tienda seleccionada correctamente')
+            ->title('Tienda y perfil seleccionada correctamente')
             ->success()
             ->send();
 

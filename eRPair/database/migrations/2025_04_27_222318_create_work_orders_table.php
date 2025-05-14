@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('work_orders', function (Blueprint $table) {
             $table->id();
-            $table->integer('work_order_number');
+            $table->integer('work_order_number')->default(1);
+            $table->integer('work_order_number_warranty')->nullable();
             $table->text('failure');
             $table->text('private_comment')->nullable();
             $table->text('comment')->nullable();
@@ -28,6 +29,16 @@ return new class extends Migration
             $table->foreignId('store_id')->constrained('stores');
             $table->timestamps();
         });
+        DB::unprepared('
+            CREATE TRIGGER increment_work_order_number AFTER INSERT ON work_orders
+            FOR EACH ROW
+            BEGIN
+                UPDATE stores
+                SET work_order_number = work_order_number + 1
+                WHERE id = NEW.store_id;
+            END;
+        ');
+
     }
 
     /**

@@ -1,0 +1,981 @@
+brand,model
+oneplus,OnePlus 11 5G
+oneplus,OnePlus Nord CE 2 Lite 5G
+samsung,Samsung Galaxy A14 5G
+motorola,Motorola Moto G62 5G
+realme,Realme 10 Pro Plus
+samsung,Samsung Galaxy F23 5G (6GB RAM + 128GB)
+apple,Apple iPhone 14
+xiaomi,Xiaomi Redmi Note 12 Pro Plus
+nothing,Nothing Phone 1
+oneplus,OnePlus Nord 2T 5G
+realme,Realme 10 Pro
+oppo,Oppo A78
+xiaomi,Xiaomi Redmi Note 12 Pro 5G
+vivo,Vivo T1 5G (6GB RAM + 128GB)
+samsung,Samsung Galaxy S23 Ultra 5G
+apple,Apple iPhone 13
+vivo,Vivo Y16
+oppo,OPPO Reno 9 Pro Plus
+oneplus,OnePlus 10R 5G
+vivo,Vivo Y22
+oneplus,OnePlus 11R
+vivo,Vivo V25 Pro 5G
+poco,Poco X4 Pro 5G
+xiaomi,Xiaomi Redmi Note 12
+vivo,Vivo V26 Pro
+samsung,Samsung Galaxy S20 FE 5G
+oneplus,OnePlus Nord CE 2 Lite 5G (8GB RAM + 128GB)
+apple,Apple iPhone 14 Pro Max
+vivo,Vivo V25 5G
+oneplus,OnePlus 11 Pro
+realme,Realme 10 Pro (8GB RAM + 128GB)
+poco,Poco X5 Pro
+vivo,Vivo V27
+apple,Apple iPhone 11
+samsung,Samsung Galaxy M53 5G
+samsung,Samsung Galaxy S21 FE 5G
+oppo,Oppo Reno 8T
+samsung,Samsung Galaxy S22 Ultra 5G
+xiaomi,Xiaomi Redmi Note 12 Pro Max 5G
+oppo,OPPO Reno 9 5G
+oneplus,OnePlus Nord CE 3 5G
+xiaomi,Xiaomi Redmi Note 11 Pro Plus 5G
+motorola,Motorola Edge 20 Fusion 5G
+realme,Realme 10 Pro Plus (8GB RAM + 256GB)
+vivo,Vivo Y35
+samsung,Samsung Galaxy M33 5G
+xiaomi,Xiaomi Redmi Note 11
+realme,Realme C33
+vivo,Vivo Y16 (4GB RAM + 64GB)
+samsung,Samsung Galaxy A74 5G
+samsung,Samsung Galaxy A14 5G (6GB RAM + 128GB)
+iqoo,iQOO Neo 7 5G
+jio,Jio JioPhone 5G
+motorola,Motorola Moto G82 5G
+realme,Realme 10
+realme,Realme 9i 5G
+apple,Apple iPhone 14 Plus
+xiaomi,Xiaomi Redmi Note 10S
+samsung,Samsung Galaxy S23 Plus
+motorola,Motorola Moto G32
+xiaomi,Xiaomi Redmi Note 13 Pro 5G
+vivo,Vivo S16
+samsung,Samsung Galaxy A23
+vivo,Vivo Y22 (6GB RAM + 128GB)
+poco,Poco M4 Pro 5G (6GB RAM + 128GB)
+vivo,Vivo S16 Pro
+oneplus,OnePlus 10 Pro 5G
+xiaomi,Xiaomi Redmi Note 12 Pro Plus (12GB RAM + 256GB)
+samsung,Samsung Galaxy F23 5G
+oppo,Oppo Find N Fold
+oppo,OPPO A17K
+vivo,Vivo V23 5G (12GB RAM + 256GB)
+iqoo,iQOO Z6 Lite 5G
+oneplus,OnePlus 10T
+xiaomi,Xiaomi Redmi Note 10T 5G (6GB RAM +128GB)
+gionee,Gionee G13 Pro
+apple,Apple iPhone 13 Pro
+oppo,OPPO F22 Pro
+samsung,Samsung Galaxy A34 5G
+xiaomi,Xiaomi Redmi 10A (4GB RAM + 64GB)
+motorola,Motorola Moto G72 4G
+samsung,Samsung Galaxy A14 5G (8GB RAM + 128GB)
+realme,Realme 9 5G
+vivo,Vivo T1 5G (8GB RAM + 128GB)
+samsung,Samsung Galaxy M13 5G
+motorola,Motorola Edge 30 5G
+samsung,Samsung Galaxy A23 5G
+oppo,OPPO K10 5G
+xiaomi,Xiaomi Redmi Note 11 (6GB RAM + 128GB)
+samsung,Samsung Galaxy A73 5G
+vivo,Vivo Y21 2021
+oneplus,OnePlus Ace Racing Edition 5G
+motorola,Motorola Moto G62 (8GB RAM + 128GB)
+vivo,Vivo X90 Pro Plus 5G
+realme,Realme C33 (4GB RAM + 64GB)
+realme,Realme 9i
+oppo,OPPO A17
+iqoo,iQOO 11 5G
+vivo,Vivo X Fold 5G
+vivo,Vivo T1 5G
+apple,Apple iPhone 14 Pro
+xiaomi,Xiaomi Redmi Note 11 Pro Max 5G
+motorola,Motorola Moto S30 Pro
+realme,Realme 10s
+oppo,OPPO F19 Pro Plus 5G
+xiaomi,Xiaomi 13 Pro 5G
+vivo,Vivo V27 Pro
+samsung,Samsung Galaxy S22 5G
+vivo,Vivo T1 44W (6GB RAM + 128GB)
+oneplus,OnePlus 10R 5G (12GB RAM + 256GB)
+tecno,Tecno Phantom X2
+apple,Apple iPhone 12
+xiaomi,Xiaomi Redmi K50i 5G
+samsung,Samsung Galaxy A53 5G
+xiaomi,Xiaomi Redmi A1
+oppo,OPPO Reno8 5G
+samsung,Samsung Galaxy M53 5G (8GB RAM + 128GB)
+iqoo,iQOO Z6 Pro 5G
+tesla,Tesla Pi Phone
+samsung,Samsung Galaxy S23
+motorola,Motorola Edge 30 Pro 5G
+oneplus,OnePlus Nord 2T (12GB RAM + 256GB)
+google,Google Pixel 6A
+infinix,Infinix Note 12 Pro 5G
+samsung,Samsung Galaxy M33 5G (8GB RAM + 128GB)
+vivo,Vivo V23 5G
+motorola,Motorola Moto G42
+oneplus,OnePlus Nord CE 2 Lite 5G (8GB RAM + 256GB)
+samsung,Samsung Galaxy A33 5G
+google,Google Pixel 7A
+xiaomi,Xiaomi Redmi 11 Prime 5G
+xiaomi,Xiaomi Redmi Note 10 Lite
+motorola,Motorola Moto E40
+nothing,Nothing Phone 1 (8GB RAM + 256GB)
+poco,Poco X4 Pro 5G (6GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 11 Pro Plus 5G (8GB RAM + 256GB)
+apple,Apple iPhone 11 (128GB)
+realme,Realme C35 (6GB RAM + 128GB)
+oppo,OPPO K10
+iqoo,iQOO Neo 6 5G
+iqoo,iQOO Z6 5G
+oppo,OPPO Reno 9 Pro 5G
+poco,Poco M4 Pro 5G
+jio,Jio Phone 3
+oneplus,OnePlus Clover
+samsung,Samsung Galaxy F04
+iqoo,iQOO 7
+samsung,Samsung Galaxy M34 5G
+xiaomi,Xiaomi Redmi 10
+apple,Apple iPhone 12 Mini
+xiaomi,Xiaomi Redmi Note 12 (6GB RAM + 128GB)
+motorola,Motorola Moto G52
+apple,Apple iPhone 15 Pro Max
+oppo,Oppo A98
+infinix,Infinix Zero 5G 2023
+realme,Realme C30
+oppo,OPPO F21 Pro 5G
+realme,Realme 11 Pro
+oppo,Oppo Find N2 5G
+realme,Realme 9 4G
+cola,Cola Phone
+apple,Apple iPhone 13 Pro Max
+oppo,Oppo Reno 10 Pro Plus
+vivo,Vivo X90 5G
+samsung,Samsung Galaxy F13
+xiaomi,Xiaomi Redmi Note 10S (6GB RAM + 128GB)
+realme,Realme 10 (8GB RAM + 128GB)
+iqoo,iQOO 9 SE 5G
+infinix,Infinix Hot 20
+letv,Letv Y1 Pro
+xiaomi,Xiaomi Redmi Note 13 Pro Max 5G
+realme,Realme Narzo 50 Pro 5G
+oppo,OPPO A74 5G
+apple,Apple iPhone 9
+iqoo,iQOO Z6 Lite (6GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 11SE
+realme,Realme Narzo 50
+vivo,Vivo Y75 5G
+vivo,Vivo V25 (12GB RAM + 256GB)
+poco,POCO M4 Pro 4G
+infinix,Infinix Zero Ultra
+tecno,Tecno Spark Go 2023
+motorola,Motorola Moto X40
+samsung,Samsung Galaxy F24 5G
+realme,Realme 10 5G
+oneplus,OnePlus Nord 3 5G
+motorola,Motorola Moto G82 (8GB RAM + 128GB)
+ikall,iKall Z19 Pro
+leeco,LeEco S1 Pro
+realme,Realme C2s
+duoqin,Duoqin F22 Pro
+samsung,Samsung Galaxy M54 5G
+nokia,Nokia N73 5G
+motorola,Motorola Edge 30 Fusion 5G
+realme,Realme C35
+oppo,OPPO Reno 8 Pro House of Dragon Edition
+oneplus,OnePlus Nord CE 3 Lite 5G
+poco,Poco X4 Pro 5G (8GB RAM + 128GB)
+samsung,Samsung Galaxy M04
+oppo,OPPO A77s
+samsung,Samsung Galaxy A13
+motorola,Motorola Edge 30 Ultra
+xiaomi,Xiaomi 13 Ultra 5G
+motorola,Motorola Moto G52 (6GB RAM + 128GB)
+poco,Poco M4 5G
+nothing,Nothing Phone 1 (12GB RAM + 256GB)
+samsung,Samsung Galaxy A54 5G
+tecno,Tecno Pova 4
+xiaomi,Xiaomi Redmi Note 12 Pro (8GB RAM + 256GB)
+apple,Apple iPhone 14 Pro Max (256GB)
+vivo,Vivo V25 Pro (12GB RAM + 256GB)
+realme,Realme 9 5G (6GB RAM + 128GB)
+realme,Realme 9 Pro 5G
+lava,Lava Blaze 5G
+honor,Honor X9a
+google,Google Pixel 7 Pro 5G
+tecno,Tecno Pova 3
+vivo,Vivo V23 Pro 5G
+samsung,Samsung Galaxy A04e
+xiaomi,Xiaomi Redmi K60
+realme,Realme 9 Pro Plus 5G
+realme,Realme 9i 5G (6GB RAM + 128GB)
+motorola,Motorola Edge 30 5G (8GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 11 (6GB RAM + 64GB)
+vivo,Vivo Y02
+poco,POCO C31 (4GB RAM + 64GB)
+realme,Realme Narzo 50 5G
+realme,Realme GT Neo 3T
+oppo,OPPO Reno 8 Pro 5G
+oneplus,OnePlus 10 Pro 5G (12GB RAM + 256GB)
+iqoo,iQOO 11 Pro 5G
+vivo,Vivo T1x 4G
+xiaomi,Xiaomi Redmi 10 Power
+oppo,OPPO A58
+vivo,Vivo T1 44W
+xiaomi,Xiaomi Mix Fold 2 5G
+vivo,Vivo Y16 (3GB RAM + 64GB)
+oppo,OPPO Reno 8 Z
+vivo,Vivo Y75 4G
+xiaomi,Xiaomi Redmi Note 12 Explorer
+oppo,OPPO A57 4G (4GB RAM + 64 GB)
+samsung,Samsung Galaxy A75 5G
+vivo,Vivo T1 Pro 5G (8GB RAM + 128GB)
+google,Google Pixel 7 5G
+xiaomi,Xiaomi Redmi Note 11T 5G (6GB RAM + 128GB)
+oppo,OPPO F21s Pro 4G
+apple,Apple iPhone 14 (256GB)
+motorola,Motorola Moto G73
+nubia,Nubia Red Magic 8 Pro 5G
+motorola,Motorola Moto G31
+tecno,Tecno Phantom X2 Pro
+infinix,Infinix Zero 20
+iqoo,iQOO Z6 5G (6GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 11 Pro 5G
+oppo,OPPO A1 Pro
+samsung,Samsung Galaxy S22 FE 5G
+samsung,Samsung Galaxy S22 Plus 5G
+vivo,Vivo U3x
+motorola,Motorola Moto G23
+poco,Poco M4 5G (6GB RAM + 128GB)
+tecno,Tecno Pova 5G
+poco,POCO C31
+apple,Apple iPhone XR2
+samsung,Samsung Galaxy A53 (8GB RAM + 256GB)
+infinix,Infinix Note 12 5G
+oppo,OPPO Reno7 Pro 5G
+oneplus,OnePlus Ace 2
+redmi,Redmi Note 11 Pro 2023
+nothing,Nothing Phone 2
+samsung,Samsung Galaxy A32 (8GB RAM + 128GB)
+google,Google Pixel 6 Pro
+infinix,Infinix Note 12i (2022)
+xiaomi,Xiaomi Redmi 11 Prime 5G (6GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 11 Pro Plus 5G (8GB RAM + 128GB)
+xiaomi,Xiaomi 12 Pro 5G
+apple,Apple iPhone 13 Mini
+tecno,Tecno Pova 3 (6GB RAM + 128GB)
+realme,Realme C31 (4GB RAM + 64GB)
+asus,Asus ROG Phone 6 Pro 5G
+vivo,Vivo V23e 5G
+apple,Apple iPhone 14 Mini
+xiaomi,Xiaomi Redmi Note 10T 5G
+iqoo,iQOO Neo 7 SE 5G
+samsung,Samsung Galaxy A23 (8GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 12 Pro (8GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 12 Turbo
+infinix,Infinix Note 12 Pro
+infinix,Infinix Hot 20 (6GB RAM+ 128GB)
+apple,Apple iPhone 14 Pro Max (1TB)
+samsung,Samsung Galaxy M13
+poco,Poco M4 Pro 5G (8GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 10S (8GB RAM + 128GB)
+realme,Realme C11 2021 (4GB RAM + 64GB)
+samsung,Samsung Galaxy A23 5G (8GB RAM + 128GB)
+motorola,Motorola Edge 30 Ultra (12GB RAM + 256GB)
+oppo,OPPO F21s Pro
+xiaomi,Xiaomi 13 5G
+xiaomi,Xiaomi Redmi 10A
+vivo,Vivo Y01A
+xiaomi,Xiaomi Redmi K50i (8GB RAM + 256GB)
+realme,Realme C30 (3GB RAM + 32GB)
+motorola,Motorola Moto G51 5G
+xiaomi,Xiaomi Redmi 10 (6GB RAM + 128GB)
+xiaomi,Xiaomi Mi 11 Lite NE 5G
+samsung,Samsung Galaxy Z Flip 3
+apple,Apple iPhone 12 (128GB)
+oneplus,OnePlus 10T (16GB RAM + 256GB)
+samsung,Samsung Galaxy A13 (4GB RAM + 128GB)
+oppo,OPPO Reno7 5G
+oneplus,OnePlus 9RT 5G
+samsung,Samsung Galaxy A53 5G (8GB RAM + 128GB)
+samsung,Samsung Galaxy S22 Ultra 5G (12GB RAM + 512GB)
+motorola,Motorola Moto G71 5G
+itel,itel S16 Pro
+vivo,Vivo Y100
+samsung,Samsung Galaxy M13 5G (4GB RAM + 64GB)
+poco,POCO X5 GT
+honor,Honor X9 5G
+iqoo,iQOO 11 (16GB RAM + 256GB)
+samsung,Samsung Galaxy Z Fold 4
+royole,Royole FlexPai 2
+apple,Apple iPhone 14 Plus (256GB)
+samsung,Samsung Galaxy A33 5G (8GB RAM + 128GB)
+tecno,Tecno Spark 9
+google,Google Pixel 6
+xiaomi,Xiaomi Redmi Note 10 Pro (6GB RAM + 128GB)
+samsung,Samsung Galaxy S21 Ultra
+infinix,Infinix Hot 20 Play
+vivo,Vivo T1x (6GB RAM + 128GB)
+oppo,OPPO F23 Pro
+iqoo,iQOO Z6 Pro 5G (8GB RAM + 128GB)
+samsung,Samsung Galaxy A73 5G (8GB RAM + 256GB)
+realme,Realme 9 5G SE (8GB RAM + 128GB)
+poco,Poco F4 5G
+infinix,Infinix Note 12
+samsung,Samsung Galaxy A03 Core
+motorola,Motorola Moto G60
+oneplus,OnePlus 9 Pro
+xiaomi,Xiaomi Redmi Note 11S
+xiaomi,Xiaomi Redmi 9 Activ
+tecno,Tecno Camon 19 Pro 5G
+samsung,Samsung Galaxy A04
+poco,POCO M4 Pro 4G (6GB RAM + 128GB)
+oneplus,OnePlus Nord N20 5G
+apple,Apple iPhone 13 (256GB)
+oppo,Oppo Find X6 Pro
+vivo,Vivo X90 Pro 5G
+motorola,Motorola Moto G53
+motorola,Motorola Moto G22
+xiaomi,Xiaomi Redmi 9i Sport
+jio,Jio JioPhone Next
+vivo,Vivo Y93
+xiaomi,Xiaomi Redmi K60 Pro
+realme,Realme C30s
+vivo,Vivo Y22s
+oppo,OPPO A77
+xiaomi,Xiaomi Redmi 10A Sport
+poco,Poco F4 (12GB RAM + 256GB)
+realme,Realme 9 4G (8GB RAM + 128GB)
+xiaomi,Xiaomi 12T Pro 5G
+iqoo,iQOO 9 5G
+apple,Apple iPhone 12 Mini (128GB)
+samsung,Samsung Galaxy S24 Ultra
+oppo,OPPO Find N Flip
+oneplus,OnePlus 10T (12GB RAM + 256GB)
+tecno,Tecno Spark 9 (4GB RAM + 64GB)
+samsung,Samsung Galaxy S21 FE 5G (8GB RAM + 256GB)
+xiaomi,Xiaomi Redmi Note 11T 5G (8GB RAM + 128GB)
+sony,Sony Xperia Pro-I
+vivo,Vivo V21 Pro
+poco,Poco X3
+samsung,Samsung Galaxy S20 FE
+google,Google Pixel 4
+samsung,Samsung Galaxy S10 Plus
+realme,Realme 11 Pro Plus
+oppo,OPPO F21 Pro 4G
+realme,Realme GT 2 5G
+samsung,Samsung Galaxy S21
+samsung,Samsung Galaxy A71
+vivo,Vivo Y02s
+letv,Letv Y2 Pro
+tecno,Tecno Spark 8C (4GB RAM + 64GB)
+iqoo,iQOO Z6 5G (8GB RAM + 128GB)
+vivo,Vivo T1 Pro
+realme,Realme 9 Pro Plus 5G (8GB RAM + 128GB)
+samsung,Samsung Galaxy A04s
+realme,Realme 9i (6GB RAM + 128GB)
+realme,Realme 8 5G (8GB RAM + 128GB)
+oppo,OPPO F19
+oppo,OPPO Find N2 Flip
+samsung,Samsung Galaxy M32 Prime Edition
+oukitel,Oukitel WP19
+realme,Realme 9 Pro 5G (8GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 10 Lite (6GB RAM + 128GB)
+samsung,Samsung Galaxy A13 5G
+xiaomi,Xiaomi Redmi Note 11 5G
+itel,itel P36
+realme,Realme GT Neo 5
+apple,Apple iPhone 15 Ultra
+poco,Poco C50
+samsung,Samsung Galaxy Note 30 Ultra 5G
+realme,Realme 9i (4GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 11T 5G
+vivo,Vivo X80 Pro 5G
+oppo,OPPO Reno 6 Pro 5G
+xiaomi,Xiaomi Mi 11i 5G
+asus,Asus ROG Phone 7
+oppo,Oppo A77 5G
+realme,Realme 9 5G SE
+samsung,Samsung Galaxy A03
+oneplus,OnePlus Nord N200
+xiaomi,Xiaomi Mi 11X
+oppo,OPPO Reno 6
+realme,Realme X50 Pro 5G (12GB RAM + 256GB)
+xiaomi,Xiaomi Redmi 10A (6GB RAM + 128GB)
+redmi,Redmi Note 12 Pro Speed Edition
+apple,Apple iPhone 14 Pro (256GB)
+motorola,Motorola Moto G72
+motorola,Motorola Moto X30 Pro
+xiaomi,Xiaomi 12S Ultra
+honor,Honor 70 5G
+oneplus,OnePlus 10 Pro 5G (12GB RAM + 512GB)
+vivo,Vivo V23 Pro 5G (12GB RAM + 256GB)
+oppo,OPPO A55 4G (6GB RAM + 128GB)
+xiaomi,Xiaomi Mi 11T Pro 5G
+nokia,Nokia X50 5G
+xiaomi,Xiaomi Redmi Note 10
+vertu,Vertu Signature Touch
+samsung,Samsung Galaxy M32 Prime Edition (6GB RAM + 128GB)
+tecno,Tecno Camon 19 Pro Mondrian Edition
+poco,Poco F5
+blu,BLU F91 5G
+oppo,OPPO A16e
+motorola,Motorola Moto E32
+xiaomi,Xiaomi Redmi Note 11S (8GB RAM + 128GB)
+apple,Apple iPhone SE 3 2022
+samsung,Samsung Galaxy A52 (8GB RAM + 128GB)
+poco,Poco X3 Pro
+xiaomi,Xiaomi Redmi 9A
+samsung,Samsung Galaxy A32
+motorola,Motorola Moto G13
+asus,Asus ROG Phone 6 Batman Edition
+xiaomi,Xiaomi Redmi Note 12 Pro Plus (6GB RAM + 128GB)
+infinix,Infinix Smart 6 HD
+apple,Apple iPhone 15 Pro
+realme,Realme C35 (4GB RAM + 128GB)
+infinix,Infinix Hot 12
+vivo,Vivo X80 5G
+vivo,Vivo Y53s
+tecno,Tecno Phantom X
+samsung,Samsung Galaxy M04 (4GB RAM + 128GB)
+redmi,Redmi 12C
+asus,Asus ZenFone 9
+sony,Sony Xperia L5 5G
+iqoo,iQOO 9 SE 5G (12GB RAM + 256GB)
+tecno,Tecno Spark 8 Pro
+xiaomi,Xiaomi Redmi 10 Prime
+samsung,Samsung Galaxy F22
+xiaomi,Xiaomi Mi Mix Alpha
+oppo,OPPO Reno 10 Pro
+nubia,Nubia Z50
+samsung,Samsung Galaxy F13 (4GB RAM + 128GB)
+nokia,Nokia G11 Plus
+infinix,Infinix Hot 12 Play
+vivo,Vivo T2 5G
+oppo,OPPO Reno7 Z 5G
+xiaomi,Xiaomi Mi 11 Lite NE 5G (8GB RAM + 128GB)
+realme,Realme Narzo 50i
+infinix,Infinix Zero X Pro
+samsung,Samsung Galaxy M32
+samsung,Samsung Galaxy A82 5G
+xiaomi,Xiaomi Poco F1
+vivo,Vivo Y25
+lyf,Lyf Earth 1
+motorola,Motorola Moto E13
+tecno,Tecno Pop 6 Pro
+itel,Itel A24 Pro
+vivo,Vivo X Fold Plus
+huawei,Huawei Mate 50 RS Porsche Design
+samsung,Samsung Galaxy F63
+iqoo,iQOO Z6 4G (6GB RAM + 128GB)
+sony,Sony Xperia 5 II
+vivo,Vivo Y3 (4GB RAM + 128GB)
+sony,Sony Xperia 1 IV (12GB RAM + 512GB)
+tecno,Tecno Pova 4 Pro
+huawei,Huawei Nova 10 SE
+vivo,Vivo T1x (4GB RAM + 128GB)
+nubia,Nubia Red Magic 7S Pro
+motorola,Motorola Moto E32s (4GB RAM + 64GB)
+iqoo,iQOO Neo 6 5G (12GB RAM + 256GB)
+samsung,Samsung Galaxy A15
+poco,POCO X4 GT 5G
+realme,Realme Narzo 50 5G (4GB RAM + 128GB)
+vivo,Vivo Y77 5G
+honor,Honor 60 SE 5G
+xiaomi,Xiaomi Redmi 11 Prime
+realme,Realme C31
+motorola,Motorola Moto G31 (6GB RAM+ 128GB)
+samsung,Samsung Galaxy Z Flip 4 5G
+oneplus,OnePlus 6 (8GB RAM + 128GB)
+google,Google Pixel 2 XL
+xiaomi,Xiaomi Redmi A1 Plus
+honor,Honor 70 5G (8GB RAM + 256GB)
+realme,Realme Narzo 50 (6GB RAM + 128GB)
+vivo,Vivo Y15s
+samsung,Samsung Galaxy M32 (6GB RAM + 128GB)
+samsung,Samsung Galaxy F42 5G
+realme,Realme Q5 5G
+poco,POCO M3 Pro 5G
+google,Google Pixel 5
+oneplus,OnePlus 12 Pro
+xiaomi,Xiaomi Redmi Note 12 Discovery Edition
+samsung,Samsung Galaxy M13 (4GB RAM + 64GB)
+oppo,Oppo Reno 8 Pro (8GB RAM + 256GB)
+vivo,Vivo Y78 5G
+iqoo,iQOO Z6 4G
+oppo,OPPO A76
+realme,Realme 9 Pro Plus 5G (8GB RAM + 256GB)
+vivo,Vivo Y01
+motorola,Motorola Moto Edge S30 5G
+realme,Realme GT 2 Pro 5G
+apple,Apple iPhone 13 Pro (256GB)
+vivo,Vivo Y73 2021
+samsung,Samsung Galaxy F14
+vivo,Vivo V20
+xiaomi,Xiaomi Redmi Note 9 Pro
+oneplus,OnePlus 10R Prime Edition
+google,Google Pixel 6 Pro (12GB RAM + 256GB)
+nokia,Nokia C31
+infinix,Infinix Hot 12 Pro (8GB RAM+ 128GB)
+poco,Poco M5
+xiaomi,Xiaomi Redmi 10C (4GB RAM + 128GB)
+zte,ZTE Axon 40 Ultra 5G
+xiaomi,Xiaomi 12 Pro 5G (12GB RAM + 256GB)
+oppo,OPPO K10 (8GB RAM + 128GB)
+huawei,Huawei Nova 9 SE
+samsung,Samsung Galaxy S22 5G (8GB RAM + 256GB)
+lenovo,Lenovo Legion Y90
+vivo,Vivo Y55 5G
+nokia,Nokia X100 5G
+realme,Realme 8s 5G (8GB RAM + 128GB)
+realme,Realme 8s 5G
+nokia,Nokia X60 Pro 5G
+poco,Poco X5
+xiaomi,Xiaomi Redmi Note 10 Pro Max (6GB RAM + 128GB)
+iqoo,iQOO 7 (12GB RAM + 256GB)
+realme,Realme 8
+samsung,Samsung Galaxy S20
+xiaomi,Xiaomi Redmi K60E
+motorola,Motorola Moto E32s
+oneplus,OnePlus Nord 3T 5G
+oppo,OPPO F23 Pro Plus 5G
+poco,Poco F5 Pro
+oppo,OPPO A16e (4GB RAM + 64GB)
+poco,POCO M4 Pro 4G (8GB RAM + 128GB)
+realme,Realme Narzo 50A
+asus,Asus ROG Phone 5s 5G
+realme,Realme GT Master Edition 5G
+samsung,Samsung Galaxy A32 5G
+nubia,Nubia Red Magic 8 Pro Plus
+samsung,Samsung Galaxy Z Fold 3
+lg,LG Wing 5G
+xiaomi,Xiaomi Redmi Note 9 Pro Max
+samsung,Samsung Galaxy A52
+vivo,Vivo Y71
+samsung,Samsung Galaxy A04e (3GB RAM + 64GB)
+oppo,Oppo A56s
+oppo,Oppo Reno 8T 4G
+oppo,OPPO Reno 10
+nokia,Nokia G60
+oppo,OPPO A77 (4GB RAM + 128 GB)
+motorola,Motorola Edge 40 Pro 5G
+oppo,Oppo K10x 5G
+iqoo,iQOO Z6 Pro 5G (12GB RAM + 256GB)
+nokia,Nokia G21 (6GB RAM + 128GB)
+samsung,Samsung Galaxy A13 (6GB RAM + 128GB)
+oppo,OPPO A16K (4GB RAM + 64GB)
+xiaomi,Xiaomi Redmi 10C
+tecno,Tecno Spark 9 Pro
+realme,Realme GT Neo 3 5G
+xiaomi,Xiaomi 11i HyperCharge 5G
+iqoo,iQOO Neo 6 SE 5G
+iqoo,iQOO 9 Pro 5G
+realme,Realme Narzo 50i (4GB RAM + 64GB)
+xiaomi,Xiaomi Redmi 9 Activ (6GB RAM + 128GB)
+jio,Jio JioPhone Next (3GB RAM + 32GB)
+xiaomi,Xiaomi Redmi Note 8 2021
+xiaomi,Xiaomi Redmi Note 10 5G
+vivo,Vivo Y20G
+samsung,Samsung Galaxy A22 5G
+vivo,Vivo V21
+realme,Realme 7 Pro (8GB RAM + 128GB)
+oneplus,OnePlus Nord Lite
+samsung,Samsung Galaxy S20 Ultra 5G
+apple,Apple iPhone 11 Pro Max
+apple,Apple iPhone 7s
+sony,Sony Xperia Ace IV
+samsung,Samsung Galaxy A04e (4GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 12 4G
+oukitel,Oukitel WP21
+vivo,Vivo V28
+poco,Poco F4 5G (8GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 11T Pro 5G
+realme,Realme Narzo 50 Pro 5G (8GB RAM + 128GB)
+vivo,Vivo T1 44W (8GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 11S (6GB RAM + 128GB)
+lava,Lava Agni 5G
+realme,Realme 8i (6GB RAM + 128GB)
+oppo,OPPO A55 4G
+poco,POCO M3 Pro 5G (6GB RAM + 128GB)
+realme,Realme C21Y
+oppo,OPPO A16
+vivo,Vivo V21 5G
+apple,Apple iPhone 12 Pro (512GB)
+sony,Sony Xperia 1 II
+motorola,Motorola Edge Plus
+samsung,Samsung Galaxy Note 20
+samsung,Samsung Galaxy A12
+xiaomi,Xiaomi Redmi Note 12 Pro 4G
+realme,Realme GT Neo 3T (8GB RAM + 128GB)
+realme,Realme C30s (4GB RAM + 64GB)
+apple,Apple iPhone 14 (512GB)
+iqoo,iQOO 9T 5G
+tecno,Tecno Camon 19 Pro
+oneplus,OnePlus Nord 2 Lite 5G
+samsung,Samsung Galaxy S22 Ultra 5G (8GB RAM + 128GB)
+poco,POCO F4 GT 5G
+xiaomi,Xiaomi 11T Pro 5G (12GB RAM + 256GB)
+vivo,Vivo Y10
+samsung,Samsung Galaxy A83 5G
+vivo,Vivo Y33s
+huawei,Huawei Mate 40 Pro 4G
+micromax,Micromax IN 2B
+asus,Asus ROG Phone 6
+realme,Realme X7 Max
+realme,Realme 8 5G
+oppo,OPPO A55 5G
+xiaomi,Xiaomi Redmi 9
+apple,Apple iPhone SE 2020
+letv,Letv Y1 Pro Plus
+oneplus,OnePlus Nord 5
+vivo,Vivo Y73T
+oppo,OPPO Reno 9 Z
+vivo,Vivo V25e
+infinix,Infinix Hot 12 Pro
+realme,Realme Narzo 50 5G (4GB RAM + 64GB)
+itel,itel Vision 3
+oppo,OPPO A96 4G
+xiaomi,Xiaomi Redmi Note 11E 5G
+honor,Honor Magic 4 Pro Plus 5G
+tecno,Tecno Spark 9T
+infinix,Infinix Smart 6
+realme,Realme C25Y (4GB RAM + 64GB)
+samsung,Samsung Galaxy A12 (6GB RAM + 128GB)
+tecno,Tecno Camon 19
+xiaomi,Xiaomi Redmi Note 10 Pro 5G
+xiaomi,Xiaomi Mi 11X 5G (8GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 10 (6GB RAM + 128GB)
+xiaomi,Xiaomi Redmi Note 10 Pro Max
+xiaomi,Xiaomi Mi 10T 5G
+lg,LG Velvet 5G
+motorola,Motorola One Fusion Plus
+lg,LG V60 ThinQ
+samsung,Samsung Galaxy Note 10 Lite
+samsung,Samsung Galaxy Note 10 Plus 5G
+iqoo,iQOO Neo 7 Racing Edition
+samsung,Samsung Galaxy A04s (4GB RAM + 128GB)
+vivo,Vivo Y35 5G
+vivo,Vivo Y02 (2GB RAM + 32GB)
+itel,itel Vision 3 (2GB RAM + 32GB)
+xiaomi,Xiaomi Redmi Note 11R
+poco,Poco M6 Pro
+oppo,OPPO A97 5G
+samsung,Samsung Galaxy A24
+infinix,Infinix Note 13 Pro
+honor,Honor Play 30
+infinix,Infinix Smart 6 Plus
+sony,Sony Xperia 5 IV 5G
+nubia,Nubia Z40 Pro 5G
+nokia,Nokia G21
+xiaomi,Xiaomi 12 Lite 5G
+oppo,Oppo Find N 5G
+apple,Apple iPhone 13 Pro Max (256GB)
+vivo,Vivo Y21s
+oppo,OPPO F19s
+samsung,Samsung Galaxy M21 2021
+oppo,OPPO F19 Pro
+oppo,OPPO X 2021
+oneplus,OnePlus Nord N10
+gionee,Gionee M12 Pro
+poco,Poco M2
+oppo,OPPO F17 Pro
+motorola,Motorola Moto G 5G
+samsung,Samsung Galaxy A50s
+samsung,Samsung Galaxy Note 10 Plus
+vivo,Vivo Y15
+vivo,Vivo S1 Pro
+vivo,Vivo T3 Pro
+vivo,Vivo V21s
+asus,Asus ROG Phone 6D Ultimate
+motorola,Motorola Moto Edge 30 Neo
+xiaomi,Xiaomi 12T
+huawei,Huawei Mate 50 Pro 5G
+realme,Realme C32
+huawei,Huawei Mate Xs 2
+iqoo,iQOO Z7 Pro 5G
+apple,Apple iPhone 15
+infinix,Infinix Note 11S (8GB RAM + 128GB)
+tecno,Tecno Spark 8 (4GB RAM + 64GB)
+oppo,Oppo A56 5G
+vivo,Vivo X80 Pro Plus 5G
+xiaomi,Xiaomi Redmi 10 Prime (6GB RAM + 128GB)
+huawei,Huawei Nova 9
+tecno,Tecno Pop 5 Go
+huawei,Huawei P50 Pro 4G
+xiaomi,Xiaomi Redmi K50 5G
+nokia,Nokia C01 Plus
+realme,Realme Q3
+oppo,OPPO Reno 6 Pro Plus 5G
+motorola,Motorola Edge S
+oppo,Oppo Find X3 Pro
+poco,Poco M3
+itel,itel S16
+vivo,Vivo V20 Pro
+xiaomi,Xiaomi Mi 10T Pro 5G
+vivo,Vivo V19 (8GB RAM + 256GB)
+samsung,Samsung Galaxy S20 5G
+vivo,Vivo U3
+oppo,Oppo K5 (8GB RAM + 128GB)
+realme,Realme XT
+vivo,Vivo Y12 (3GB RAM + 64GB)
+xiaomi,Xiaomi Poco F1 (6GB RAM + 128GB)
+poco,Poco C50 (3GB RAM + 32GB)
+ikall,iKall Z19
+xiaomi,Xiaomi Redmi K60 Gaming Edition
+vivo,Vivo S17 Pro
+honor,Honor 80 Pro Plus
+apple,Apple iPhone SE 4
+tecno,Tecno Pova Neo 5G
+apple,Apple iPhone 14 Pro Max (512GB)
+google,Google Pixel 8
+vivo,Vivo T2x 5G
+motorola,Motorola Moto G52 5G
+motorola,Motorola Edge 40 5G
+vivo,Vivo X Note 5G (12GB RAM + 512GB)
+realme,Realme GT 2 Pro 5G (12GB RAM + 256GB)
+vivo,Vivo Y15C
+honor,Honor X8
+samsung,Samsung Galaxy A03 (4GB RAM + 64GB)
+samsung,Samsung Galaxy S22 Plus 5G (8GB RAM + 256GB)
+vivo,Vivo Y33T
+xiaomi,Xiaomi 11i 5G (8GB RAM + 128GB)
+oppo,Oppo Find X5 Pro 5G
+tecno,Tecno Spark Go 2022
+vivo,Vivo Y21e
+xiaomi,Xiaomi Redmi 9A Sport
+apple,Apple iPhone 13 Pro Max (1TB)
+vivo,Vivo Y12G (3GB RAM + 64GB)
+vivo,Vivo V23e
+samsung,Samsung Galaxy F22 (6GB RAM + 128GB)
+xiaomi,Xiaomi 12 Ultra 5G
+micromax,Micromax IN 2C
+samsung,Samsung Galaxy A03s
+oppo,OPPO A54 (4GB RAM + 128GB)
+xiaomi,Xiaomi Redmi 20X
+xiaomi,Xiaomi Mi Mix Fold
+realme,Realme Narzo 30 5G
+oppo,OPPO A54
+oppo,Oppo A15s (4GB RAM + 128GB)
+itel,itel A56
+xiaomi,Xiaomi Redmi 9 Power
+samsung,Samsung Galaxy S21 Plus
+poco,POCO M2 Pro
+samsung,Samsung Galaxy S20 Plus
+realme,Realme 6 Pro
+huawei,Huawei P40 Pro
+vivo,Vivo Y11 (2019)
+vivo,Vivo V15 Pro (8GB RAM +128GB)
+vivo,Vivo Y95
+vivo,Vivo V11i
+samsung,Samsung Galaxy S9 Plus (128GB)
+realme,Realme GT Neo 4T
+vivo,Vivo Y53t
+samsung,Samsung Galaxy A04 (4GB RAM + 128GB)
+leitz,Leitz Phone 2
+xiaomi,Xiaomi Redmi K60i
+infinix,Infinix Hot 20S
+realme,Realme GT Neo 3T (8GB RAM + 256GB)
+apple,Apple iPhone 14 Plus (512GB)
+apple,Apple iPhone 14 Pro (1TB)
+xiaomi,Xiaomi Redmi 13 Prime 5G
+xiaomi,Xiaomi Redmi 11 Prime (6GB RAM + 128GB)
+nokia,Nokia C21 Plus (4GB RAM + 64GB)
+oneplus,OnePlus Nord N300
+tecno,Tecno Camon 19 Neo
+realme,Realme Narzo 50i Prime
+xiaomi,Xiaomi Redmi K50 Ultra 5G
+oppo,OPPO A57 4G
+infinix,Infinix Note 12 (6GB RAM + 128GB)
+samsung,Samsung Galaxy S23 FE 5G
+samsung,Samsung Galaxy M51s 5G
+vivo,Vivo X80 5G (12GB RAM + 256GB)
+poco,Poco X6 Pro 5G
+infinix,Infinix Note 12 (G96)
+samsung,Samsung Galaxy M14
+vivo,Vivo T2 Pro 5G
+xiaomi,Xiaomi Redmi 10 Prime Plus 5G
+xiaomi,Xiaomi Redmi Note 11 Pro 4G
+realme,Realme Narzo 50A Prime
+vivo,Vivo Y55s 5G
+vivo,Vivo Y21T
+gionee,Gionee K10
+xiaomi,Xiaomi Redmi Note 10 Lite (4GB RAM + 128GB)
+apple,Apple iPhone 13 (512GB)
+infinix,Infinix Hot 11S
+realme,Realme GT Explorer Master Edition
+xiaomi,Xiaomi Mi 12 5G
+cat,CAT S22 Flip
+xiaomi,Xiaomi Mi 11 Lite (8GB RAM + 128GB)
+realme,Realme Q3i 5G
+xiaomi,Xiaomi Mi 11X Pro
+lenovo,Lenovo Legion Pro 2
+samsung,Samsung Galaxy M62
+realme,Realme Q2i
+apple,Apple iPhone 12 Pro (256GB)
+xiaomi,Xiaomi Redmi 9i (4GB RAM + 128GB)
+realme,Realme 6 (6GB RAM + 64GB)
+samsung,Samsung Galaxy A01 Core
+oppo,Oppo Reno 5
+oppo,Oppo A31 2020 (6GB RAM + 128GB)
+sony,Sony Xperia 10 II
+vivo,Vivo Y91c
+huawei,Huawei Nova 7i
+vivo,Vivo Y19
+vivo,Vivo U3 (6GB RAM + 64GB)
+xiaomi,Xiaomi Redmi Note 9
+xiaomi,Xiaomi Redmi 8 (4GB RAM + 64GB)
+motorola,Motorola One Macro
+google,Google Pixel 3a XL
+samsung,Samsung Galaxy A40
+samsung,Samsung Galaxy S10 5G
+huawei,Huawei Honor 9N
+xiaomi,Xiaomi Redmi Note 4
+doogee,Doogee V Max
+huawei,Huawei Nova Y61
+iqoo,iQOO Z9
+vivo,Vivo V29
+poco,Poco M5 (6GB RAM + 128GB)
+nokia,Nokia X30
+tecno,Tecno Pova Neo 2
+vivo,Vivo Y15C (3GB RAM + 64GB)
+huawei,Huawei Nova 10
+huawei,Huawei Nova Y90
+samsung,Samsung Galaxy A92 5G
+infinix,Infinix Note 12 VIP
+oneplus,OnePlus Nord 4 5G
+realme,Realme Narzo 50A Prime (4GB RAM + 128GB)
+oneplus,OnePlus Ace 5G
+iqoo,iQOO 9 5G (12GB RAM + 256GB)
+xiaomi,Xiaomi Redmi Note 12T 5G
+oppo,Oppo A96 5G
+royole,Royole FlexPai 3 5G
+tecno,Tecno Camon 18
+tecno,Tecno Phantom X Pro
+tecno,Tecno Spark 8T
+realme,Realme GT Neo2 5G
+sony,Sony Xperia 10 III Lite 5G
+realme,Realme G1
+tecno,Tecno Pova 2
+poco,Poco X4
+motorola,Motorola Moto G40 Fusion
+oneplus,OnePlus 9T
+realme,Realme 8 (8GB RAM + 128GB)
+realme,Realme Narzo 30 Pro 5G (8GB RAM +128GB)
+itel,Itel A23 Pro
+samsung,Samsung Galaxy S21 Ultra 5G (12GB RAM + 128GB)
+oppo,Oppo Reno 5 Pro 5G
+oneplus,OnePlus Nord SE
+samsung,Samsung Galaxy M12
+oneplus,OnePlus Nord N100
+apple,Apple iPhone 12 Mini (256GB)
+apple,Apple iPhone 12 (256GB)
+oppo,OPPO A15
+xiaomi,Xiaomi Redmi Note 9 Pro (4GB RAM + 128GB)
+oppo,Oppo A12
+realme,Realme X50 Pro 5G (8GB RAM + 128GB)
+samsung,Samsung Galaxy S20 Plus 5G
+xiaomi,Xiaomi Redmi K20 Pro Signature Edition
+xiaomi,Xiaomi Redmi Note 8 Pro
+realme,Realme A1
+oppo,OPPO A73
+lyf,Lyf Earth 2
+apple,Apple iPhone 15 Plus
+vivo,Vivo Y55s 2023
+lava,Lava Blaze NXT
+tecno,Tecno Camon 20 Premier
+oppo,OPPO Reno 8 House of Dragon Edition
+motorola,Motorola Moto E22s
+xiaomi,Xiaomi Redmi A1 Plus (3GB RAM + 32GB)
+infinix,Infinix Hot 20i
+tecno,Tecno Spark 9 (3GB RAM + 64GB)
+zte,ZTE Axon 30S
+honor,Honor X6
+xiaomi,Xiaomi Civi 2
+tcl,TCL Ion X
+samsung,Samsung Galaxy Z Fold 4 (12GB RAM + 1TB)
+nothing,Nothing Phone 1 Lite
+motorola,Motorola Moto Edge X30 Pro
+oneplus,OnePlus Ace Pro
+realme,Realme GT 2 Explorer Master Edition
+samsung,Samsung Galaxy M35
+samsung,Samsung Galaxy A05
+infinix,Infinix Note 12 Turbo
+poco,POCO F5 GT 5G
+iqoo,iQOO Z8 5G
+vivo,Vivo Y55 4G
+vivo,Vivo X Fold 5G (12GB RAM + 512GB)
+oppo,Oppo K10 Pro 5G
+tecno,Tecno Spark 8C
+iqoo,iQOO Z7 5G
+infinix,Infinix Note 11 (6GB RAM + 128GB)
+xiaomi,Xiaomi 11i HyperCharge 5G (8GB RAM + 128GB)
+samsung,Samsung Galaxy F42 5G (8GB RAM + 128GB)
+apple,Apple iPhone 13 Pro (1TB)
+nubia,Nubia Red Magic 6S 5G
+micromax,Micromax IN 2B (6GB RAM + 64GB)
+nokia,Nokia X60 5G
+vivo,Vivo Y12a
+oppo,Oppo Reno 5A
+poco,Poco F3 GT
+honor,Honor 50
+oppo,OPPO A54 (6GB RAM + 128GB)
+realme,Realme 8i
+iqoo,iQOO 7 Legend
+realme,Realme C11 2021
+samsung,Samsung Galaxy A22
+realme,Realme GT 5G
+google,Google Pixel 5A
+samsung,Samsung Galaxy F12
+samsung,Samsung Galaxy F41 (6GB RAM + 128GB)
+samsung,Samsung Galaxy A21s (6GB RAM + 128GB)
+xiaomi,Xiaomi Redmi 9A (6GB RAM + 128GB)
+vivo,Vivo V20 SE
+oppo,OPPO A53 2020 (6GB RAM + 128GB)
+realme,Realme Narzo 20
+itel,itel Vision 1 (3GB RAM + 32GB)
+realme,Realme C11
+xiaomi,Xiaomi Mi 10 5G (8GB RAM + 256GB)
+vivo,Vivo Y21 (2020)
+oneplus,OnePlus Z
+sharp,Sharp Aquos R5G
+huawei,Huawei Mate 30 RS Porsche Design
+samsung,Samsung Galaxy A11
+realme,Realme C2
+huawei,Huawei Mate X
+samsung,Samsung Galaxy A9 Pro (2019)
+samsung,Samsung Galaxy A7 (2018)
+vivo,Vivo Y55S
+poco,Poco C55
+blackview,Blackview BV5200 Pro
+honor,Honor X7a
+oppo,OPPO A58x
+doogee,Doogee S99
+lava,Lava X3
+motorola,Motorola Edge 40 Fusion
+ikall,iKall Z18
+oukitel,Oukitel WP9
+xiaomi,Xiaomi 14
+motorola,Motorola ThinkPhone
+xiaomi,Xiaomi Civi 3
+realme,Realme Narzo 50i Prime (4GB RAM + 64GB)
+oppo,Oppo Find X6
+itel,itel A23s
+google,Google Pixel 8 Pro
+vivo,Vivo X Fold 2
+motorola,Motorola Moto Edge S30 Pro
+honor,Honor X8 5G
+poco,POCO X4 GT 5G (8GB RAM + 256GB)
+motorola,Motorola Moto G91 5G
+samsung,Samsung Galaxy M52s 5G

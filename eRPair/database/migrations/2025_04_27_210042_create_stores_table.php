@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
-            $table->integer('work_order_number')->default(0);
+            $table->integer('work_order_number')->default(1);
             $table->timestamps();
         });
     }

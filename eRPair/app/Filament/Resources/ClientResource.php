@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
+use App\Filament\Resources\ClientResource\RelationManagers\InvoicesRelationManager;
 use App\Models\Client;
 use Closure;
 use Filament\Forms;
@@ -14,6 +15,7 @@ use Filament\Tables\Table;
 use App\Filament\Resources\ClientResource\RelationManagers\DeviceRelationManager;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ClientResource extends Resource
@@ -21,13 +23,22 @@ class ClientResource extends Resource
     protected static ?string $model = Client::class;
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $label = 'Cliente';
-
-    /*
-     * 
-     * PUTO CENTRATE. CREA EL RELATIONSHIP MANAGER CON DISPOSITIVOS. 
-     * - LA VALIDACION DEL DOCUMENTO NO PUTO FUNCIONA.
-     * 
-     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'document',
+            'name',
+            'surname',
+            'phone_number'
+        ];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return[
+            'Documento' => $record->document,
+            'Nombre' => ($record->name." ". $record->surname),
+        ];
+    }
 
     public static function form(Form $form): Form
     {
@@ -114,34 +125,42 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('document')
                     ->label('Documento')
                     ->sortable()
+                    ->toggleable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
                     ->sortable()
+                    ->toggleable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('surname')
                     ->label('Apellido')
                     ->sortable()
+                    ->toggleable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('surname2')
-                    ->label('Segundo apellido')
+                    ->label('2º Apellido')
                     ->sortable()
+                    ->toggleable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
-                    ->label('Número de teléfono')
+                    ->label('Telefono')
                     ->sortable()
+                    ->toggleable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number_2')
-                    ->label('Número de teléfono secundario')
+                    ->label('Telefono 2')
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault:true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('postal_code')
                     ->label('Código postal')
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault:true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->label('Dirección')
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault:true)
                     ->searchable(),
             ])
             ->filters([
@@ -156,6 +175,7 @@ class ClientResource extends Resource
     {
         return [
             DeviceRelationManager::class,
+            InvoicesRelationManager::class,
         ];
     }
 

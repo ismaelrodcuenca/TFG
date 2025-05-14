@@ -75,4 +75,9 @@ class Invoice extends Model
     {
         return $this->belongsTo(PaymentMethod::class);
     }
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
+    }
 }

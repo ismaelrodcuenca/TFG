@@ -51,7 +51,7 @@ class Device extends Model
 
     public function brand(): HasOneThrough
     {
-        return $this->hasOneThrough(Brand::class, DeviceModel::class, 'brand_id', 'device_mode_id');
+        return $this->hasOneThrough(Brand::class, DeviceModel::class, 'brand_id', 'device_model_id');
     }
 
     public function workOrders(): HasMany

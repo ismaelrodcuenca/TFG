@@ -28,6 +28,7 @@ class WorkOrderResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document';
     protected static ?string $label = 'Hojas de pedidos';
 
+    //TEMPORALACTIVO protected static bool $shouldRegisterNavigation = false;
     public static function form(Form $form): Form
     {
         return $form
@@ -42,10 +43,7 @@ class WorkOrderResource extends Resource
                         ->numeric()
                         ->disabled()
                         ->default(function () {
-                            return 1;
-                            /**
-                             * @todo logica para traer el id del work_order_number
-                             */
+                            
                         }),
                     Forms\Components\Toggle::make('is_warranty')
                         ->label('Is Warranty')
@@ -64,20 +62,14 @@ class WorkOrderResource extends Resource
                     Forms\Components\Select::make('user_id')
                         ->label('User')
                         ->relationship('user', 'name')
-                        ->required()
                         ->hidden()
                         ->default(auth()->user()->id),
 
                     Forms\Components\Select::make('device_id')
                         ->label('Device')
-                        ->relationship('device', 'name')
                         ->disabled()
-                        ->required()
                         ->default(function(){
-                            return 1;
-                            /**
-                             * @todo Logica para obtener del padre.
-                             */
+                            
                         }),
 
                     Forms\Components\Select::make('store_id')
@@ -94,10 +86,9 @@ class WorkOrderResource extends Resource
                         ->hidden(),
                     Forms\Components\Select::make('status_id')
                         ->label('Status')
-                        ->relationship('status', 'name')
-                        ->required()
+
                         ->hidden(),
-                ])->hidden(),
+                ]),
 
                 Forms\Components\TextInput::make('failure')
                     ->label('Failure')
@@ -129,7 +120,33 @@ class WorkOrderResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('work_order_number')
+                    ->label('Order Number')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('device.name')
+                    ->label('Device')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('store.name')
+                    ->label('Store')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status.name')
+                    ->label('Status')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('failure')
+                    ->label('Failure')
+                    ->limit(50),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //
