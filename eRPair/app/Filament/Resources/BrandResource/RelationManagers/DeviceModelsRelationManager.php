@@ -43,8 +43,12 @@ class DeviceModelsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
             ])
+            ->recordUrl(fn($record) => url("/dashboard/device-models/{$record->id}/edit"))
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('editar')
+                    ->icon('heroicon-o-pencil-square')
+                    ->url(fn($record) => url("/dashboard/device-models/{$record->id}/edit"))
+                    ->openUrlInNewTab(false),
             ]);
     }
 }

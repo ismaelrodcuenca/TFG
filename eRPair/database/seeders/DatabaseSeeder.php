@@ -17,46 +17,62 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $this->command->warn("Comenzando insercciones...");
+
         User::factory()->create([
             'name' => 'Filament Admin',
             'email' => 'admin@admin.com',
             'password' => bcrypt('12345admin'),
         ]);
-        
+        User::factory()->create([
+            'name' => 'Manager',
+            'email' => 'manager@admin.com',
+            'password' => bcrypt('12345manager'),
+        ]);
+
+        User::factory()->create([
+            'name' => 'Technician',
+            'email' => 'technician@admin.com',
+            'password' => bcrypt('12345technician'),
+        ]);
+
+        User::factory()->create([
+            'name' => 'SalesPerson',
+            'email' => 'salesperson@admin.com',
+            'password' => bcrypt('12345salesperson'),
+        ]);
+
+        $this->command->info("Usuario creado correctamente.");
+
         $path = database_path('seeders\data\import.csv');
 
+        //SI NO EXISTE EL ARCHIVO. CONSOLA
         if (!File::exists($path)) {
             $this->command->error("Archivo CSV no encontrado: $path");
             return;
         }
 
+        //
         $csv = array_map('str_getcsv', file($path));
         $header = array_map('strtolower', array_shift($csv)); // ['brand_name', 'model']
 
         foreach ($csv as $row) {
+
             $data = array_combine($header, $row);
 
             if (!isset($data['brand'], $data['model'])) {
                 continue;
             }
 
-            // Normalizar y limpiar
+            //A MAYUSCULA
             $brandName = strtoupper(trim($data['brand']));
 
-            $rawModel = $data['model'];
+            //MODELO EN ARRAY 
+            $modelName = $data['model'];
 
-            // Quitar texto entre paréntesis
-            $cleanModel = preg_replace('/\s*\(.*?\)\s*/', '', $rawModel);
-
-            // Quitar espacios múltiples
-            $cleanModel = preg_replace('/\s+/', ' ', $cleanModel);
-
-            // Convertir a mayúsculas
-            $modelName = strtoupper(trim($cleanModel));
-
-            // Obtener o crear la marca
+            //vERIFICA SI EXISTE EL MODELO, SINO LO CREA
             $brand = DB::table('brands')->where('name', $brandName)->first();
-
             if (!$brand) {
                 $brandId = DB::table('brands')->insertGetId([
                     'name' => $brandName,
@@ -65,7 +81,7 @@ class DatabaseSeeder extends Seeder
                 $brandId = $brand->id;
             }
 
-            // Insertar modelo si no existe
+            //HACEMOS LA MISMA VAINA QUE CON LAS MARCAS
             DB::table('device_models')->updateOrInsert(
                 ['name' => $modelName, 'brand_id' => $brandId],
                 ['name' => $modelName, 'brand_id' => $brandId]
@@ -73,26 +89,22 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->command->info("Modelos de dispositivos importados correctamente.");
+
         DB::table('taxes')->insert([
             ['name' => 'IVA', 'percentage' => 10],
             ['name' => 'IVA', 'percentage' => 21],
             ['name' => 'SIN IMPUESTOS', 'percentage' => 0],
         ]);
 
-        DB::table('brands')->insert([
-            ['name' => 'APPLE'],
-            ['name' => 'SAMSUNG'],
-            ['name' => 'XIAOMI'],
-            ['name' => 'HUAWEI'],
-            ['name' => 'OPPO'],
-        ]);
+        $this->command->info("Impuestos insertados correctamente.");
 
-        
         DB::table('payment_methods')->insert([
             ['name' => 'TARJETA'],
             ['name' => 'EFECTIVO'],
             ['name' => 'TRANSFERENCIA'],
         ]);
+
+        $this->command->info("Metodos de pago insertados correctamente.");
 
         DB::table('document_types')->insert([
             ['name' => 'DNI'],
@@ -101,13 +113,18 @@ class DatabaseSeeder extends Seeder
             ['name' => 'OTRO'],
         ]);
 
+        $this->command->info("Tipos de Documentos insertados correctamente.");
+
         DB::table('statuses')->insert([
             ['name' => 'PENDIENTE'],
             ['name' => 'PENDIENTE DE PIEZA'],
-            ['name' => 'ASIGNADO'],
             ['name' => 'COMPLETADO'],
+            ['name' => 'FACTURADO'],
             ['name' => 'CANCELADO'],
         ]);
+
+
+        $this->command->info("Estados insertados correctamente.");
 
         DB::table('roles')->insert([
             ['name' => 'ADMIN'],
@@ -115,6 +132,8 @@ class DatabaseSeeder extends Seeder
             ['name' => 'TÉCNICO'],
             ['name' => 'ENCARGADO'],
         ]);
+
+        $this->command->info("Roles insertados correctamente.");
 
         DB::table('types')->insert([
             ['name' => 'PANTALLA'],
@@ -124,9 +143,11 @@ class DatabaseSeeder extends Seeder
             ['name' => 'FLEX'],
             ['name' => 'LENTE'],
             ['name' => 'TAPA'],
-            ['name'=> 'ACCESORIO'],
-            ['name'=> 'OTRO'],
+            ['name' => 'ACCESORIO'],
+            ['name' => 'OTRO'],
         ]);
+
+        $this->command->info("Tipos de productos insertados correctamente.");
 
         DB::table('categories')->insert([
             ['name' => 'SERVICIOS', 'tax_id' => 1],
@@ -136,131 +157,139 @@ class DatabaseSeeder extends Seeder
             ['name' => 'PROPINAS', 'tax_id' => 3],
         ]);
 
-        
+        $this->command->info("Categorias insertados correctamente.");
+
         DB::table('clients')->insert([
             [
-            'document' => '12345678A',
-            'name' => 'JUAN',
-            'surname' => 'PÉREZ',
-            'surname2' => 'GARCÍA',
-            'phone_number' => '600123456',
-            'phone_number_2' => '600654321',
-            'postal_code' => '28001',
-            'address' => 'CALLE MAYOR, 1',
-            'document_type_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'document' => '12345678A',
+                'name' => 'JUAN',
+                'surname' => 'PÉREZ',
+                'surname2' => 'GARCÍA',
+                'phone_number' => '600123456',
+                'phone_number_2' => '600654321',
+                'postal_code' => '28001',
+                'address' => 'CALLE MAYOR, 1',
+                'document_type_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'document' => '87654321B',
-            'name' => 'MARÍA',
-            'surname' => 'LÓPEZ',
-            'surname2' => null,
-            'phone_number' => '610987654',
-            'phone_number_2' => null,
-            'postal_code' => '28002',
-            'address' => 'CALLE GRAN VÍA, 2',
-            'document_type_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'document' => '87654321B',
+                'name' => 'MARÍA',
+                'surname' => 'LÓPEZ',
+                'surname2' => null,
+                'phone_number' => '610987654',
+                'phone_number_2' => null,
+                'postal_code' => '28002',
+                'address' => 'CALLE GRAN VÍA, 2',
+                'document_type_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'document' => '11223344C',
-            'name' => 'CARLOS',
-            'surname' => 'MARTÍNEZ',
-            'surname2' => 'FERNÁNDEZ',
-            'phone_number' => '620123789',
-            'phone_number_2' => '620987321',
-            'postal_code' => '28003',
-            'address' => 'CALLE ALCALÁ, 3',
-            'document_type_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-        ]);
-        DB::table('companies')->insert([
-            [
-            'cif' => 'A12345678',
-            'name' => 'TECH SOLUTIONS',
-            'corporate_name' => 'TECH SOLUTIONS S.L.',
-            'address' => 'CALLE INNOVACIÓN, 10',
-            'postal_code' => '28004',
-            'locality' => 'MADRID',
-            'province' => 'MADRID',
-            'discount' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'cif' => 'B87654321',
-            'name' => 'GREEN ENERGY',
-            'corporate_name' => 'GREEN ENERGY S.A.',
-            'address' => 'AVENIDA VERDE, 20',
-            'postal_code' => '28005',
-            'locality' => 'MADRID',
-            'province' => 'MADRID',
-            'discount' => 3.0,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'cif' => 'C11223344',
-            'name' => 'SMART DEVICES',
-            'corporate_name' => 'SMART DEVICES CORP.',
-            'address' => 'PASEO INTELIGENTE, 30',
-            'postal_code' => '28006',
-            'locality' => 'MADRID',
-            'province' => 'MADRID',
-            'discount' => 5.0,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-        ]);
-        
-        DB::table('stores')->insert([
-            [
-            'name' => 'PLAZA MAYOR',
-            'address' => 'CALLE REPARACIÓN, 1',
-            'work_order_number' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'POLIGONO SANTA BARBARA',
-            'address' => 'CALLE ENERGÍA, 2',
-            'work_order_number' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-            ],
-            [
-            'name' => 'VIALIA',
-            'address' => 'CALLE CARGA, 3',
-            'work_order_number' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'document' => '11223344C',
+                'name' => 'CARLOS',
+                'surname' => 'MARTÍNEZ',
+                'surname2' => 'FERNÁNDEZ',
+                'phone_number' => '620123789',
+                'phone_number_2' => '620987321',
+                'postal_code' => '28003',
+                'address' => 'CALLE ALCALÁ, 3',
+                'document_type_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
 
+        $this->command->info("Clientes insertados correctamente.");
+
+        DB::table('companies')->insert([
+            [
+                'cif' => 'A12345678',
+                'name' => 'TECH SOLUTIONS',
+                'corporate_name' => 'TECH SOLUTIONS S.L.',
+                'address' => 'CALLE INNOVACIÓN, 10',
+                'postal_code' => '28004',
+                'locality' => 'MADRID',
+                'province' => 'MADRID',
+                'discount' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'cif' => 'B87654321',
+                'name' => 'GREEN ENERGY',
+                'corporate_name' => 'GREEN ENERGY S.A.',
+                'address' => 'AVENIDA VERDE, 20',
+                'postal_code' => '28005',
+                'locality' => 'MADRID',
+                'province' => 'MADRID',
+                'discount' => 3.0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'cif' => 'C11223344',
+                'name' => 'SMART DEVICES',
+                'corporate_name' => 'SMART DEVICES CORP.',
+                'address' => 'PASEO INTELIGENTE, 30',
+                'postal_code' => '28006',
+                'locality' => 'MADRID',
+                'province' => 'MADRID',
+                'discount' => 5.0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        $this->command->info("Empresas insertadas correctamente.");
+
+        DB::table('stores')->insert([
+            [
+                'name' => 'PLAZA MAYOR',
+                'address' => 'CALLE REPARACIÓN, 1',
+                'work_order_number' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'POLIGONO SANTA BARBARA',
+                'address' => 'CALLE ENERGÍA, 2',
+                'work_order_number' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'VIALIA',
+                'address' => 'CALLE CARGA, 3',
+                'work_order_number' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        $this->command->info("Tiendas insertadas correctamente.");
+
         DB::table('repair_times')->insert([
             [
-            'name' => '1 HORA',
-            'created_at' => now(),
-            'updated_at' => now(),
+                'name' => '1 HORA',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'name' => '2 HORAS',
-            'created_at' => now(),
-            'updated_at' => now(),
+                'name' => '2 HORAS',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'name' => '3 HORAS',
-            'created_at' => now(),
-            'updated_at' => now(),
+                'name' => '3 HORAS',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'name' => '2 DAYS',
-            'created_at' => now(),
-            'updated_at' => now(),
+                'name' => '2 DAYS',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'SE AVISARÁ CUANDO ENCONTREMOS LA AVERÍA.',
@@ -272,8 +301,9 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
         ]);
+
+        $this->command->info("Tiempos de repación insertados correctamente.");
 
 
         DB::table('devices')->insert([
@@ -497,8 +527,9 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
         ]);
+
+        $this->command->info("Dispositivos insertados correctamente.");
 
         DB::table('store_user')->insert([
             [
@@ -519,28 +550,96 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
             ],
+            [
+            'user_id' => 2,
+            'store_id' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+            [
+            'user_id' => 2,
+            'store_id' => 2,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+            [
+            'user_id' => 3,
+            'store_id' => 2,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+            [
+            'user_id' => 3,
+            'store_id' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+            [
+            'user_id' => 4,
+            'store_id' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+            [
+            'user_id' => 4,
+            'store_id' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
         ]);
+
+        $this->command->info("Usuario agregado a tiendas correctamente.");
 
         DB::table('rol_user')->insert([
             [
-            'user_id' => 1,
-            'rol_id' => 1, // ADMIN
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 1,
+                'rol_id' => 1, // ADMIN
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 1,
-            'rol_id' => 2, // DEPENDIENTE
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 1,
+                'rol_id' => 2, // DEPENDIENTE
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 1,
-            'rol_id' => 3, // TÉCNICO
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 1,
+                'rol_id' => 3, // TÉCNICO
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],[
+                'user_id' => 1,
+                'rol_id' => 4, // MANGER
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 2,
+                'rol_id' => 2, // DEPENDIENTE
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 3,
+                'rol_id' => 3, // TÉCNICO
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 4,
+                'rol_id' => 4, // ENCARGADO
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],[
+                'user_id' => 4,
+                'rol_id' => 2, // ENCARGADO
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
+
+        $this->command->info("Perfiles agregados a Usuario correctamente.");
 
         $deviceModels = DB::table('device_models')->get();
         $parts = ['Pantalla', 'Batería', 'Conector de carga', 'Cámara', 'Reparación de placa'];
@@ -549,25 +648,185 @@ class DatabaseSeeder extends Seeder
         $categoryId = DB::table('categories')->where('name', 'PIEZAS')->value('id');
 
         foreach ($deviceModels as $deviceModel) {
+
             foreach ($parts as $part) {
+                $brandName = DB::table('brands')
+                    ->join('device_models', 'brands.id', '=', 'device_models.brand_id')
+                    ->where('device_models.id', $deviceModel->id)
+                    ->value('brands.name');
+                $itemId = DB::table('items')->insertGetId([
+                    'name' => "{$part} para {$brandName} {$deviceModel->name}",
+                    'cost' => rand(10, 100), // Random cost
+                    'price' => rand(150, 300), // Random price
+                    'distributor' => $distributors[array_rand($distributors)],
+                    'type_id' => match ($part) {
+                        'Pantalla' => 1,
+                        'Batería' => 2,
+                        'Conector de carga' => 3,
+                        'Cámara' => 6,
+                        'Reparación de placa' => 9,
+                        default => $typeId,
+                    },
+                    'category_id' => $categoryId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                DB::table('device_model_item')->insert([
+                    'device_model_id' => $deviceModel->id,
+                    'item_id' => $itemId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        $this->command->info("Items creados para modelos insertados correctamente.");
+
+        $accessories = [
+            'FUNDA DE SILICONA',
+            'PROTECTOR DE PANTALLA DE VIDRIO TEMPLADO',
+            'CARGADOR RÁPIDO',
+            'AURICULARES INALÁMBRICOS',
+            'SOPORTE PARA COCHE',
+            'CABLE USB-C',
+            'CABLE LIGHTNING',
+            'POWER BANK',
+            'ALTAVOZ BLUETOOTH',
+            'TECLADO INALÁMBRICO',
+            'RATÓN INALÁMBRICO',
+            'ADAPTADOR HDMI',
+            'LÁPIZ TÁCTIL',
+            'SOPORTE PARA TABLET',
+            'CARGADOR INALÁMBRICO',
+            'TARJETA DE MEMORIA',
+            'LECTOR DE TARJETAS',
+            'ADAPTADOR DE CORRIENTE UNIVERSAL',
+            'FUNDA IMPERMEABLE',
+            'SOPORTE PLEGABLE',
+            'CARGADOR SOLAR',
+            'SOPORTE PARA ESCRITORIO',
+            'CARGADOR MÚLTIPLE',
+            'ADAPTADOR DE AUDIO',
+            'FUNDA CON TECLADO',
+            'PROTECTOR DE CÁMARA',
+            'SOPORTE MAGNÉTICO',
+            'CARGADOR PARA COCHE',
+            'FUNDA ANTICHOQUE',
+            'CABLE RETRÁCTIL',
+        ];
+
+        $categoryId = DB::table('categories')->where('name', 'ACCESORIOS')->value('id');
+        $typeId = DB::table('types')->where('name', 'ACCESORIO')->value('id');
+
+        foreach ($accessories as $accessory) {
             DB::table('items')->insert([
-                'name' => "{$part} para {$deviceModel->name}",
-                'cost' => rand(10, 100), // Random cost
-                'price' => rand(150, 300), // Random price
+                'name' => $accessory,
+                'cost' => rand(5, 50), // Random cost
+                'price' => rand(20, 100), // Random price
                 'distributor' => $distributors[array_rand($distributors)],
-                'type_id' => match ($part) {
-                    'Pantalla' => 1,
-                    'Batería' => 2,
-                    'Conector de carga' => 3,
-                    'Cámara' => 6,
-                    'Reparación de placa' => 9,
-                    default => $typeId,
-                },
+                'type_id' => $typeId,
                 'category_id' => $categoryId,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+        }
+
+        $this->command->info("Items de tipo accesorios insertados correctamente.");
+
+        $services = [
+            'REPARACIÓN DE SOFTWARE',
+            'DIAGNÓSTICO TÉCNICO',
+            'LIMPIEZA INTERNA',
+            'ACTUALIZACIÓN DE FIRMWARE',
+            'RECUPERACIÓN DE DATOS',
+            'INSTALACIÓN DE SISTEMA OPERATIVO',
+            'CONFIGURACIÓN DE DISPOSITIVO',
+            'ELIMINACIÓN DE VIRUS',
+            'OPTIMIZACIÓN DE RENDIMIENTO',
+            'SOPORTE TÉCNICO REMOTO',
+        ];
+
+        $categoryId = DB::table('categories')->where('name', 'SERVICIOS')->value('id');
+        $typeId = DB::table('types')->where('name', 'OTRO')->value('id');
+
+        foreach ($services as $service) {
+            DB::table('items')->insert([
+                'name' => $service,
+                'cost' => rand(20, 100), // Random cost
+                'price' => rand(50, 200), // Random price
+                'distributor' => "ERPAIR", // No distributor for services
+                'type_id' => $typeId,
+                'category_id' => $categoryId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+        $categoryId = DB::table('categories')->where('name', 'PROPINAS')->value('id');
+        $typeId = DB::table('types')->where('name', 'OTRO')->value('id');
+
+        $this->command->info("Servicios insertados correctamente.");
+
+        DB::table('items')->insert([
+            'name' => 'PROPINA',
+            'cost' => 0, // No cost for tips
+            'price' => 2, // Default price for tips
+            'distributor' => "", // No distributor for tips
+            'type_id' => $typeId,
+            'category_id' => $categoryId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $reconditionedDevices = [
+            'IPHONE 12 128GB NEGRO',
+            'IPHONE 12 256GB BLANCO',
+            'IPHONE 13 128GB AZUL',
+            'IPHONE 13 256GB ROJO',
+            'IPHONE 14 128GB VERDE',
+            'IPHONE 14 256GB DORADO',
+            'IPHONE 14 PRO 128GB MORADO',
+            'IPHONE 14 PRO 256GB PLATA',
+        ];
+
+        $categoryId = DB::table('categories')->where('name', 'REACONDICIONADOS')->value('id');
+        $typeId = DB::table('types')->where('name', 'OTRO')->value('id');
+
+        foreach ($reconditionedDevices as $device) {
+            DB::table('items')->insert([
+                'name' => $device,
+                'cost' => rand(200, 800), // Random cost
+                'price' => rand(1000, 1500), // Random price
+                'distributor' => $distributors[array_rand($distributors)],
+                'type_id' => $typeId,
+                'category_id' => $categoryId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+
+        $this->command->info("Reacondicionados insertados correctamente.");
+
+        $this->command->warn("Comenzando a agregar items a todas las tiendas...");
+
+        $items = DB::table('items')->get();
+        $stores = DB::table('stores')->get();
+
+        foreach ($stores as $store) {
+            foreach ($items as $item) {
+                DB::table('stocks')->insert([
+                    'store_id' => $store->id,
+                    'item_id' => $item->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
             }
         }
+
+        $this->command->info("Todos los items han sido agregados a todas las tiendas correctamente.");
+
+
     }
+
 }

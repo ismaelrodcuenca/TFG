@@ -45,11 +45,13 @@ class StoreSelection extends Page implements HasForms
                 ->label('Tienda')
                 ->placeholder('Selecciones una tienda')
                 ->options($stores)
+                ->default(array_key_first($stores) ?? null)
                 ->required(),
             Select::make('rol_id')
                 ->placeholder('Selecciones un rol')
                 ->label('Rol')
                 ->options($roles)
+                ->default(array_key_first($stores) ?? null)
                 ->required(),
         ];
     }
@@ -58,7 +60,6 @@ class StoreSelection extends Page implements HasForms
     {
         $storeId = $this->form->getState()['store_id'];
         $rolId = $this->form->getState()['rol_id'];
-        $notificationString = null;
         session(['store_id' => $storeId]);
         session(['rol_id' => $rolId]);
 
@@ -66,7 +67,6 @@ class StoreSelection extends Page implements HasForms
             $notificationString = 'Seleccion requerida';
         }
         $notificationString = 'Bienvenido, '.auth()->user()->name;
-        // Redirigir al dashboard o la página principal de tu app
         Notification::make()
             ->title('Tienda y perfil seleccionada correctamente')
             ->success()

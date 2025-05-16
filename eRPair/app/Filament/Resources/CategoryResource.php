@@ -6,10 +6,12 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use constants;
+use App\Helpers\PermissionHelper;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -25,8 +27,15 @@ class CategoryResource extends Resource
 
     public static ?string $navigationGroup = 'Gestiones ERP';
 
-    protected static ?string $label = 'Categorias';
-
+    protected static ?string $label = 'Categoria';
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
+    public static function authorization()
+    {
+        return [false];
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -36,42 +45,35 @@ class CategoryResource extends Resource
             ]);
     }
 
-    
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('name')
-                ->label(constants::NAME_TYPO)
-                ->sortable()
-                ->searchable(),
+                    ->label(constants::NAME_TYPO)
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('tax.name')
-                ->label(constants::TAX)
-                ->sortable()
-                ->searchable(),
+                    ->label(constants::TAX)
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('tax.percentage')
-                ->label(constants::PERCENTAJE)
-                ->sortable()
-                ->searchable()->suffix('%'),
+                    ->label(constants::PERCENTAJE)
+                    ->sortable()
+                    ->searchable()->suffix('%'),
             ])
             ->filters([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                EditAction::make()
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            
+
         ];
     }
 

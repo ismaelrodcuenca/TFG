@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureStoreSelected
 {
+   
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check()) {

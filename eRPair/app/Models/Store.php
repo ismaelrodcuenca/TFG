@@ -36,7 +36,7 @@ class Store extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'store_user', 'store_id', 'user_id' );
+        return $this->belongsToMany(User::class, 'store_user');
     }
 
     public function cashDesks(): BelongsToMany
@@ -46,7 +46,7 @@ class Store extends Model
 
     public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Item::class)->withPivot('quantity');
+        return $this->belongsToMany(Item::class, 'stocks')->withPivot('quantity');
     }
 
     public function workOrders(): HasMany

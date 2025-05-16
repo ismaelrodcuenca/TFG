@@ -6,14 +6,13 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ModelRelationManager extends RelationManager
+class DeviceModelsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'models';
+    protected static string $relationship = 'deviceModels';
 
     public function form(Form $form): Form
     {
@@ -30,22 +29,17 @@ class ModelRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('brand.name'),Tables\Columns\TextColumn::make('name'),
             ])
             ->filters([
                 //
             ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
-            ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                AttachAction::make(),
+                Tables\Actions\Action::make('editar')
+                    ->icon('heroicon-o-pencil-square')
+                    ->url(fn($record) => url("/dashboard/device-models/{$record->id}/edit"))
+                    ->openUrlInNewTab(false),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->recordUrl(fn($record) => url("/dashboard/device-models/{$record->id}/edit"));
     }
 }

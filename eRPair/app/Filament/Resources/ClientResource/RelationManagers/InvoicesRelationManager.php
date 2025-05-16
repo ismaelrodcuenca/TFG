@@ -23,7 +23,7 @@ class InvoicesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('taxes_full_amount'),
                 Tables\Columns\TextColumn::make('work_order_number'),
                 Tables\Columns\TextColumn::make('full_amount'),
-                Tables\Columns\TextColumn::make('down_payment_amount')->nullable(),
+                Tables\Columns\TextColumn::make('down_payment_amount'),
             ])
             ->filters([
                 //

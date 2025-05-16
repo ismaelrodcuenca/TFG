@@ -3,6 +3,7 @@
 
 use App\Filament\Resources\StatusResource\Pages;
 use App\Filament\Resources\StatusResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\Status;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -25,8 +26,12 @@ class StatusResource extends Resource
     protected static ?string $model = Status::class;
     protected static ?string $navigationIcon = 'heroicon-o-tag';
     public static ?string $navigationGroup = 'Gestiones ERP';
-    protected static ?string $label = 'Estados';
+    protected static ?string $label = 'Estado';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -40,21 +45,14 @@ class StatusResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                ->label(constants::MODELO)
+                ->label(constants::NAME_TYPO)
                 ->sortable()
                 ->searchable(),
             ])
             ->filters([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

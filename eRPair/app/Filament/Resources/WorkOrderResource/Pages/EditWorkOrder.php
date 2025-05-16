@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\WorkOrderResource\Pages;
 
 use App\Filament\Resources\WorkOrderResource;
+use App\Helpers\PermissionHelper;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -13,7 +14,8 @@ class EditWorkOrder extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+            ->hidden(PermissionHelper::isNotAdmin()),
         ];
     }
 }

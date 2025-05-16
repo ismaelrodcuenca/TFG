@@ -1,4 +1,8 @@
 <?php 
+define("ADMIN_ROL",1);
+define("SALESPERSON_ROL",2);
+define("TECHNICIAN_ROL",3);
+define("MANAGER_ROL",4 );
 class constants{
     const NAME_TYPO = "Título";
     const NAME = "Nombre";

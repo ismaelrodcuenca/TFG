@@ -5,8 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\StoreRelationManager;
+use App\Helpers\PermissionHelper;
 use App\Models\User;
 use constants;
+use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -23,9 +25,10 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $label = 'Usuarios';
 
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -53,9 +56,10 @@ class UserResource extends Resource
                 
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                ->hidden(PermissionHelper::isNotAdmin()),
+                Tables\Actions\DeleteAction::make()
+                ->hidden(PermissionHelper::isNotAdmin()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

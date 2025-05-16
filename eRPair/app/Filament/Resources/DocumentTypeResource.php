@@ -3,20 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DocumentTypeResource\Pages;
-use App\Filament\Resources\DocumentTypeResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\DocumentType;
 use constants;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 
 class DocumentTypeResource extends Resource
@@ -24,8 +18,12 @@ class DocumentTypeResource extends Resource
     protected static ?string $model = DocumentType::class;
     protected static ?string $navigationIcon = 'heroicon-o-identification';
     public static ?string $navigationGroup = 'Gestiones ERP';
-    protected static ?string $label = 'Tipos De Documentos';
+    protected static ?string $label = 'Tipo De Documento';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -47,14 +45,7 @@ class DocumentTypeResource extends Resource
             ->filters([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                EditAction::make(),
             ]);
     }
 

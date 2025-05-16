@@ -4,12 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BrandResource\Pages;
 use App\Filament\Resources\BrandResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\Brand;
 use constants;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 use Filament\Tables\Columns\TextColumn;
@@ -24,7 +26,7 @@ class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
     protected static ?string $label = constants::MARCAS;
 
     public $translatable = ['name'];
@@ -42,15 +44,13 @@ class BrandResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()->translateLabel(true)->sortable()->label('Nombre')
-            ])
-            ->filters([
-                //Tables\Filters\Filter::make('name')
+                TextColumn::make('name')->searchable()->translateLabel(true)->sortable()
+                    ->label('Nombre')
+                    ->searchable()
             ])
             ->actions([
-                ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                
+
             ]);
     }
 

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TaxResource\Pages;
 use App\Filament\Resources\TaxResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\Tax;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -26,8 +27,13 @@ class TaxResource extends Resource
     protected static ?string $model = Tax::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-percent-badge';
-    protected static ?string $label = 'Impuestos';
+    protected static ?string $label = 'Impuesto';
     public static ?string $navigationGroup = 'Gestiones ERP';
+    
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
 
     public static function form(Form $form): Form
     {
@@ -54,14 +60,7 @@ class TaxResource extends Resource
             ->filters([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

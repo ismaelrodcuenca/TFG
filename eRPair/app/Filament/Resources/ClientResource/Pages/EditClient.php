@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ClientResource\Pages;
 
 use App\Filament\Resources\ClientResource;
+use App\Helpers\PermissionHelper;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -12,8 +13,7 @@ class EditClient extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+                return[];
+
     }
 }

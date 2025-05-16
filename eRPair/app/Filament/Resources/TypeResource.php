@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TypeResource\Pages;
 use App\Filament\Resources\TypeResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\Type;
 use constants;
 use Filament\Forms;
@@ -25,15 +26,15 @@ class TypeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $label = 'Tipos de Items';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('name')->label(constants::NAME)->required(),
-                Forms\Components\Select::make('tax_id')
-                    ->label('Tax')
-                    ->relationship('tax', 'name')
-                    ->required(),
             ]);
     }
 
@@ -42,21 +43,14 @@ class TypeResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                ->label(constants::MODELO)
+                ->label(constants::NAME_TYPO)
                 ->sortable()
                 ->searchable(),
             ])
             ->filters([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

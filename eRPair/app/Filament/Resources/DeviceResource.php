@@ -6,7 +6,10 @@ use App\Filament\Resources\DeviceResource\Pages;
 use App\Filament\Resources\DeviceResource\RelationManagers;
 use App\Filament\Resources\DeviceResource\RelationManagers\ItemsRelationManager;
 use App\Filament\Resources\DeviceResource\RelationManagers\WorkOrdersRelationManager;
+use App\Models\Brand;
 use App\Models\Device;
+use App\Models\DeviceModel;
+use DB;
 use DragonCode\Support\Facades\Helpers\Boolean;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -49,7 +52,7 @@ class DeviceResource extends Resource
                     Forms\Components\Select::make('brand_id')
                     ->label('Marca')
                     ->options(function () {
-                        return \App\Models\Brand::all()->pluck('name', 'id');
+                        return DB::table('brands')->select('*')->orderBy('name','ASC')->pluck('name','id')->toArray();
                     })
                     ->reactive()
                     ->afterStateUpdated(fn (callable $set) => $set('device_model_id', null))
@@ -61,15 +64,14 @@ class DeviceResource extends Resource
                         $brandId = $get('brand_id');
                         if (!$brandId) return [];
     
-                        return \App\Models\DeviceModel::where('brand_id', $brandId)->pluck('name', 'id');
+                        return DB::table('device_models')->select('*')->where('brand_id', $brandId)->orderBy('name','ASC')->pluck('name','id')->toArray();
                     })
+                    ->placeholder('Seleccione una Marca')
                     ->default(function (callable $get) {
-                        $brandId = $get('brand');
-                        if (!$brandId) return [
-                            ''=> "Seleccione una marca",
-                        ];
-                        
-                        return \App\Models\DeviceModel::where('brand_id', $brandId)->pluck('name', 'id');
+                        $brandId = $get('brand_id');
+                        if (!$brandId) return [];
+                        return DeviceModel::all()->where('brand_id', $brandId )
+                        ->sort()->pluck('name', 'id');
                     })
                     ->required(),
                 Forms\Components\Select::make('client_id')

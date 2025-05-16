@@ -14,7 +14,7 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-        // return whatever you want as url
+        //Manda directamente para store-select
         $url = '/store-select';
  
         return redirect($url);

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CompanyResource\Pages;
 
 use App\Filament\Resources\CompanyResource;
+use App\Helpers\PermissionHelper;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -12,8 +13,7 @@ class EditCompany extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+                return[];
+
     }
 }

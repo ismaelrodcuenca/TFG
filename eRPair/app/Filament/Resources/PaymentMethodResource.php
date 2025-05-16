@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentMethodResource\Pages;
 use App\Filament\Resources\PaymentMethodResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\PaymentMethod;
 use constants;
 use Filament\Forms;
@@ -23,10 +24,14 @@ class PaymentMethodResource extends Resource
 {
     protected static ?string $model = PaymentMethod::class;
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-    protected static ?string $label = 'Métodos de Pagos';
+    protected static ?string $label = 'Métodos de Pago';
 
     public static ?string $navigationGroup = 'Gestiones ERP';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -48,14 +53,7 @@ class PaymentMethodResource extends Resource
             ->filters([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

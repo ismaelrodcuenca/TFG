@@ -3,25 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ItemResource\Pages;
-use App\Filament\Resources\ItemResource\RelationManagers;
-use App\Filament\Resources\ItemResource\RelationManagers\BrandRelationManager;
-use App\Filament\Resources\ItemResource\RelationManagers\CategoryRelationManager;
-use App\Filament\Resources\ItemResource\RelationManagers\ModelRelationManager;
-use App\Filament\Resources\ItemResource\RelationManagers\TypeRelationManager;
+use App\Filament\Resources\ItemResource\RelationManagers\DeviceModelsRelationManager;
+use App\Filament\Resources\ItemResource\RelationManagers\StoresRelationManager;
+use App\Models\Brand;
 use App\Models\Category;
+use App\Models\DeviceModel;
 use App\Models\Item;
 use App\Models\Type;
 use constants;
-use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ItemResource extends Resource
 {
@@ -50,7 +47,6 @@ class ItemResource extends Resource
                     ->label(constants::DISTRIBUTOR),
                 Forms\Components\Select::make('type_id')
                     ->relationship('type', 'name')
-                    ->default('8')
                     ->label(constants::TYPE),
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name')
@@ -72,15 +68,19 @@ class ItemResource extends Resource
                     ->label(constants::PRICE)
                     ->sortable()
                     ->numeric()
+                    ->alignment(Alignment::Center)
                     ->suffix('€')
                     ->toggleable(true, false),
                 Tables\Columns\TextColumn::make('cost')
-                ->label('Coste')
-                ->sortable()
-                ->toggleable(true),
+                    ->label('Coste')
+                    ->sortable()
+                    ->suffix('€')
+                    ->alignment(Alignment::Center)
+                    ->toggleable(true),
                 Tables\Columns\TextColumn::make('distributor')
                     ->label(constants::DISTRIBUTOR)
                     ->searchable()
+                    ->alignment(Alignment::Center)
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('type.name')
                     ->label(constants::TYPE)
@@ -93,17 +93,22 @@ class ItemResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('category_id')
-                ->label('Categorias')
-                ->options(Category::all()->pluck('name','id')->toArray())
-                ->default(3),
+                    ->label('Categorias')
+                    ->options(Category::all()->pluck('name', 'id')->toArray())
+                    ->default(3),
                 SelectFilter::make('type_id')
-                ->label('Tipo')
-                ->options(Type::all()->pluck('name','id')->toArray())
-                ->default(8),
+                    ->label('Tipo')
+                    ->options(Type::all()->pluck('name', 'id')->toArray())
+                    ->default(8),
+                SelectFilter::make('deviceModels')
+                    ->label('Modelos')
+                    ->options(
+                        DeviceModel::all()->pluck('name', 'id')->toArray()
+                    ),
                 Filter::make('name'),
                 Filter::make('price'),
                 Filter::make('costo')
-                ->default(),
+                    ->default(),
                 Filter::make('distributor'),
             ])
             ->actions([
@@ -115,9 +120,11 @@ class ItemResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            ModelRelationManager::class,
-        ];
+        //Permite filtrar el array de nulos
+        return array_filter([
+            DeviceModelsRelationManager::class,
+            StoresRelationManager::class,
+        ]);
     }
 
     public static function getPages(): array

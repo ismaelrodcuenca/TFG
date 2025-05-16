@@ -10,11 +10,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ItemRelationManager extends RelationManager
+class ItemsRelationManager extends RelationManager
 {
     protected static string $relationship = 'items';
 
-    public function table(Table $table): Table
+     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('name')
@@ -37,10 +37,15 @@ class ItemRelationManager extends RelationManager
             ])
             ->defaultSort('name', 'asc')
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make()
+                    ->preloadRecordSelect()
             ])
+            ->recordUrl(fn($record) => url("/dashboard/items/{$record->id}/edit"))
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('editar')
+                    ->icon('heroicon-o-pencil-square')
+                    ->url(fn($record) => url("/dashboard/items/{$record->id}/edit"))
+                    ->openUrlInNewTab(false),
             ]);
     }
 }

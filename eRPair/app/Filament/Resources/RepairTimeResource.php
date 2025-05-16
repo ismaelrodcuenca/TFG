@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RepairTimeResource\Pages;
 use App\Filament\Resources\RepairTimeResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\RepairTime;
 use constants;
 use Filament\Forms;
@@ -28,9 +29,14 @@ class RepairTimeResource extends Resource
     protected static ?string $model = RepairTime::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?string $label = 'Tiempos De Reparación ';
+    protected static ?string $label = 'Tiempo De Reparación ';
 
     public static ?string $navigationGroup = 'Gestiones ERP';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
 
     public static function form(Form $form): Form
     {
@@ -53,14 +59,7 @@ class RepairTimeResource extends Resource
             ->filters([
             ])
             ->actions([
-                ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

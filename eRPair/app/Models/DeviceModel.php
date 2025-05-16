@@ -38,7 +38,7 @@ class DeviceModel  extends Model
 
     public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Item::class, 'device_model_item');
+        return $this->belongsToMany(Item::class);
     }
 
     public function devices(): HasMany

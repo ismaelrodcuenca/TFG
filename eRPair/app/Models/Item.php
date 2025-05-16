@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Item extends Model
 {
+
     /**
      * Especifica la tabla de la base de datos asociada con el modelo.
      *
@@ -31,6 +32,17 @@ class Item extends Model
      */
     protected $fillable = ['name', 'cost', 'price', 'distributor', 'type_id', 'category_id'];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($item) {
+            $stores = Store::all();
+            foreach ($stores as $store) {
+                $item->stores()->attach($store->id, ['quantity' => 0]);
+            }
+        });
+    }
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class);
@@ -53,7 +65,7 @@ class Item extends Model
 
     public function stores(): BelongsToMany
     {
-        return $this->belongsToMany(Store::class)->withPivot('quantity');
+        return $this->belongsToMany(Store::class, 'stocks')->withPivot('quantity');
     }
 
     //NO SE VA A USAR. 

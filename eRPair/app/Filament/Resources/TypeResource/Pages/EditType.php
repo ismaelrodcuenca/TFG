@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TypeResource\Pages;
 
 use App\Filament\Resources\TypeResource;
+use App\Helpers\PermissionHelper;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -12,8 +13,6 @@ class EditType extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        return [];
     }
 }
