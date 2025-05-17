@@ -11,6 +11,7 @@ use App\Filament\Resources\WorkOrderResource\RelationManagers\ItemsRelationManag
 use App\Filament\Resources\WorkOrderResource\RelationManagers\RepairTimeRelationManager;
 use App\Filament\Resources\WorkOrderResource\RelationManagers\StatusRelationManager;
 use App\Filament\Resources\WorkOrderResource\RelationManagers\UserRelationManager;
+use App\Models\Store;
 use App\Models\WorkOrder;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
@@ -20,13 +21,14 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use PhpParser\Node\Stmt\Label;
 
 class WorkOrderResource extends Resource
 {
     protected static ?string $model = WorkOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document';
-    protected static ?string $label = 'Hojas de pedidos';
+    protected static ?string $label = 'Hojas de pedido';
 
     //TEMPORALACTIVO protected static bool $shouldRegisterNavigation = false;
     public static function form(Form $form): Form
@@ -42,11 +44,12 @@ class WorkOrderResource extends Resource
                         ->label('Order Number')
                         ->numeric()
                         ->disabled()
-                        ->default(function () {
-                            
-                        }),
+                        ->hidden(),
+                        /**
+                         * @todo En el Modelo. Obtener numero de Pedido y incrementar en tienda. 
+                         */
                     Forms\Components\Toggle::make('is_warranty')
-                        ->label('Is Warranty')
+                        ->label('Garantía')
                         ->hidden()
                         ->default(function () {
                             if (true) {
@@ -69,45 +72,55 @@ class WorkOrderResource extends Resource
                         ->label('Device')
                         ->disabled()
                         ->default(function(){
-                            
+                            /**
+                             * @todo traer desde el Recurso Dispositivos
+                             */
                         }),
 
-                    Forms\Components\Select::make('store_id')
-                        ->label('Store')
-                        ->relationship('store', 'name')
-                        ->required()
-                        ->hidden()
-                        ->default(fn() => session()->get('store_id')),
-
-                    Forms\Components\Select::make('closure_id')
+                    
+                    Forms\Components\TextInput::make('closure_id')
                         ->label('Closure')
-                        ->relationship('closure', 'name')
-                        ->nullable()
+                        ->dehydrated(false)
                         ->hidden(),
                     Forms\Components\Select::make('status_id')
                         ->label('Status')
 
                         ->hidden(),
                 ]),
+                Group::make()->schema([
+                    Forms\Components\Select::make('store_id')
+                        ->label('Tienda')
+                        ->required()
+                        ->disabled()
+                        ->options(Store::all()->pluck('name','id')->toArray())
+                        ->default(fn() => session()->get('store_id')),
 
-                Forms\Components\TextInput::make('failure')
+                ]),
+
+                Forms\Components\Textarea::make('failure')
                     ->label('Failure')
-                    ->required(),
+                    ->required()
+                    ->columnSpan('full'),
                 Forms\Components\Textarea::make('private_comment')
                     ->label('Private Comment')
-                    ->nullable(),
+                    ->nullable()
+                    ->columnSpan('full'),
                 Forms\Components\Textarea::make('comment')
                     ->label('Comment')
-                    ->nullable(),
-                Forms\Components\TextInput::make('physical_condition')
+                    ->nullable()
+                    ->columnSpan('full'),
+                Forms\Components\Textarea::make('physical_condition')
                     ->label('Physical Condition')
-                    ->required(),
-                Forms\Components\TextInput::make('humidity')
+                    ->required()
+                    ->columnSpan('full'),
+                Forms\Components\Textarea::make('humidity')
                     ->label('Humidity')
-                    ->required(),
+                    ->required()
+                    ->columnSpan('full'),
                 Forms\Components\TextInput::make('test')
                     ->label('Test')
-                    ->required(),
+                    ->required()
+                    ->columnSpan('full'),
                 Forms\Components\Select::make('repair_time_id')
                     ->label('Repair Time')
                     ->relationship('repairTime', 'name')

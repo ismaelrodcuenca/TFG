@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\PermissionHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,6 +30,11 @@ class Category extends Model
      */
     protected $fillable = ['name', 'tax_id'];
 
+
+    public function canAccessFilament(): bool
+    {
+        return PermissionHelper::isAdmin() ? true : false;
+    }
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
