@@ -25,7 +25,7 @@ class StatusResource extends Resource
 {
     protected static ?string $model = Status::class;
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    public static ?string $navigationGroup = 'Gestiones ERP';
+    public static ?string $navigationGroup = 'Miscelanea';
     protected static ?string $label = 'Estado';
 
     public static function shouldRegisterNavigation(): bool

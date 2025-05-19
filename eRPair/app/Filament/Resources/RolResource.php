@@ -26,7 +26,7 @@ class RolResource extends Resource
     protected static ?string $model = Rol::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    public static ?string $navigationGroup = 'Gestiones ERP';
+    public static ?string $navigationGroup = 'Miscelanea';
     protected static ?string $label = 'Rol';
 
     public static function shouldRegisterNavigation(): bool

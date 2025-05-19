@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
@@ -35,11 +36,12 @@ class WorkOrder extends Model
         'failure',
         'private_comment',
         'comment',
-        'pyshical_condition',
+        'physical_condition',
         'humidity',
         'test',
         'is_warranty',
         'user_id',
+        'store_id',
         'deliverer_id',
         'closure_id',
         'repair_time_id',
@@ -53,23 +55,31 @@ class WorkOrder extends Model
     {
         static::creating(function ($workOrder) {
             DB::transaction(function () use ($workOrder) {
-                $store = Store::lockForUpdate()->find($workOrder->store_id);
+            $store = Store::lockForUpdate()->find($workOrder->store_id);
 
-                if (!$store) {
-                    throw new \Exception("Tienda no encontrada");
-                }
-                // Asignar el número actual a la orden
-                $workOrder->work_order_number = $store->work_order_number;
-
-                // Incrementar el contador de la tienda
-                $store->increment('work_order_number');
+            if (!$store) {
+                throw new \Exception("Tienda no encontrada. \n Tienda Pedido: ". $workOrder->store_id. "\n Tienda Sesion: ". session('store_id'));
+            }
+            // Asignar el número actual a la orden
+            $workOrder->work_order_number = $store->work_order_number;
             });
+        });
+
+        static::created(function ($workOrder) {
+            DB::table('status_work_orders')->insert([
+            'work_order_id' => $workOrder->id,
+            'status_id' => Status::where('name', 'pendiente')->value('id'),
+            'user_id' => auth()->user()->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ]);
         });
     }
 
-    public function items(): HasMany
+
+    public function items(): BelongsToMany
     {
-        return $this->hasMany(Item::class)->withPivot('modified_amount');
+        return $this->belongsToMany(Item::class)->withPivot('modified_amount');
     }
 
     public function invoices(): HasMany
@@ -82,7 +92,7 @@ class WorkOrder extends Model
         return $this->belongsTo(Closure::class);
     }
 
-    public function user(): BelongsTo
+    public function user(): BelongsTo 
     {
         return $this->belongsTo(User::class);
     }
@@ -97,9 +107,9 @@ class WorkOrder extends Model
         return $this->belongsTo(RepairTime::class);
     }
 
-    public function status(): BelongsTo
+    public function statuses(): BelongsToMany
     {
-        return $this->belongsTo(Status::class);
+        return $this->belongsToMany(Status::class)->withTimestamps();
     }
 
     public function store(): BelongsTo

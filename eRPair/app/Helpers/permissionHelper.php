@@ -1,17 +1,27 @@
 <?php
 
-namespace App\Helpers;
+namespace app\Helpers;
+
 
 use DB;
 use Filament\Notifications\Notification;
 
 class PermissionHelper
 {
+
+    public static function developMode(): bool
+    {
+        return true;
+    }
     public static function actualRol(): int
     {
         return session('rol_id', 0);
     }
 
+    public static function hasRole(): bool
+    {
+        return session('rol_id') != 0;
+    }
     /**
      * Check if the current user has administrative privileges.
      *
@@ -126,4 +136,10 @@ class PermissionHelper
     {
         return !self::isSomethingElse($else);
     }
+
+    /**
+     * Checks if the current user has a valid role.
+     *
+     * @return bool Returns false if there is no role, true otherwise.
+     */
 }

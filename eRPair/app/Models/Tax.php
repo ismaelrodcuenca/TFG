@@ -28,6 +28,10 @@ class Tax extends Model
      */
     protected $fillable = ['name', 'percentage'];
 
+     public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
     public function types(): HasMany
     {
         return $this->hasMany(Type::class);

@@ -26,7 +26,57 @@ class Company extends Model
      * 
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
-    protected $fillable = ['cif', 'name', 'corporate_name', 'address', 'postal_code', 'locality', 'province', 'discount'];
+    protected $fillable = [
+        'cif', 
+        'name', 
+        'corporate_name', 
+        'address', 
+        'postal_code', 
+        'locality', 
+        'province', 
+        'discount'];
+
+        public function setCifAttribute($value)
+        {
+            if (!is_null($value)) {
+                $this->attributes['cif'] = strtoupper($value);
+            }
+        }
+
+        public function setNameAttribute($value)
+        {
+            if (!is_null($value)) {
+                $this->attributes['name'] = strtoupper($value);
+            }
+        }
+
+        public function setCorporateNameAttribute($value)
+        {
+            if (!is_null($value)) {
+                $this->attributes['corporate_name'] = strtoupper($value);
+            }
+        }
+
+        public function setAddressAttribute($value)
+        {
+            if (!is_null($value)) {
+                $this->attributes['address'] = strtoupper($value);
+            }
+        }
+
+        public function setLocalityAttribute($value)
+        {
+            if (!is_null($value)) {
+                $this->attributes['locality'] = strtoupper($value);
+            }
+        }
+
+        public function setProvinceAttribute($value)
+        {
+            if (!is_null($value)) {
+                $this->attributes['province'] = strtoupper($value);
+            }
+        }
 
     public function invoices(): HasMany
     {

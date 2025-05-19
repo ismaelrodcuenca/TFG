@@ -1,6 +1,6 @@
 <?php
  
-namespace App\Http\Responses;
+namespace App\Http\Middleware\Responses;
  
 use Filament\Http\Responses\Auth\Contracts\LoginResponse as LoginResponseContract;
  

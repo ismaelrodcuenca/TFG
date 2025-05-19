@@ -28,7 +28,7 @@ class TaxResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-percent-badge';
     protected static ?string $label = 'Impuesto';
-    public static ?string $navigationGroup = 'Gestiones ERP';
+    public static ?string $navigationGroup = 'Miscelanea';
     
     public static function shouldRegisterNavigation(): bool
     {

@@ -44,4 +44,8 @@ class Category extends Model
     {
         return $this->belongsTo(Tax::class);
     }
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
 }

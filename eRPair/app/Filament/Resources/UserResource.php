@@ -13,7 +13,9 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,9 +28,20 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $label = 'Usuarios';
+    protected static ?string $label = 'Usuario';
 
-    
+    protected static ?string $navigationGroup = 'Recursos';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::hasRole();
+    }
+
+    public static function getEloquentQuery(): Builder
+{
+    return PermissionHelper::isNotAdmin() ? parent::getEloquentQuery()
+        ->where('id', auth()->user()->id) : parent::getEloquentQuery();// o cualquier otra condición
+}
     public static function form(Form $form): Form
     {
         return $form
@@ -44,27 +57,20 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                ->label(constants::NAME)
-                ->sortable()
-                ->searchable(),
+                    ->label(constants::NAME)
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('email')
-                ->label(constants::EMAIL)
-                ->sortable()
-                ->searchable(),
-            ])    
+                    ->label(constants::EMAIL)
+                    ->sortable()
+                    ->searchable(),
+            ])
             ->filters([
-                
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                ->hidden(PermissionHelper::isNotAdmin()),
-                Tables\Actions\DeleteAction::make()
-                ->hidden(PermissionHelper::isNotAdmin()),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Action::make("Desactivar")
+                    ->icon('heroicon-o-user-minus')
+                    ->color('warning'),
             ]);
     }
 

@@ -29,7 +29,12 @@ class DeviceModelResource extends Resource
 
     protected static ?string $label = 'Modelo';
 
-    public static ?string $navigationGroup = 'Catálogo';
+    public static ?string $navigationGroup = 'Miscelanea';
+    
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::developMode();
+    }
 
     public static function form(Form $form): Form
     {
@@ -50,7 +55,6 @@ class DeviceModelResource extends Resource
     {
         return $table
             ->columns([
-
                 Tables\Columns\TextColumn::make('brand.name')
                     ->label(constants::MARCA)
                     ->searchable()
@@ -71,8 +75,7 @@ class DeviceModelResource extends Resource
                 Tables\Actions\Action::make('editar')
                     ->icon('heroicon-o-pencil-square')
                     ->url(fn($record) => url("/dashboard/device-models/{$record->id}/edit"))
-                    ->openUrlInNewTab(false)
-                    ->hidden(PermissionHelper::isNotAdmin()),
+                    ->openUrlInNewTab(false),
             ]);
         ;
     }

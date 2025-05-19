@@ -14,8 +14,6 @@ class EditWorkOrder extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()
-            ->hidden(PermissionHelper::isNotAdmin()),
         ];
     }
 }

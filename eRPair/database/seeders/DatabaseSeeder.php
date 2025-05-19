@@ -18,29 +18,52 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
+        DB::table('globalOptions')->insert([
+            'name' => 'RoCuCode S.L.',
+            'corportate_name' => 'RoCuCode S.L.',
+            'CIF' => 'B12345678',
+            'address' => 'Calle Mayor 45, 3ºB',
+            'postal_code' => '29011',
+            'city' => 'Málaga',
+            'province' => 'Málaga',
+            'country' => 'España',
+            'phone' => '+34 951 123 456',
+            'corporate_email' => 'info@tecnofix.es',
+            'website' => 'https://www.tecnofix.es',
+            'foundation_year' => 2014,
+            'sector' => 'Reparación de dispositivos electrónicos',
+            'short_description' => 'Empresa especializada en reparación exprés de móviles y tablets.',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         $this->command->warn("Comenzando insercciones...");
 
         User::factory()->create([
             'name' => 'Filament Admin',
             'email' => 'admin@admin.com',
             'password' => bcrypt('12345admin'),
+            'active' => true,
         ]);
         User::factory()->create([
             'name' => 'Manager',
             'email' => 'manager@admin.com',
             'password' => bcrypt('12345manager'),
+            'active' => true,
         ]);
 
         User::factory()->create([
             'name' => 'Technician',
             'email' => 'technician@admin.com',
             'password' => bcrypt('12345technician'),
+            'active' => true,
         ]);
 
         User::factory()->create([
             'name' => 'SalesPerson',
             'email' => 'salesperson@admin.com',
             'password' => bcrypt('12345salesperson'),
+            'active' => true,
         ]);
 
         $this->command->info("Usuario creado correctamente.");
@@ -69,7 +92,7 @@ class DatabaseSeeder extends Seeder
             $brandName = strtoupper(trim($data['brand']));
 
             //MODELO EN ARRAY 
-            $modelName = $data['model'];
+            $modelName = strtoupper($data['model']);
 
             //vERIFICA SI EXISTE EL MODELO, SINO LO CREA
             $brand = DB::table('brands')->where('name', $brandName)->first();
@@ -161,7 +184,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('clients')->insert([
             [
-                'document' => '12345678A',
+                'document' => '12345678Z',
                 'name' => 'JUAN',
                 'surname' => 'PÉREZ',
                 'surname2' => 'GARCÍA',
@@ -174,7 +197,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'document' => '87654321B',
+                'document' => '23456789S',
                 'name' => 'MARÍA',
                 'surname' => 'LÓPEZ',
                 'surname2' => null,
@@ -187,7 +210,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'document' => '11223344C',
+                'document' => '87654321X',
                 'name' => 'CARLOS',
                 'surname' => 'MARTÍNEZ',
                 'surname2' => 'FERNÁNDEZ',
@@ -246,25 +269,37 @@ class DatabaseSeeder extends Seeder
 
         DB::table('stores')->insert([
             [
-                'name' => 'PLAZA MAYOR',
-                'address' => 'CALLE REPARACIÓN, 1',
-                'work_order_number' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
+            'name' => 'PLAZA MAYOR',
+            'address' => 'CALLE REPARACIÓN, 1',
+            'prefix' => '+34',
+            'number' => '666 666 664',
+            'email' => 'plazamayor@tecnofix.es',
+            'schedule' => 'Lunes a Viernes 10:00-20:00',
+            'work_order_number' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
             ],
             [
-                'name' => 'POLIGONO SANTA BARBARA',
-                'address' => 'CALLE ENERGÍA, 2',
-                'work_order_number' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
+            'name' => 'POLIGONO SANTA BARBARA',
+            'address' => 'CALLE ENERGÍA, 2',
+            'prefix' => '+34',
+            'number' => '666 666 665',
+            'email' => 'poligonosb@tecnofix.es',
+            'schedule' => 'Lunes a Sábado 10:00-14:00 17:00-21:00',
+            'work_order_number' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
             ],
             [
-                'name' => 'VIALIA',
-                'address' => 'CALLE CARGA, 3',
-                'work_order_number' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
+            'name' => 'VIALIA',
+            'address' => 'CALLE CARGA, 3',
+            'prefix' => '+34',
+            'number' => '666 666 666 ',
+            'email' => 'vialia@tecnofix.es',
+            'schedule' => 'Lunes a Sábado 10:00-22:00',
+            'work_order_number' => 2,
+            'created_at' => now(),
+            'updated_at' => now(),
             ],
         ]);
 
@@ -826,7 +861,102 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info("Todos los items han sido agregados a todas las tiendas correctamente.");
 
+        DB::table('work_orders')->insert([
+            [
+                'work_order_number' => 1,
+                'work_order_number_warranty' => null,
+                'failure' => 'Pantalla rota, no enciende.',
+                'private_comment' => 'Cliente muy exigente.',
+                'comment' => 'Revisar antes de entregar.',
+                'physical_condition' => 'Rayaduras leves en la carcasa.',
+                'humidity' => 'Sin signos de humedad.',
+                'test' => 'No pasa test de encendido.',
+                'is_warranty' => false,
+                'user_id' => 1,
+                'device_id' => 1,
+                'closure_id' => null,
+                'repair_time_id' => 1,
+                'store_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'work_order_number' => 2,
+                'work_order_number_warranty' => 1001,
+                'failure' => 'Batería no carga.',
+                'private_comment' => null,
+                'comment' => 'Cliente solicita presupuesto.',
+                'physical_condition' => 'Buen estado general.',
+                'humidity' => 'No hay humedad.',
+                'test' => 'No carga con ningún cargador.',
+                'is_warranty' => true,
+                'user_id' => 2,
+                'device_id' => 2,
+                'closure_id' => null,
+                'repair_time_id' => 2,
+                'store_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'work_order_number' => 3,
+                'work_order_number_warranty' => null,
+                'failure' => 'No funciona el altavoz.',
+                'private_comment' => 'Posible daño por agua.',
+                'comment' => null,
+                'physical_condition' => 'Oxidación en el conector.',
+                'humidity' => 'Humedad detectada.',
+                'test' => 'Altavoz no emite sonido.',
+                'is_warranty' => false,
+                'user_id' => 3,
+                'device_id' => 3,
+                'closure_id' => null,
+                'repair_time_id' => 3,
+                'store_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'work_order_number' => 4,
+                'work_order_number_warranty' => null,
+                'failure' => 'Problemas con el botón de encendido.',
+                'private_comment' => null,
+                'comment' => 'Cliente necesita reparación urgente.',
+                'physical_condition' => 'Botón flojo.',
+                'humidity' => 'Sin humedad.',
+                'test' => 'Botón no responde.',
+                'is_warranty' => false,
+                'user_id' => 4,
+                'device_id' => 4,
+                'closure_id' => null,
+                'repair_time_id' => 4,
+                'store_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'work_order_number' => 5,
+                'work_order_number_warranty' => null,
+                'failure' => 'Pantalla táctil no responde.',
+                'private_comment' => 'Cliente habitual.',
+                'comment' => null,
+                'physical_condition' => 'Pantalla sin daños visibles.',
+                'humidity' => 'No hay humedad.',
+                'test' => 'No responde al tacto.',
+                'is_warranty' => false,
+                'user_id' => 1,
+                'device_id' => 5,
+                'closure_id' => null,
+                'repair_time_id' => 5,
+                'store_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+        $this->command->info("Órdenes de trabajo insertadas correctamente.");
 
+        
+        
     }
 
 }

@@ -2,16 +2,26 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\ClientResource\RelationManagers\DeviceRelationManager;
 use App\Filament\Resources\DeviceResource\Pages;
 use App\Filament\Resources\DeviceResource\RelationManagers;
 use App\Filament\Resources\DeviceResource\RelationManagers\ItemsRelationManager;
 use App\Filament\Resources\DeviceResource\RelationManagers\WorkOrdersRelationManager;
+use App\Helpers\PermissionHelper;
 use App\Models\Brand;
+use App\Models\Client;
 use App\Models\Device;
 use App\Models\DeviceModel;
 use DB;
 use DragonCode\Support\Facades\Helpers\Boolean;
 use Filament\Forms;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Split;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
@@ -21,66 +31,130 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use constants;
+use Ramsey\Uuid\Provider\Time\FixedTimeProvider;
 
 class DeviceResource extends Resource
 {
     protected static ?string $model = Device::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $label = 'Dispositivo';
+
+    public static ?string $navigationGroup = 'Catálogo';
+    private ?int $brand_id;
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isManager();
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Toggle::make('has_no_serial_or_imei')
-                    ->label('No Serial or IMEI')
-                    ->default(false),
-                Forms\Components\TextInput::make('serial_number')
-                    ->label(constants::SERIAL_NUMBER)
-                    ->nullable(),
-                Forms\Components\TextInput::make('IMEI')
-                    ->label(constants::IMEI)
-                    ->nullable(),
-                Forms\Components\TextInput::make('colour')
-                    ->label(constants::COLOUR)
-                    ->required(),
-                Forms\Components\TextInput::make('unlock_code')
-                    ->label(constants::UNLOCK_CODE)
-                    ->nullable(),
-                    Forms\Components\Select::make('brand_id')
-                    ->label('Marca')
-                    ->options(function () {
-                        return DB::table('brands')->select('*')->orderBy('name','ASC')->pluck('name','id')->toArray();
-                    })
-                    ->reactive()
-                    ->afterStateUpdated(fn (callable $set) => $set('device_model_id', null))
-                    ->required(),
-    
-                Forms\Components\Select::make('device_model_id')
-                    ->label('Modelo')
-                    ->options(function (callable $get) {
-                        $brandId = $get('brand_id');
-                        if (!$brandId) return [];
-    
-                        return DB::table('device_models')->select('*')->where('brand_id', $brandId)->orderBy('name','ASC')->pluck('name','id')->toArray();
-                    })
-                    ->placeholder('Seleccione una Marca')
-                    ->default(function (callable $get) {
-                        $brandId = $get('brand_id');
-                        if (!$brandId) return [];
-                        return DeviceModel::all()->where('brand_id', $brandId )
-                        ->sort()->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\Select::make('client_id')
-                    ->label(constants::CLIENT)
-                    ->relationship('client', 'document')
-                    ->required()
-                    ->placeholder('Documento Cliente')
-                    ->searchable(),
-                    
+                Section::make("Datos del cliente")
+                    ->icon('heroicon-o-user')
+                    ->schema([
+                        Split::make([
+                            Placeholder::make('Documento')
+                                ->content(function (callable $get) {
+                                    $clientId = $get('client_id');
+                                    if (!$clientId) {
+                                        return 'Sin cliente seleccionado';
+                                    }
+                                    $client = Client::find($clientId);
+                                    if (!$client) {
+                                        return 'Cliente no encontrado';
+                                    }
+                                    return "{$client->documentType->name}: {$client->document}";
+                                }),
+
+                            Placeholder::make("Nombre")
+                                ->content(function (callable $get) {
+                                    $clientId = $get('client_id');
+                                    if (!$clientId) {
+                                        return 'Sin cliente seleccionado';
+                                    }
+                                    $client = Client::find($clientId);
+                                    if (!$client) {
+                                        return 'Cliente no encontrado';
+                                    }
+                                    return "{$client->name}";
+                                }),
+                            Placeholder::make("Apellidos")
+                                ->content(function (callable $get) {
+                                    $clientId = $get('client_id');
+                                    if (!$clientId) {
+                                        return 'Sin cliente seleccionado';
+                                    }
+                                    $client = Client::find($clientId);
+                                    if (!$client) {
+                                        return 'Cliente no encontrado';
+                                    }
+                                    $surname2 = $client->surname2 ?? '';
+                                    return "{$client->surname} {$surname2}";
+                                }),
+                            Forms\Components\Select::make('client_id')
+                                ->required()
+                                ->hidden(),
+                        ]),
+                    ])
+                    ->columnSpan('full'),
+
+                Section::make("Datos del dispositivo")
+                    ->icon('heroicon-o-device-phone-mobile')
+                    ->schema([
+                        
+                        Section::make([
+                            Forms\Components\Toggle::make('has_no_serial_or_imei')
+                                ->label('No Serial or IMEI')
+                                ->default(false),
+                            Forms\Components\TextInput::make('serial_number')
+                                ->label(constants::SERIAL_NUMBER)
+                                ->nullable(),
+                            Forms\Components\TextInput::make('IMEI')
+                                ->label(constants::IMEI)
+                                ->nullable()
+                        ]),
+
+                        Split::make([
+                            Section::make()
+                                ->schema([
+                                    Select::make('brand.name.')
+                                        ->label('Marca')
+                                        ->options(fn() => DB::table('brands')->orderBy('name', 'ASC')->pluck('name', 'id')->toArray())
+                                        ->relationship('model.brand', 'name')
+                                        ->reactive()
+                                        ->afterStateUpdated(fn(callable $set) => $set('device_model_id', null))
+                                        ->required(),
+
+                                    Select::make('device_model_id')
+                                        ->relationship('model', 'name')
+                                        ->label('Modelo')
+                                        ->options(function (callable $get) {
+                                            $brandId = $get('brand_id');
+                                            return $brandId
+                                                ? DB::table('device_models')->where('brand_id', $brandId)->orderBy('name', 'ASC')->pluck('name', 'id')->toArray()
+                                                : [];
+                                        })
+                                        ->placeholder('Seleccione una Marca')
+                                        ->required(),
+                                ])
+                                ->columnSpan(1),
+
+                            Section::make()
+                                ->schema([
+                                    TextInput::make('colour')
+                                        ->label(constants::COLOUR)
+                                        ->required(),
+
+                                    TextInput::make('unlock_code')
+                                        ->label(constants::UNLOCK_CODE)
+                                        ->nullable(),
+                                ])
+                                ->columnSpan(1),
+                        ])
+                    ]),
             ]);
     }
 
@@ -88,7 +162,7 @@ class DeviceResource extends Resource
     {
         return $table
             ->columns([
-                
+
                 Tables\Columns\TextColumn::make('model.name')
                     ->label(constants::MODELO)
                     ->sortable()
@@ -130,11 +204,11 @@ class DeviceResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
-                    Tables\Columns\TextColumn::make('created_at')
-                        ->label('Created At')
-                        ->sortable()
-                        ->searchable()
-                        ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([

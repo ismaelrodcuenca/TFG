@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\InvoiceResource\Pages;
 use App\Filament\Resources\InvoiceResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\Invoice;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -17,8 +18,14 @@ class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-currency-euro';
+    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
     protected static ?string $label = 'Facturas';
+    
+    public static ?string $navigationGroup = 'Recursos';
+        public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
 
     public static function form(Form $form): Form
     {

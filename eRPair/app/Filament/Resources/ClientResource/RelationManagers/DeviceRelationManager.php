@@ -3,11 +3,17 @@
 namespace App\Filament\Resources\ClientResource\RelationManagers;
 
 use App\Filament\Resources\DeviceResource\Pages\CreateDevice;
+use App\Models\Client;
 use Closure;
 use constants;
+use DB;
 use Filament\Actions\EditAction;
 use Filament\Actions\Modal\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Split;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -26,67 +32,163 @@ class DeviceRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        /**
-         * Formulario para creacion de dispositivo, con condiciones para determinados campos en funcion de lo que esté relleno o activo.
-         */
         return $form
-
             ->schema([
-                Forms\Components\Toggle::make('has_no_serial_or_imei')
-                    ->label('No Serial or IMEI')
-                    ->default(false)
-                    ->reactive(),
-                Forms\Components\TextInput::make('serial_number')
-                    ->label(constants::SERIAL_NUMBER)
-                    ->reactive()
-                    ->required(fn(Get $get) => !$get('IMEI') && !$get('has_no_serial_or_imei'))
-                    ->disabled(fn(Get $get) => $get('has_no_serial_or_imei'))
-                    ->minLength(6)
-                    ->dehydrated(fn(Get $get) => !$get('has_no_serial_or_imei')),
-                Forms\Components\TextInput::make('IMEI')
-                    ->label(constants::IMEI)
-                    ->reactive()
-                    ->required(fn(Get $get) => !$get('serial_number') && !$get('has_no_serial_or_imei'))
-                    ->disabled(fn(Get $get) => $get('has_no_serial_or_imei'))
-                    ->minLength(15)
-                    ->maxLength(15)
-                    ->dehydrated(fn(Get $get) => !$get('has_no_serial_or_imei')),
-                Forms\Components\TextInput::make('colour')
-                    ->label(constants::COLOUR)
-                    ->required(),
-                Forms\Components\TextInput::make('unlock_code')
-                    ->label(constants::UNLOCK_CODE)
-                    ->nullable(),
-                Forms\Components\Select::make('brand_id')
-                    ->label('Marca')
-                    ->options(function () {
-                        return \App\Models\Brand::all()->pluck('name', 'id');
-                    })
-                    ->reactive()
-                    ->afterStateUpdated(fn(callable $set) => $set('device_model_id', null))
-                    ->required()
-                    ->placeholder(function () {
-                        if ($this->device->mode->id) {
-                            return $this->device->mode->id;
-                        }
-                    }),
+                Section::make("Datos del cliente")
+                    ->icon('heroicon-o-user')
+                    ->schema([
+                        Split::make([
+                            Placeholder::make('Documento')
+                                ->content(function (callable $get) {
+                                    $clientId = $get('client_id');
+                                    if (!$clientId) {
+                                        return 'Sin cliente seleccionado';
+                                    }
+                                    $client = Client::find($clientId);
+                                    if (!$client) {
+                                        return 'Cliente no encontrado';
+                                    }
+                                    return "{$client->documentType->name}: {$client->document}";
+                                }),
 
-                Forms\Components\Select::make('device_model_id')
-                    ->label('Modelo')
-                    ->options(function (callable $get) {
-                        $brandId = $get('brand_id');
-                        if (!$brandId)
-                            return [];
+                            Placeholder::make("Nombre")
+                                ->content(function (callable $get) {
+                                    $clientId = $get('client_id');
+                                    if (!$clientId) {
+                                        return 'Sin cliente seleccionado';
+                                    }
+                                    $client = Client::find($clientId);
+                                    if (!$client) {
+                                        return 'Cliente no encontrado';
+                                    }
+                                    return "{$client->name}";
+                                }),
+                            Placeholder::make("Apellidos")
+                                ->content(function (callable $get) {
+                                    $clientId = $get('client_id');
+                                    if (!$clientId) {
+                                        return 'Sin cliente seleccionado';
+                                    }
+                                    $client = Client::find($clientId);
+                                    if (!$client) {
+                                        return 'Cliente no encontrado';
+                                    }
+                                    $surname2 = $client->surname2 ?? '';
+                                    return "{$client->surname} {$surname2}";
+                                }),
+                            Forms\Components\Select::make('client_id')
+                                ->required()
+                                ->hidden(),
+                        ]),
+                    ])
+                    ->columnSpan('full'),
 
-                        return \App\Models\DeviceModel::where('brand_id', $brandId)->pluck('name', 'id');
-                    })
-                    ->required(),
-                Forms\Components\Select::make('client_id')
-                    ->default(fn($livewire) => $livewire->ownerRecord->id)
-                    ->hidden()
-                    ->disabled(),
-            ])
-            ->action([
+                Section::make("Datos del dispositivo")
+                    ->icon('heroicon-o-device-phone-mobile')
+                    ->schema([
+
+                        /**
+                         * Controla si el Toggle es activo. Si este está activl, ni IMEI ni Serial está hbilitado ni se envian a la BBDD. En caso de se falso, estos son required segun si algo de estos están vacios
+                         */
+                        Section::make([
+                            Forms\Components\Toggle::make('has_no_serial_or_imei')
+                                ->label('No Serial or IMEI')
+                                ->default(false)
+                                ->reactive(),
+                            Forms\Components\TextInput::make('serial_number')
+                                ->label(constants::SERIAL_NUMBER)
+                                ->nullable(fn(callable $get) => $get('has_no_serial_or_imei') === true)
+                                ->reactive()
+                                ->required(
+                                    function (callable $get) {
+                                        $hasNoSerialOrImei = $get('has_no_serial_or_imei');
+                                        $imeiEmpty = empty($get('IMEI'));
+                                        if ($hasNoSerialOrImei) {
+                                            return false;
+                                        }
+                                        return $imeiEmpty;
+                                    }
+                                )
+                                ->dehydrated(
+                                    fn(callable $get) => !$get('has_no_serial_or_imei') === true
+                                )
+                                ->disabled(fn(callable $get) => $get('has_no_serial_or_imei') === true),
+                            Forms\Components\TextInput::make('IMEI')
+                                ->label(constants::IMEI)
+                                ->nullable(fn(callable $get) => $get('has_no_serial_or_imei') === true)
+                                ->required(
+                                    function (callable $get) {
+                                        $hasNoSerialOrImei = $get('has_no_serial_or_imei');
+                                        $serialEmpty = empty($get('serial_number'));
+                                        if ($hasNoSerialOrImei) {
+                                            return false;
+                                        }
+                                        return $serialEmpty;
+                                    }
+                                )
+                                ->reactive()
+                                ->dehydrated(
+                                    fn(callable $get) => !$get('has_no_serial_or_imei') === true
+                                )
+                                ->disabled(fn(callable $get) => $get('has_no_serial_or_imei') === true)
+                                ->minLength(function (callable $get) {
+                                    if ($get('has_no_serial_or_imei')) {
+                                        return 0;
+                                    }
+                                    return 15;
+                                })
+                                ->maxLength(function (callable $get) {
+                                    if ($get('has_no_serial_or_imei')) {
+                                        return 0;
+                                    }
+                                    return 15;
+                                })
+                        ]),
+
+                        Split::make([
+                            Section::make()
+                                ->schema([
+                                    Select::make('brand_id')
+                                        ->label('Marca')
+                                        ->options(fn() => DB::table('brands')->orderBy('name', 'ASC')->pluck('name', 'id')->toArray())
+                                        ->reactive()
+                                        ->afterStateUpdated(fn(callable $set) => $set('device_model_id', null))
+                                        ->required(),
+
+                                    Select::make('device_model_id')
+                                        ->label('Modelo')
+                                        ->options(function (callable $get) {
+                                            $brandId = $get('brand_id');
+                                            return $brandId
+                                                ? DB::table('device_models')->where('brand_id', $brandId)->orderBy('name', 'ASC')->pluck('name', 'id')->toArray()
+                                                : [];
+                                        })
+                                        ->placeholder('Seleccione una Marca')
+                                        ->required(),
+                                ])
+                                ->columnSpan(1), // Opcional si estás dentro de un grid
+
+                            Section::make()
+                                ->schema([
+                                    TextInput::make('colour')
+                                        ->label(constants::COLOUR)
+                                        ->required(),
+
+                                    TextInput::make('unlock_code')
+                                        ->label(constants::UNLOCK_CODE)
+                                        ->nullable(),
+                                ])
+                                ->columnSpan(1),
+                        ])
+
+
+
+                    ]),
+
+
+
+
+
             ]);
     }
 

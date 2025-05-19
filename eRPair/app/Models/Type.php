@@ -28,6 +28,10 @@ class Type extends Model
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
     protected $fillable = ['name'];
+     public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
 
     public function items(): HasMany
     {

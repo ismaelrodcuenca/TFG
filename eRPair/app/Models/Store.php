@@ -34,6 +34,15 @@ class Store extends Model
         'work_order_number'
     ];
 
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
+
+    public function setAddressAttribute($value)
+    {
+        $this->attributes['address'] = strtoupper($value);
+    }
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'store_user');

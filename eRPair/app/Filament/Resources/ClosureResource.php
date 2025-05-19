@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClosureResource\Pages;
 use App\Filament\Resources\ClosureResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -19,6 +20,13 @@ class ClosureResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $label = 'Cierres';
+    protected static ?string $navigationGroup = 'Taller';
+    
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::developMode();
+    }
+
 
     public static function form(Form $form): Form
     {

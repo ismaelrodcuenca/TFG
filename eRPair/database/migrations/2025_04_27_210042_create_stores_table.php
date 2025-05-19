@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('address');
+            $table->string('address');            
+            $table->string('prefix');
+            $table->string('number');
+            $table->string('email');
+            $table->string('schedule');
             $table->integer('work_order_number')->default(1);
             $table->timestamps();
         });

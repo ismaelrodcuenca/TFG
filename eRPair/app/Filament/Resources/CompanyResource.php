@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CompanyResource\Pages;
 use App\Filament\Resources\CompanyResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\Company;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -19,6 +20,13 @@ class CompanyResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
     protected static ?string $label = 'Empresas';
+    
+    public static ?string $navigationGroup = 'Recursos';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
 
     public static function form(Form $form): Form
     {

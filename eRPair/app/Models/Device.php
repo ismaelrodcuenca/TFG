@@ -28,7 +28,14 @@ class Device extends Model
      * 
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
-    protected $fillable = ['has_no_serial_or_imei', 'serial_number', 'IMEI', 'colour', 'unlock_code', 'device_model_id', 'client_id'];
+    protected $fillable = [
+        'has_no_serial_or_imei', 
+        'serial_number', 
+        'IMEI', 
+        'colour', 
+        'unlock_code', 
+        'device_model_id', 
+        'client_id'];
 
     /**
      * Propiedad protegida que define los atributos que deben ser convertidos a tipos específicos.
@@ -47,13 +54,6 @@ class Device extends Model
     {
         return $this->belongsTo(DeviceModel::class, 'device_model_id');
     }
-
-
-    public function brand(): HasOneThrough
-    {
-        return $this->hasOneThrough(Brand::class, DeviceModel::class, 'brand_id', 'device_model_id');
-    }
-
     public function workOrders(): HasMany
     {
         return $this->hasMany(WorkOrder::class);

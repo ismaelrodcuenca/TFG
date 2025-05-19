@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StoreResource\Pages;
 use App\Filament\Resources\StoreResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -19,6 +20,13 @@ class StoreResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $label = 'Tiendas';
+
+    public static ?string $navigationGroup = 'Recursos';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
 
     public static function form(Form $form): Form
     {
@@ -36,14 +44,14 @@ class StoreResource extends Resource
     {
         return $table
             ->columns([
-            Tables\Columns\TextColumn::make('name')
-                ->label('Nombre')
-                ->searchable()
-                ->sortable(),
-            Tables\Columns\TextColumn::make('address')
-                ->label('Dirección')
-                ->searchable()
-                ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->label('Dirección')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

@@ -28,15 +28,54 @@ class Client extends Model
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
     protected $fillable = [
-        'document', 
-        'name', 
-        'surname', 
-        'surname2', 
-        'phone_number', 
-        'phone_number_2', 
-        'postal_code', 
+        'document',
+        'name',
+        'surname',
+        'surname2',
+        'phone_number',
+        'phone_number_2',
+        'postal_code',
         'address',
-        'document_type_id'];
+        'document_type_id'
+    ];
+
+    //FUNCIONES STRTOUPPER
+    public function setNameAttribute($value)
+    {
+        if (!is_null($value)) {
+            $this->attributes['name'] = strtoupper($value);
+        }
+    }
+
+    public function setSurnameAttribute($value)
+    {
+        if (!is_null($value)) {
+            $this->attributes['surname'] = strtoupper($value);
+        }
+    }
+
+    public function setSurname2Attribute($value)
+    {
+        if (!is_null($value)) {
+            $this->attributes['surname2'] = strtoupper($value);
+        }
+    }
+
+    public function setAddressAttribute($value)
+    {
+        if (!is_null($value)) {
+            $this->attributes['address'] = strtoupper($value);
+        }
+    }
+
+    public function setDocumentAttribute($value)
+    {
+        if (!is_null($value)) {
+            $this->attributes['document'] = strtoupper($value);
+        }
+    }
+
+    //RELACIONES
 
     public function documentType(): BelongsTo
     {

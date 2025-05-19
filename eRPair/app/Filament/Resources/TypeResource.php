@@ -21,7 +21,7 @@ use Filament\Forms\Components\TextInput;
 class TypeResource extends Resource
 {
     protected static ?string $model = Type::class;
-    public static ?string $navigationGroup = 'Gestiones ERP';
+    public static ?string $navigationGroup = 'Miscelanea';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $label = 'Tipos de Items';

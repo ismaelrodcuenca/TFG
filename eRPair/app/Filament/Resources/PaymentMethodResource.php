@@ -26,7 +26,7 @@ class PaymentMethodResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
     protected static ?string $label = 'Métodos de Pago';
 
-    public static ?string $navigationGroup = 'Gestiones ERP';
+    public static ?string $navigationGroup = 'Miscelanea';
 
     public static function shouldRegisterNavigation(): bool
     {

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ItemResource\Pages;
 use App\Filament\Resources\ItemResource\RelationManagers\DeviceModelsRelationManager;
 use App\Filament\Resources\ItemResource\RelationManagers\StoresRelationManager;
+use App\Helpers\PermissionHelper;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\DeviceModel;
@@ -26,6 +27,10 @@ class ItemResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-battery-0';
     public static ?string $navigationGroup = 'Catálogo';
+        public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isSalesperson();
+    }
 
     public static function form(Form $form): Form
     {

@@ -30,7 +30,13 @@ class Item extends Model
      * 
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
-    protected $fillable = ['name', 'cost', 'price', 'distributor', 'type_id', 'category_id'];
+    protected $fillable = [
+        'name', 
+        'cost', 
+        'price', 
+        'distributor', 
+        'type_id', 
+        'category_id'];
 
     protected static function boot()
     {

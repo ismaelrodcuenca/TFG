@@ -36,7 +36,6 @@ class Brand extends Model
 
     public function setNameAttribute($value)
     {
-        // Asignar el valor a mayúsculas antes de guardarlo en la base de datos
         $this->attributes['name'] = strtoupper($value);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Status extends Model
@@ -28,8 +29,8 @@ class Status extends Model
      */
     protected $fillable = ['name'];
 
-    public function workOrders(): HasMany
+    public function workOrders(): BelongsToMany
     {
-        return $this->hasMany(WorkOrder::class);
+        return $this->belongsToMany(WorkOrder::class);
     }
 }

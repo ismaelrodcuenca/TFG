@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CashDeskResource\Pages;
 use App\Filament\Resources\CashDeskResource\RelationManagers;
+use App\Helpers\PermissionHelper;
 use App\Models\CashDesk;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -15,6 +16,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 class CashDeskResource extends Resource
 {
@@ -22,7 +24,10 @@ class CashDeskResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
     protected static ?string $label = 'Cajas';
-
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isSalesperson();
+    }
     public static function form(Form $form): Form
     {
         return $form

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Filament\Resources\ClientResource\RelationManagers\InvoicesRelationManager;
+use App\Helpers\PermissionHelper;
 use App\Models\Client;
 use Closure;
 use Filament\Forms;
@@ -22,7 +23,11 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $label = 'Cliente';
+    protected static ?string $label = 'Cliente';   
+        public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isSalesperson();
+    } 
     public static function getGloballySearchableAttributes(): array
     {
         return [
@@ -34,9 +39,9 @@ class ClientResource extends Resource
     }
     public static function getGlobalSearchResultDetails(Model $record): array
     {
-        return[
+        return [
             'Documento' => $record->document,
-            'Nombre' => ($record->name." ". $record->surname),
+            'Nombre' => ($record->name . " " . $record->surname),
         ];
     }
 
@@ -52,42 +57,33 @@ class ClientResource extends Resource
                     ->label('Documento')
                     ->required()
                     ->unique()
-                    ->rules([
-                        fn(): Closure => function (string $attribute, $value, Closure $fail) {
-                            $documentTypeId = request()->input('document_type_id') ?? null;
+                    ->rule(function (callable $get) {
+                        return function (string $attribute, mixed $value, Closure $fail) use ($get) {
+                            $docTypeId = $get('document_type_id');
+                            $docType = \App\Models\DocumentType::find($docTypeId)?->name;
 
-                            if ($documentTypeId === 1) {
-                                $value = strtoupper($value);
-                                if (!preg_match('/^[0-9]{8}[A-Z]$/', $value)) {
-                                    return $fail("El documento no tiene el formato correcto.");
-                                }
-                                if (strlen($value) > 9) {
-                                    return $fail("El documento no puede tener más de 9 caracteres.");
-                                }
+                            $type = strtoupper($docType ?? '');
 
-                                $numbers = substr($value, 0, 8);
-                                $letter = substr($value, -1);
-                                $letters = 'TRWAGMYFPDXBNJZSQVHLCKE';
-
-                                if ($letter !== $letters[$numbers % 23]) {
-                                    return $fail("El documento no es válido.");
-                                }
-                            }if ($documentTypeId === 2) {
-                                if (!preg_match('/^[XYZ][0-9]{7}[A-Z]$/', $value)) {
-                                    return $fail("El NIE no tiene el formato correcto.");
-                                }
-
-                                $prefix = ['X' => '0', 'Y' => '1', 'Z' => '2'][substr($value, 0, 1)];
-                                $numbers = $prefix . substr($value, 1, 7);
-                                $letter = substr($value, -1);
-                                $letters = 'TRWAGMYFPDXBNJZSQVHLCKE';
-
-                                if ($letter !== $letters[$numbers % 23]) {
-                                    return $fail("El NIE no es válido.");
-                                }
+                            if (!in_array($type, ['DNI', 'NIE'])) {
+                                return; // No aplicamos validación si no es DNI o NIE
                             }
-                        }
-                    ]),
+
+                            $value = strtoupper($value);
+                            if (!preg_match('/^[XYZ]?\d{5,8}[A-Z]$/', $value)) {
+                                $fail('El formato del documento no es válido.');
+                                return;
+                            }
+
+                            // Reemplazo para NIE si aplica
+                            $number = str_replace(['X', 'Y', 'Z'], [0, 1, 2], substr($value, 0, -1));
+                            $letter = substr($value, -1);
+                            $expected = substr('TRWAGMYFPDXBNJZSQVHLCKET', $number % 23, 1);
+
+                            if ($letter !== $expected) {
+                                $fail('La letra del documento no corresponde al número.');
+                            }
+                        };
+                    }),
                 Forms\Components\TextInput::make('name')
                     ->label('Nombre')
                     ->required(),
@@ -150,17 +146,17 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('phone_number_2')
                     ->label('Telefono 2')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault:true)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('postal_code')
                     ->label('Código postal')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault:true)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->label('Dirección')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault:true)
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
             ])
             ->filters([

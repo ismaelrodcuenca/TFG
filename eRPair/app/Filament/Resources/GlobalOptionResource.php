@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DeliveryResource\Pages;
-use App\Filament\Resources\DeliveryResource\RelationManagers;
-use App\Models\Delivery;
+use App\Filament\Resources\GlobalOptionResource\Pages;
+use App\Filament\Resources\GlobalOptionResource\RelationManagers;
+use App\Helpers\PermissionHelper;
+use App\Models\GlobalOption;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,17 +14,18 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class DeliveryResource extends Resource
+class GlobalOptionResource extends Resource
 {
-    protected static ?string $model = Delivery::class;
+    protected static ?string $model = GlobalOption::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-hand-raised';
-    protected static ?string $label = 'Entregas';
+    protected static ?string $label = 'Datos Fiscales';
+    protected static ?string $navigationGroup = 'Recursos';
 
     public static function shouldRegisterNavigation(): bool
     {
-        return false;
+        return PermissionHelper::isAdmin();
     }
+    protected static ?string $navigationIcon = 'heroicon-o-document-currency-euro';
 
     public static function form(Form $form): Form
     {
@@ -62,9 +64,9 @@ class DeliveryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDeliveries::route('/'),
-            'create' => Pages\CreateDelivery::route('/create'),
-            'edit' => Pages\EditDelivery::route('/{record}/edit'),
+            'index' => Pages\ListGlobalOptions::route('/'),
+            'create' => Pages\CreateGlobalOption::route('/create'),
+            'edit' => Pages\EditGlobalOption::route('/{record}/edit'),
         ];
     }
 }

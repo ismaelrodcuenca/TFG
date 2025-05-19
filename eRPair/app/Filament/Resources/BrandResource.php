@@ -29,9 +29,11 @@ class BrandResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
     protected static ?string $label = constants::MARCAS;
 
-    public $translatable = ['name'];
     public static ?string $navigationGroup = 'Catálogo';
-
+    public static function shouldRegisterNavigation(): bool
+    {
+        return PermissionHelper::isSalesperson();
+    }
     public static function form(Form $form): Form
     {
         return $form

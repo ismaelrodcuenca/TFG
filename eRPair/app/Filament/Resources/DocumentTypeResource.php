@@ -17,7 +17,7 @@ class DocumentTypeResource extends Resource
 {
     protected static ?string $model = DocumentType::class;
     protected static ?string $navigationIcon = 'heroicon-o-identification';
-    public static ?string $navigationGroup = 'Gestiones ERP';
+    public static ?string $navigationGroup = 'Miscelanea';
     protected static ?string $label = 'Tipo De Documento';
 
     public static function shouldRegisterNavigation(): bool
