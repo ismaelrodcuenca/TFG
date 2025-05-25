@@ -29,7 +29,7 @@ class StoresRelationManager extends RelationManager
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255)
-                    ->disabled(PermissionHelper::isNotAdmin()),
+                    ->disabled(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric()

@@ -40,7 +40,7 @@ class DeviceRelationManager extends RelationManager
                         Split::make([
                             Placeholder::make('Documento')
                                 ->content(function (callable $get) {
-                                    $clientId = $get('client_id');
+                                    $clientId = $get('client_id') ?? $this->getOwnerRecord()?->id;
                                     if (!$clientId) {
                                         return 'Sin cliente seleccionado';
                                     }
@@ -48,12 +48,14 @@ class DeviceRelationManager extends RelationManager
                                     if (!$client) {
                                         return 'Cliente no encontrado';
                                     }
-                                    return "{$client->documentType->name}: {$client->document}";
+                                    $documentTypeName = $client->documentType ? $client->documentType->name : 'Tipo de documento desconocido';
+                                    return "{$documentTypeName}: {$client->document}";
                                 }),
 
                             Placeholder::make("Nombre")
                                 ->content(function (callable $get) {
-                                    $clientId = $get('client_id');
+                                    
+                                    $clientId = $get('client_id') ?? $this->getOwnerRecord()?->id;
                                     if (!$clientId) {
                                         return 'Sin cliente seleccionado';
                                     }
@@ -65,7 +67,7 @@ class DeviceRelationManager extends RelationManager
                                 }),
                             Placeholder::make("Apellidos")
                                 ->content(function (callable $get) {
-                                    $clientId = $get('client_id');
+                                    $clientId = $get('client_id') ?? $this->getOwnerRecord()?->id;
                                     if (!$clientId) {
                                         return 'Sin cliente seleccionado';
                                     }
@@ -86,10 +88,6 @@ class DeviceRelationManager extends RelationManager
                 Section::make("Datos del dispositivo")
                     ->icon('heroicon-o-device-phone-mobile')
                     ->schema([
-
-                        /**
-                         * Controla si el Toggle es activo. Si este está activl, ni IMEI ni Serial está hbilitado ni se envian a la BBDD. En caso de se falso, estos son required segun si algo de estos están vacios
-                         */
                         Section::make([
                             Forms\Components\Toggle::make('has_no_serial_or_imei')
                                 ->label('No Serial or IMEI')
@@ -166,7 +164,7 @@ class DeviceRelationManager extends RelationManager
                                         ->placeholder('Seleccione una Marca')
                                         ->required(),
                                 ])
-                                ->columnSpan(1), // Opcional si estás dentro de un grid
+                                ->columnSpan(1), 
 
                             Section::make()
                                 ->schema([

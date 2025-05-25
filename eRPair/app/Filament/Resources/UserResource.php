@@ -34,7 +34,7 @@ class UserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return PermissionHelper::hasRole();
+        return PermissionHelper::isAdmin();
     }
 
     public static function getEloquentQuery(): Builder
@@ -66,6 +66,7 @@ class UserResource extends Resource
                     ->searchable(),
             ])
             ->filters([
+
             ])
             ->actions([
                 Action::make("Desactivar")

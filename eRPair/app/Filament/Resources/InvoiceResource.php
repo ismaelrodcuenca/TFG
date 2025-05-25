@@ -51,7 +51,14 @@ class InvoiceResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->query(function () {
+                if (PermissionHelper::isAdmin()) {
+                    return Invoice::query();
+                };
+                return Invoice::query()
+                ->where('store_id',session('store_id'));
+            });
     }
 
     public static function getRelations(): array

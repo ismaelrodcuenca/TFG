@@ -31,22 +31,32 @@ class Item extends Model
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
     protected $fillable = [
-        'name', 
-        'cost', 
-        'price', 
-        'distributor', 
-        'type_id', 
-        'category_id'];
+        'name',
+        'cost',
+        'price',
+        'distributor',
+        'type_id',
+        'category_id'
+    ];
 
     protected static function boot()
     {
         parent::boot();
 
         static::created(function ($item) {
-            $stores = Store::all();
-            foreach ($stores as $store) {
-                $item->stores()->attach($store->id, ['quantity' => 0]);
+            //Si campos link_item activo linckea el item creado a al modelo del record que venga
+            if ($item->link_item_device_model) {
+                $deviceModelId = request()->input('device_model_id');
+                if ($deviceModelId) {
+                    $item->deviceModels()->syncWithoutDetaching([$deviceModelId]);
+                }
             }
+            //Agrega a todas las tiendas al item creado
+            $stores = Store::all();
+                foreach ($stores as $store) {
+                    $item->stores()->attach($store->id, ['quantity' => 0]);
+                }
+
         });
     }
     public function type(): BelongsTo

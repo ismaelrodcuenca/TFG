@@ -881,7 +881,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'work_order_number' => 2,
+                'work_order_number' => 1,
                 'work_order_number_warranty' => 1001,
                 'failure' => 'Batería no carga.',
                 'private_comment' => null,
@@ -899,7 +899,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'work_order_number' => 3,
+                'work_order_number' => 1,
                 'work_order_number_warranty' => null,
                 'failure' => 'No funciona el altavoz.',
                 'private_comment' => 'Posible daño por agua.',
@@ -917,7 +917,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'work_order_number' => 4,
+                'work_order_number' => 2,
                 'work_order_number_warranty' => null,
                 'failure' => 'Problemas con el botón de encendido.',
                 'private_comment' => null,
@@ -935,7 +935,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'work_order_number' => 5,
+                'work_order_number' => 2,
                 'work_order_number_warranty' => null,
                 'failure' => 'Pantalla táctil no responde.',
                 'private_comment' => 'Cliente habitual.',
@@ -953,7 +953,20 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
         ]);
-        $this->command->info("Órdenes de trabajo insertadas correctamente.");
+
+        $workOrders = DB::table('work_orders')->get();
+
+        foreach ($workOrders as $workOrder) {
+            DB::table('status_work_order')->insert([
+                'work_order_id' => $workOrder->id,
+                'user_id' => $workOrder->user_id,
+                'status_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $this->command->info("Órdenes de trabajo y status insertados correctamente.");
 
         
         

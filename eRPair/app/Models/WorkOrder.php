@@ -41,6 +41,7 @@ class WorkOrder extends Model
         'test',
         'is_warranty',
         'user_id',
+        'device_id',
         'store_id',
         'deliverer_id',
         'closure_id',
@@ -66,7 +67,7 @@ class WorkOrder extends Model
         });
 
         static::created(function ($workOrder) {
-            DB::table('status_work_orders')->insert([
+            DB::table('status_work_order')->insert([
             'work_order_id' => $workOrder->id,
             'status_id' => Status::where('name', 'pendiente')->value('id'),
             'user_id' => auth()->user()->id,
@@ -79,7 +80,7 @@ class WorkOrder extends Model
 
     public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Item::class)->withPivot('modified_amount');
+        return $this->belongsToMany(Item::class, 'item_work_order')->withPivot('modified_amount', 'item_work_order_id');
     }
 
     public function invoices(): HasMany

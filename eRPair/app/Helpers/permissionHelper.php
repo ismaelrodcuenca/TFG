@@ -11,7 +11,7 @@ class PermissionHelper
 
     public static function developMode(): bool
     {
-        return true;
+        return false;
     }
     public static function actualRol(): int
     {
@@ -20,7 +20,7 @@ class PermissionHelper
 
     public static function hasRole(): bool
     {
-        return session('rol_id') != 0;
+        return !session('rol_id') != 0;
     }
     /**
      * Check if the current user has administrative privileges.
@@ -137,9 +137,25 @@ class PermissionHelper
         return !self::isSomethingElse($else);
     }
 
+    
     /**
-     * Checks if the current user has a valid role.
-     *
-     * @return bool Returns false if there is no role, true otherwise.
+     * Checks if the current user is not allowed to access a record outside of their store.
+     * This method is used to restrict access to records based on the user's store association.
+     * @param mixed $record The record to check against the user's store.
+     * @return bool Returns true if the user is not allowed to access the record outside of their store, false otherwise.
      */
+     public static function NotAvailableOutsideStore($record): bool
+     {
+        if(self::isAdmin()){
+            return false;
+        }
+        $storeID = $record->store->id ?? null;
+        if(!$storeID){
+            $storeID = $record->getParentRecord()->store->id;
+        }
+        if(session('store_id') == $storeID){
+            return false;
+        }
+        return true;
+     }
 }

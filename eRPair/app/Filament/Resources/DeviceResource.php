@@ -43,6 +43,8 @@ class DeviceResource extends Resource
 
     public static ?string $navigationGroup = 'Catálogo';
     private ?int $brand_id;
+
+    
     public static function shouldRegisterNavigation(): bool
     {
         return PermissionHelper::isManager();
@@ -104,7 +106,7 @@ class DeviceResource extends Resource
                 Section::make("Datos del dispositivo")
                     ->icon('heroicon-o-device-phone-mobile')
                     ->schema([
-                        
+
                         Section::make([
                             Forms\Components\Toggle::make('has_no_serial_or_imei')
                                 ->label('No Serial or IMEI')
@@ -118,29 +120,36 @@ class DeviceResource extends Resource
                         ]),
 
                         Split::make([
-                            Section::make()
+                            Section::make('')
                                 ->schema([
-                                    Select::make('brand.name.')
+                                    Select::make('brand_filter')
                                         ->label('Marca')
-                                        ->options(fn() => DB::table('brands')->orderBy('name', 'ASC')->pluck('name', 'id')->toArray())
-                                        ->relationship('model.brand', 'name')
+                                        ->options(fn() => Brand::orderBy('name')->pluck('name', 'id'))
                                         ->reactive()
+                                        ->afterStateHydrated(function (callable $set, $record) {
+                                            $model = $record->model;
+                                            if ($model && $model->brand_id) {
+                                                $set('brand_filter', $model->brand_id);
+                                            }
+                                        })
                                         ->afterStateUpdated(fn(callable $set) => $set('device_model_id', null))
                                         ->required(),
 
                                     Select::make('device_model_id')
-                                        ->relationship('model', 'name')
                                         ->label('Modelo')
                                         ->options(function (callable $get) {
-                                            $brandId = $get('brand_id');
+                                            $brandId = $get('brand_filter');
                                             return $brandId
-                                                ? DB::table('device_models')->where('brand_id', $brandId)->orderBy('name', 'ASC')->pluck('name', 'id')->toArray()
+                                                ? DeviceModel::where('brand_id', $brandId)
+                                                    ->orderBy('name')
+                                                    ->pluck('name', 'id')
                                                 : [];
                                         })
-                                        ->placeholder('Seleccione una Marca')
-                                        ->required(),
+                                        ->searchable()
+                                        ->required()
+                                        ->placeholder('Seleccione una marca primero'),
                                 ])
-                                ->columnSpan(1),
+                            ,
 
                             Section::make()
                                 ->schema([
@@ -163,13 +172,13 @@ class DeviceResource extends Resource
         return $table
             ->columns([
 
-                Tables\Columns\TextColumn::make('model.name')
-                    ->label(constants::MODELO)
+                Tables\Columns\TextColumn::make('model.brand.name')
+                    ->label('Brand')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('model.brand.name')
-                    ->label('Brand')
+                Tables\Columns\TextColumn::make('model.name')
+                    ->label(constants::MODELO)
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
@@ -212,7 +221,7 @@ class DeviceResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+               
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
