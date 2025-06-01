@@ -30,9 +30,9 @@ class Delivery extends Model
      */
     protected $fillable = ['user_id'];
 
-    public function workOrder(): HasOne
+    public function workOrder(): BelongsTo
     {
-        return $this->hasOne(WorkOrder::class);
+        return $this->belongsTo(WorkOrder::class);
     }
 
     public function user(): BelongsTo

@@ -17,8 +17,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->command->info("Comenzando insercciones...");
 
-        DB::table('globalOptions')->insert([
+        $this->command->warn("Agregando el propietario de la empresa...");
+
+        DB::table('owner')->insert([
             'name' => 'RoCuCode S.L.',
             'corportate_name' => 'RoCuCode S.L.',
             'CIF' => 'B12345678',
@@ -36,8 +39,9 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        $this->command->info("Propietario: OK");
 
-        $this->command->warn("Comenzando insercciones...");
+        $this->command->warn("Agregando usuario...");
 
         User::factory()->create([
             'name' => 'Filament Admin',
@@ -45,28 +49,30 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('12345admin'),
             'active' => true,
         ]);
+
         User::factory()->create([
-            'name' => 'Manager',
+            'name' => 'Salesman User',
+            'email' => 'salesman@admin.com',
+            'password' => bcrypt('12345salesman'),
+            'active' => true,
+        ]);
+        User::factory()->create([
+            'name' => 'Manager User',
             'email' => 'manager@admin.com',
             'password' => bcrypt('12345manager'),
             'active' => true,
         ]);
-
         User::factory()->create([
-            'name' => 'Technician',
+            'name' => 'Technician User',
             'email' => 'technician@admin.com',
             'password' => bcrypt('12345technician'),
             'active' => true,
         ]);
+        
+        $this->command->info("Usuario: OK");
 
-        User::factory()->create([
-            'name' => 'SalesPerson',
-            'email' => 'salesperson@admin.com',
-            'password' => bcrypt('12345salesperson'),
-            'active' => true,
-        ]);
+        $this->command->warn("Agregando el marcas y modelos...");
 
-        $this->command->info("Usuario creado correctamente.");
 
         $path = database_path('seeders\data\import.csv');
 
@@ -111,15 +117,17 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        $this->command->info("Modelos de dispositivos importados correctamente.");
+        $this->command->info("Marcas:OK");
+        $this->command->info("Modelos:OK");
+
+        $this->command->warn("Agregando impuestos, métodos de pago, tipos de documentos, estados, roles, tipos de productos y categorías...");
 
         DB::table('taxes')->insert([
             ['name' => 'IVA', 'percentage' => 10],
             ['name' => 'IVA', 'percentage' => 21],
             ['name' => 'SIN IMPUESTOS', 'percentage' => 0],
         ]);
-
-        $this->command->info("Impuestos insertados correctamente.");
+        $this->command->info("Impuestos: OK");
 
         DB::table('payment_methods')->insert([
             ['name' => 'TARJETA'],
@@ -127,7 +135,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'TRANSFERENCIA'],
         ]);
 
-        $this->command->info("Metodos de pago insertados correctamente.");
+        $this->command->info("Metodos de pago: OK");
 
         DB::table('document_types')->insert([
             ['name' => 'DNI'],
@@ -136,7 +144,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'OTRO'],
         ]);
 
-        $this->command->info("Tipos de Documentos insertados correctamente.");
+        $this->command->info("Tipo de Documento: OK");
 
         DB::table('statuses')->insert([
             ['name' => 'PENDIENTE'],
@@ -144,10 +152,14 @@ class DatabaseSeeder extends Seeder
             ['name' => 'COMPLETADO'],
             ['name' => 'FACTURADO'],
             ['name' => 'CANCELADO'],
+            ['name' => 'EN REPARACIÓN'],
+            ['name' => 'DEVOLUCIÓN COMPLETA'],
+            ['name' => 'DEVOLUCIÓN PARCIAL'],
+            ['name' => 'ENTREGADO'],
         ]);
 
 
-        $this->command->info("Estados insertados correctamente.");
+        $this->command->info("Estados: OK");
 
         DB::table('roles')->insert([
             ['name' => 'ADMIN'],
@@ -156,7 +168,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'ENCARGADO'],
         ]);
 
-        $this->command->info("Roles insertados correctamente.");
+        $this->command->info("Roles: OK");
 
         DB::table('types')->insert([
             ['name' => 'PANTALLA'],
@@ -170,7 +182,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'OTRO'],
         ]);
 
-        $this->command->info("Tipos de productos insertados correctamente.");
+        $this->command->info("Tipos de productos: OK");
 
         DB::table('categories')->insert([
             ['name' => 'SERVICIOS', 'tax_id' => 1],
@@ -180,7 +192,10 @@ class DatabaseSeeder extends Seeder
             ['name' => 'PROPINAS', 'tax_id' => 3],
         ]);
 
-        $this->command->info("Categorias insertados correctamente.");
+        $this->command->info("Categorias: OK");
+
+
+        $this->command->warn("Agregando clientes, empresas, tiendas y tiempos de reparación, dispositivos y perfiles...");
 
         DB::table('clients')->insert([
             [
@@ -197,7 +212,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'document' => '23456789S',
+                'document' => 'X1234567S',
                 'name' => 'MARÍA',
                 'surname' => 'LÓPEZ',
                 'surname2' => null,
@@ -224,7 +239,7 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        $this->command->info("Clientes insertados correctamente.");
+        $this->command->info("Clientes: OK");
 
         DB::table('companies')->insert([
             [
@@ -263,47 +278,59 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'cif' => 'D55667788',
+                'name' => 'MANZANA ROTA',
+                'corporate_name' => 'MANZANA ROTA S.L.',
+                'address' => 'CALLE UNION, 83',
+                'postal_code' => '28007',
+                'locality' => 'MÁLAGA',
+                'province' => 'MÁLAGA',
+                'discount' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
 
-        $this->command->info("Empresas insertadas correctamente.");
+        $this->command->info("Empresas: OK");
 
         DB::table('stores')->insert([
             [
-            'name' => 'PLAZA MAYOR',
-            'address' => 'CALLE REPARACIÓN, 1',
-            'prefix' => '+34',
-            'number' => '666 666 664',
-            'email' => 'plazamayor@tecnofix.es',
-            'schedule' => 'Lunes a Viernes 10:00-20:00',
-            'work_order_number' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'name' => 'PLAZA MAYOR',
+                'address' => 'CALLE REPARACIÓN, 1',
+                'prefix' => '+34',
+                'number' => '666 666 664',
+                'email' => 'plazamayor@tecnofix.es',
+                'schedule' => 'Lunes a Viernes 10:00-20:00',
+                'work_order_number' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'name' => 'POLIGONO SANTA BARBARA',
-            'address' => 'CALLE ENERGÍA, 2',
-            'prefix' => '+34',
-            'number' => '666 666 665',
-            'email' => 'poligonosb@tecnofix.es',
-            'schedule' => 'Lunes a Sábado 10:00-14:00 17:00-21:00',
-            'work_order_number' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'name' => 'POLIGONO SANTA BARBARA',
+                'address' => 'CALLE ENERGÍA, 2',
+                'prefix' => '+34',
+                'number' => '666 666 665',
+                'email' => 'poligonosb@tecnofix.es',
+                'schedule' => 'Lunes a Sábado 10:00-14:00 17:00-21:00',
+                'work_order_number' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'name' => 'VIALIA',
-            'address' => 'CALLE CARGA, 3',
-            'prefix' => '+34',
-            'number' => '666 666 666 ',
-            'email' => 'vialia@tecnofix.es',
-            'schedule' => 'Lunes a Sábado 10:00-22:00',
-            'work_order_number' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'name' => 'VIALIA',
+                'address' => 'CALLE CARGA, 3',
+                'prefix' => '+34',
+                'number' => '666 666 666 ',
+                'email' => 'vialia@tecnofix.es',
+                'schedule' => 'Lunes a Sábado 10:00-22:00',
+                'work_order_number' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
 
-        $this->command->info("Tiendas insertadas correctamente.");
+        $this->command->info("Tiendas: OK");
 
         DB::table('repair_times')->insert([
             [
@@ -338,8 +365,7 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        $this->command->info("Tiempos de repación insertados correctamente.");
-
+        $this->command->info("Tiempos de repación: OK");
 
         DB::table('devices')->insert([
             [
@@ -377,253 +403,88 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN1122334455',
-                'IMEI' => '112233445566778',
+                'serial_number' => 'SN5555555555',
+                'IMEI' => '555555555555555',
                 'colour' => 'Red',
-                'unlock_code' => '4321',
-                'device_model_id' => 4,
+                'unlock_code' => '9999',
+                'device_model_id' => 1,
                 'client_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN5566778899',
-                'IMEI' => '998877665544332',
-                'colour' => 'Green',
-                'unlock_code' => '8765',
-                'device_model_id' => 5,
-                'client_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => true,
-                'serial_number' => null,
-                'IMEI' => null,
-                'colour' => 'Yellow',
-                'unlock_code' => null,
-                'device_model_id' => 6,
-                'client_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN6677889900',
-                'IMEI' => '667788990011223',
-                'colour' => 'Purple',
-                'unlock_code' => '1111',
-                'device_model_id' => 7,
-                'client_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN4455667788',
-                'IMEI' => '445566778899001',
-                'colour' => 'Pink',
-                'unlock_code' => '2222',
-                'device_model_id' => 8,
-                'client_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => true,
-                'serial_number' => null,
-                'IMEI' => null,
-                'colour' => 'Orange',
-                'unlock_code' => null,
-                'device_model_id' => 9,
-                'client_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN2233445566',
-                'IMEI' => '223344556677889',
-                'colour' => 'Gray',
-                'unlock_code' => '3333',
-                'device_model_id' => 10,
-                'client_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN9988776655',
-                'IMEI' => '998877665544332',
-                'colour' => 'Silver',
-                'unlock_code' => '4444',
-                'device_model_id' => 11,
-                'client_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => true,
-                'serial_number' => null,
-                'IMEI' => null,
-                'colour' => 'Gold',
-                'unlock_code' => null,
-                'device_model_id' => 12,
-                'client_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN3344556677',
-                'IMEI' => '334455667788990',
-                'colour' => 'Black',
-                'unlock_code' => '5555',
-                'device_model_id' => 13,
-                'client_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN7766554433',
-                'IMEI' => '776655443322110',
-                'colour' => 'White',
-                'unlock_code' => '6666',
-                'device_model_id' => 14,
-                'client_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => true,
-                'serial_number' => null,
-                'IMEI' => null,
-                'colour' => 'Blue',
-                'unlock_code' => null,
-                'device_model_id' => 15,
-                'client_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN5566778899',
-                'IMEI' => '556677889900112',
-                'colour' => 'Red',
-                'unlock_code' => '7777',
-                'device_model_id' => 16,
-                'client_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN1122334455',
-                'IMEI' => '112233445566778',
+                'serial_number' => 'SN6666666666',
+                'IMEI' => '666666666666666',
                 'colour' => 'Green',
                 'unlock_code' => '8888',
-                'device_model_id' => 17,
-                'client_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => true,
-                'serial_number' => null,
-                'IMEI' => null,
-                'colour' => 'Yellow',
-                'unlock_code' => null,
-                'device_model_id' => 18,
-                'client_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN6677889900',
-                'IMEI' => '667788990011223',
-                'colour' => 'Purple',
-                'unlock_code' => '9999',
-                'device_model_id' => 19,
-                'client_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'has_no_serial_or_imei' => false,
-                'serial_number' => 'SN4455667788',
-                'IMEI' => '445566778899001',
-                'colour' => 'Pink',
-                'unlock_code' => '0000',
-                'device_model_id' => 20,
+                'device_model_id' => 2,
                 'client_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
 
-        $this->command->info("Dispositivos insertados correctamente.");
+        $this->command->info("Dispositivos: OK");
 
         DB::table('store_user')->insert([
             [
-            'user_id' => 1,
-            'store_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 1,
+                'store_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 1,
-            'store_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 1,
+                'store_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 1,
-            'store_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 1,
+                'store_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 2,
-            'store_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 2,
+                'store_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 2,
-            'store_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 2,
+                'store_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 3,
-            'store_id' => 2,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 3,
+                'store_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 3,
-            'store_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 3,
+                'store_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 4,
-            'store_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 4,
+                'store_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-            'user_id' => 4,
-            'store_id' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
+                'user_id' => 4,
+                'store_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
 
-        $this->command->info("Usuario agregado a tiendas correctamente.");
+        $this->command->info("Usuarios agregados a tiendas: OK ");
 
         DB::table('rol_user')->insert([
             [
@@ -643,7 +504,8 @@ class DatabaseSeeder extends Seeder
                 'rol_id' => 3, // TÉCNICO
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],[
+            ],
+            [
                 'user_id' => 1,
                 'rol_id' => 4, // MANGER
                 'created_at' => now(),
@@ -657,25 +519,23 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'user_id' => 3,
-                'rol_id' => 3, // TÉCNICO
+                'rol_id' => 4, // ENCARGADO
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'user_id' => 4,
-                'rol_id' => 4, // ENCARGADO
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],[
-                'user_id' => 4,
-                'rol_id' => 2, // ENCARGADO
+                'rol_id' => 3, // TÉCNICO
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
 
-        $this->command->info("Perfiles agregados a Usuario correctamente.");
+        $this->command->info("Perfiles agregados a Usuario: OK ");
 
+        $this->command->warn("Agregando items...");
+
+        //PIEZAS
         $deviceModels = DB::table('device_models')->get();
         $parts = ['Pantalla', 'Batería', 'Conector de carga', 'Cámara', 'Reparación de placa'];
         $distributors = ['KF', 'PA', 'SS'];
@@ -715,9 +575,7 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-
-        $this->command->info("Items creados para modelos insertados correctamente.");
-
+        //ACCESORIOS
         $accessories = [
             'FUNDA DE SILICONA',
             'PROTECTOR DE PANTALLA DE VIDRIO TEMPLADO',
@@ -767,8 +625,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $this->command->info("Items de tipo accesorios insertados correctamente.");
-
+        //SERVICIOS
         $services = [
             'REPARACIÓN DE SOFTWARE',
             'DIAGNÓSTICO TÉCNICO',
@@ -800,8 +657,7 @@ class DatabaseSeeder extends Seeder
         $categoryId = DB::table('categories')->where('name', 'PROPINAS')->value('id');
         $typeId = DB::table('types')->where('name', 'OTRO')->value('id');
 
-        $this->command->info("Servicios insertados correctamente.");
-
+        //PROPINA
         DB::table('items')->insert([
             'name' => 'PROPINA',
             'cost' => 0, // No cost for tips
@@ -840,10 +696,9 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        $this->command->info("Items: OK");
 
-        $this->command->info("Reacondicionados insertados correctamente.");
-
-        $this->command->warn("Comenzando a agregar items a todas las tiendas...");
+        $this->command->warn("Agregando items a todas las tiendas...");
 
         $items = DB::table('items')->get();
         $stores = DB::table('stores')->get();
@@ -853,14 +708,16 @@ class DatabaseSeeder extends Seeder
                 DB::table('stocks')->insert([
                     'store_id' => $store->id,
                     'item_id' => $item->id,
+                    'quantity' => rand(1, 5),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
             }
         }
 
-        $this->command->info("Todos los items han sido agregados a todas las tiendas correctamente.");
+        $this->command->info("Items agregados a todas las tiendas: OK");
 
+        $this->command->warn("Agregando órdenes de trabajo, setteando status, agregrando items aleatorios relacionados...");
         DB::table('work_orders')->insert([
             [
                 'work_order_number' => 1,
@@ -871,28 +728,24 @@ class DatabaseSeeder extends Seeder
                 'physical_condition' => 'Rayaduras leves en la carcasa.',
                 'humidity' => 'Sin signos de humedad.',
                 'test' => 'No pasa test de encendido.',
-                'is_warranty' => false,
                 'user_id' => 1,
                 'device_id' => 1,
-                'closure_id' => null,
                 'repair_time_id' => 1,
                 'store_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now()->subHours(1),
+                'updated_at' => now()->subHours(1),
             ],
             [
                 'work_order_number' => 1,
-                'work_order_number_warranty' => 1001,
+                'work_order_number_warranty' => null,
                 'failure' => 'Batería no carga.',
                 'private_comment' => null,
                 'comment' => 'Cliente solicita presupuesto.',
                 'physical_condition' => 'Buen estado general.',
                 'humidity' => 'No hay humedad.',
                 'test' => 'No carga con ningún cargador.',
-                'is_warranty' => true,
                 'user_id' => 2,
                 'device_id' => 2,
-                'closure_id' => null,
                 'repair_time_id' => 2,
                 'store_id' => 2,
                 'created_at' => now(),
@@ -907,10 +760,8 @@ class DatabaseSeeder extends Seeder
                 'physical_condition' => 'Oxidación en el conector.',
                 'humidity' => 'Humedad detectada.',
                 'test' => 'Altavoz no emite sonido.',
-                'is_warranty' => false,
                 'user_id' => 3,
                 'device_id' => 3,
-                'closure_id' => null,
                 'repair_time_id' => 3,
                 'store_id' => 3,
                 'created_at' => now(),
@@ -925,17 +776,15 @@ class DatabaseSeeder extends Seeder
                 'physical_condition' => 'Botón flojo.',
                 'humidity' => 'Sin humedad.',
                 'test' => 'Botón no responde.',
-                'is_warranty' => false,
                 'user_id' => 4,
                 'device_id' => 4,
-                'closure_id' => null,
                 'repair_time_id' => 4,
                 'store_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'work_order_number' => 2,
+                'work_order_number' => 3,
                 'work_order_number_warranty' => null,
                 'failure' => 'Pantalla táctil no responde.',
                 'private_comment' => 'Cliente habitual.',
@@ -943,20 +792,70 @@ class DatabaseSeeder extends Seeder
                 'physical_condition' => 'Pantalla sin daños visibles.',
                 'humidity' => 'No hay humedad.',
                 'test' => 'No responde al tacto.',
-                'is_warranty' => false,
                 'user_id' => 1,
                 'device_id' => 5,
-                'closure_id' => null,
                 'repair_time_id' => 5,
-                'store_id' => 2,
+                'store_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'work_order_number' => 4,
+                'work_order_number_warranty' => 2,
+                'failure' => 'Vuelve a fallar el botón de encendido.',
+                'private_comment' => 'Cliente habitual.',
+                'comment' => null,
+                'physical_condition' => 'Estado OK.',
+                'humidity' => 'No hay humedad.',
+                'test' => 'No responde al pulsarlo.',
+                'user_id' => 1,
+                'device_id' => 4,
+                'repair_time_id' => 5,
+                'store_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'work_order_number' => 5,
+                'work_order_number_warranty' => null,
+                'failure' => 'Problema de placa base.',
+                'private_comment' => null,
+                'comment' => null,
+                'physical_condition' => 'Estado OK.',
+                'humidity' => 'No se aprecia humedad.',
+                'test' => 'Terminal no hace nada. No Carga. No enciende.',
+                'user_id' => 1,
+                'device_id' => 2,
+                'repair_time_id' => 5,
+                'store_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
 
         $workOrders = DB::table('work_orders')->get();
-
+        
+        
         foreach ($workOrders as $workOrder) {
+            if ($workOrder->id == 3) {
+
+                DB::table('status_work_order')->insert([
+                    'work_order_id' => $workOrder->id,
+                    'user_id' => $workOrder->user_id,
+                    'status_id' => 1,
+                    'created_at' => now()->subHour(),
+                    'updated_at' => now()->subHour(),
+                ]);
+
+                DB::table('status_work_order')->insert([
+                    'work_order_id' => $workOrder->id,
+                    'user_id' => $workOrder->user_id,
+                    'status_id' => 2,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+                continue;
+            }
             DB::table('status_work_order')->insert([
                 'work_order_id' => $workOrder->id,
                 'user_id' => $workOrder->user_id,
@@ -965,11 +864,35 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
+        DB::table('status_work_order')->insert([
+            'work_order_id' => 1,
+            'user_id' => 1,
+            'status_id' => 5,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        foreach ($workOrders as $workOrder) {
+            $device = DB::table('devices')->where('id', $workOrder->device_id)->first();
+            if (!$device) {
+                continue;
+            }
+            $deviceModelId = $device->device_model_id;
+            $itemIds = DB::table('device_model_item')
+                ->where('device_model_id', $deviceModelId)
+                ->pluck('item_id')
+                ->take(2);
 
-        $this->command->info("Órdenes de trabajo y status insertados correctamente.");
+            foreach ($itemIds as $itemId) {
+                DB::table('item_work_order')->insert([
+                    'work_order_id' => $workOrder->id,
+                    'item_id' => $itemId,
+                    'modified_amount' => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
 
-        
-        
     }
 
 }

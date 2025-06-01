@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('globalOptions', function (Blueprint $table) {
+        Schema::create('owner', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('corportate_name');
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoice_item');
+        Schema::dropIfExists('owner');
     }
 };

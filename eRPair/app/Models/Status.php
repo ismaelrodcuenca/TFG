@@ -29,8 +29,8 @@ class Status extends Model
      */
     protected $fillable = ['name'];
 
-    public function workOrders(): BelongsToMany
+    public function statusWorkOrder(): HasMany
     {
-        return $this->belongsToMany(WorkOrder::class);
+        return $this->hasMany(StatusWorkOrder::class);
     }
 }

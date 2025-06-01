@@ -188,6 +188,20 @@ class DeviceResource extends Resource
                     ->label('No SN o IMEI')
                     ->toggleable()
                     ->alignment(Alignment::Center),
+                    
+                Tables\Columns\TextColumn::make('client.document')
+                    ->label(constants::CLIENT)
+                    ->sortable()
+                    ->state(function ($record) {
+                        if (!$record->client) {
+                            return 'Sin cliente';
+                        }
+                        $client = $record->client;
+                        $surname2 = $client->surname2 ?? '';
+                        return "{$client->document} - {$client->name} {$client->surname} {$surname2}";
+                    })
+                    ->searchable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('serial_number')
                     ->label(constants::SERIAL_NUMBER)
                     ->sortable()
@@ -207,12 +221,7 @@ class DeviceResource extends Resource
                     ->label(constants::UNLOCK_CODE)
                     ->sortable()
                     ->searchable()
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('client.document')
-                    ->label(constants::CLIENT)
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
+                    ->toggleable(true, true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->sortable()

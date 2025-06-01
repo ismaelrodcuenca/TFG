@@ -21,10 +21,8 @@ return new class extends Migration
             $table->text('physical_condition');
             $table->text('humidity');
             $table->text('test');
-            $table->boolean('is_warranty')->default(false);
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('device_id')->constrained('devices');
-            $table->foreignId('closure_id')->nullable()->constrained('closures');
             $table->foreignId('repair_time_id')->constrained('repair_times');
             $table->foreignId('store_id')->constrained('stores');
             $table->timestamps();

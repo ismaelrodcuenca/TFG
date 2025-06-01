@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\WorkOrderResource\RelationManagers;
+namespace App\Filament\Resources\ItemWorkOrderResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -10,15 +10,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class StatusRelationManager extends RelationManager
+class WorkOrderRelationManager extends RelationManager
 {
-    protected static string $relationship = 'statuses';
+    protected static string $relationship = 'workOrder';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('id')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -27,9 +27,9 @@ class StatusRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
+            ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('id'),
             ])
             ->filters([
                 //
@@ -38,7 +38,6 @@ class StatusRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

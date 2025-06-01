@@ -3,40 +3,31 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\WorkOrderResource\Pages;
-use App\Filament\Resources\WorkOrderResource\RelationManagers;
 use App\Filament\Resources\WorkOrderResource\RelationManagers\ClosureRelationManager;
-use App\Filament\Resources\WorkOrderResource\RelationManagers\DeviceRelationManager;
 use App\Filament\Resources\WorkOrderResource\RelationManagers\InvoicesRelationManager;
-use App\Filament\Resources\WorkOrderResource\RelationManagers\ItemsRelationManager;
-use App\Filament\Resources\WorkOrderResource\RelationManagers\RepairTimeRelationManager;
+use App\Filament\Resources\WorkOrderResource\RelationManagers\ItemWorkOrdersRelationManager;
 use App\Filament\Resources\WorkOrderResource\RelationManagers\StatusRelationManager;
-use App\Filament\Resources\WorkOrderResource\RelationManagers\UserRelationManager;
+use App\Filament\Resources\WorkOrderResource\RelationManagers\StatusWorkOrdersRelationManager;
 use App\Helpers\PermissionHelper;
 use App\Models\Device;
 use App\Models\Store;
 use App\Models\WorkOrder;
 use Date;
+use DB;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\Alignment;
 use Filament\Tables;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Mail\Mailables\Content;
-use PhpParser\Node\Stmt\Label;
 
 class WorkOrderResource extends Resource
 {
@@ -47,9 +38,9 @@ class WorkOrderResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return true;
+        return PermissionHelper::hasRole();
     }
- public static function getGloballySearchableAttributes(): array
+    public static function getGloballySearchableAttributes(): array
     {
         return [
             'work_order_number',
@@ -58,79 +49,75 @@ class WorkOrderResource extends Resource
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         return [
-                'work_order_number' => ($record->work_order_number . " " . $record->device->model->brand->name . " - " . $record->device->model->name),
+            'work_order_number' => ($record->work_order_number . " " . $record->device->model->brand->name . " - " . $record->device->model->name),
         ];
     }
-    
-        protected static ?string $label = 'Hojas de pedido';
+
+    protected static ?string $label = 'Hojas de pedido';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Grid::make(3)
+                Grid::make(2)
                     ->schema([
-                        //Sección para el dispositivo
-                        Section::make("Dispositivo")
+                        Grid::make(3)
                             ->schema([
+                                Section::make("Dispositivo")
+                                    ->schema([
+                                        Placeholder::make("")
+                                            ->content(function (callable $get) {
+                                                $deviceId = $get('device_id');
+                                                if (!$deviceId) {
+                                                    return 'Sin dispositivo';
+                                                }
+                                                $device = Device::with('model.brand')->find($deviceId);
+                                                if (!$device) {
+                                                    return 'Dispositivo no encontrado';
+                                                }
+                                                $modelo = $device->model->name ?? 'Modelo desconocido';
+                                                $marca = $device->model->brand->name ?? 'Marca desconocida';
+                                                return "{$marca} - {$modelo}";
+                                            }),
+                                    ])
+                                    ->icon("heroicon-o-device-phone-mobile")
+                                    ->columnSpan(1),
 
-                                Placeholder::make("")
-                                    ->content(function (callable $get) {
-                                        $deviceId = $get('device_id');
-
-                                        if (!$deviceId) {
-                                            return 'Sin dispositivo';
-                                        }
-
-                                        $device = Device::with('model.brand')->find($deviceId);
-
-                                        if (!$device) {
-                                            return 'Dispositivo no encontrado';
-                                        }
-
-                                        $modelo = $device->model->name ?? 'Modelo desconocido';
-                                        $marca = $device->model->brand->name ?? 'Marca desconocida';
-
-                                        return "{$marca} {$modelo}";
-                                    }),
-
-                            ])
-                            ->icon("heroicon-o-device-phone-mobile")
-                            ->columnSpan(1),
-                        //Seccion para la tienda
-                        Section::make("Tienda")
-                            ->schema([
-
-                                Placeholder::make("")
-                                    ->content(content: function () {
-                                        $store = Store::findOrFail(session('store_id'), ['name']);
-                                        return $store['name'];
-                                    }),
-
-                            ])
-                            ->icon('heroicon-o-building-storefront')
-                            ->columnSpan(1),
-                        //Seccion para el creador del pedido
-                        Section::make("Creado Por")
-                            ->schema([
-
-                                Placeholder::make("")
-                                    ->content(fn() => auth()->user()->name ?? ''),
-
-                            ])
-                            ->icon('heroicon-o-user-circle')
-                            ->columnSpan(1)
+                                Section::make("Tienda")
+                                    ->schema([
+                                        Placeholder::make("")
+                                            ->content(function ($record) {
+                                                $store = Store::find($record->store_id);
+                                                return $store['name'] ?? 'Sin Tienda';
+                                            }),
+                                    ])
+                                    ->icon('heroicon-o-building-storefront')
+                                    ->columnSpan(1),
+                                Section::make('Estado')
+                                    ->icon('heroicon-o-clock')
+                                    ->schema([
+                                        Placeholder::make("")
+                                            ->content(function ($record) {
+                                                $lastStatus = $record->statusWorkOrders->last()->status->name ?? 'Sin Estado';
+                                                $hasInvoices = $record->invoices()->exists();
+                                                if ($lastStatus == "PENDIENTE" && $hasInvoices) {
+                                                    return "PENDIENTE - CON ANTICIPO";
+                                                }
+                                                return $lastStatus ?? 'Sin Estado';
+                                            }),
+                                    ])->columnSpan(1),
+                            ]),
                     ]),
                 //Sección para el cliente
                 Section::make('Cliente')
                     ->icon('heroicon-s-user')
                     ->schema([
-                        Grid::make(4)
+                        Grid::make(3)
                             ->schema([
                                 // Sección para el documento del cliente
                                 Section::make("Documento")
                                     ->schema([
-                                        
+
                                         Placeholder::make("")
                                             ->content(fn(callable $get) => Device::find($get('device_id'))->client->document ?? 'Sin Cliente'),
 
@@ -152,10 +139,10 @@ class WorkOrderResource extends Resource
                                             }),
 
                                     ])
-                                    ->columnSpan(2),
+                                    ->columnSpan(1),
 
                                 // Sección para el teléfono del cliente
-                                Section::make("Telefono")
+                                Section::make("Teléfono")
                                     ->schema([
 
                                         Placeholder::make("")
@@ -182,63 +169,47 @@ class WorkOrderResource extends Resource
                     Hidden::make('work_order_number_warranty')
                         ->dehydrated(true)
                         ->default(null),
-                    Hidden::make('is_warranty')
-                        ->default(false)
-                        ->dehydrated(true),
                 ]),
 
                 //Sección para los datos del pedido
                 Forms\Components\Textarea::make('failure')
-                    ->label('Failure')
+                    ->label('Avería')
                     ->default(fn($record) => $record?->failure)
                     ->required()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => $record->created_at
-                        ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                        : true),
+                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
                 Forms\Components\Textarea::make('private_comment')
-                    ->label('Private Comment')
+                    ->label('Comentario privado')
                     ->nullable()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => $record->created_at
-                        ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                        : true),
+                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
                 Forms\Components\Textarea::make('comment')
-                    ->label('Comment')
+                    ->label('Comentario')
                     ->nullable()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => $record->created_at
-                        ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                        : true),
+                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
                 Forms\Components\Textarea::make('physical_condition')
-                    ->label('Physical Condition')
+                    ->label('Estado físico')
                     ->required()
                     ->columnSpan('full')
                     ->dehydrated(true)
-                    ->disabled(fn($record) => $record->created_at
-                        ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                        : true),
+                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
                 Forms\Components\Textarea::make('humidity')
-                    ->label('Humidity')
+                    ->label('Humedad')
                     ->required()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => $record->created_at
-                        ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                        : true),
+                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
                 Forms\Components\Textarea::make('test')
-                    ->label('Test')
+                    ->label('Prueba')
                     ->required()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => $record->created_at
-                        ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                        : true),
+                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
                 Forms\Components\Select::make('repair_time_id')
-                    ->label('Repair Time')
+                    ->label('Tiempo de reparación')
                     ->relationship('repairTime', 'name')
                     ->required()
-                    ->disabled(fn($record) => $record->created_at
-                        ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                        : true),
+                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
+
             ]);
     }
 
@@ -251,33 +222,37 @@ class WorkOrderResource extends Resource
                     ->label('Fecha de creación')
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
-                    ->color(fn($record) => $record->is_warranty ? 'success' : 'default'),
+                    ->alignCenter()
+                    ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default'),
                 Tables\Columns\TextColumn::make('work_order_number')
-                    ->label('Work Order Number')
-                    ->color(fn($record) => $record->is_warranty ? 'success' : 'default')
+                    ->label('Nº Hoja de pedido')
+                    ->alignCenter()
+                    ->state(fn($record) => $record->work_order_number_warranty ? $record->work_order_number . " (" . $record->work_order_number_warranty . ")" : $record->work_order_number)
+                    ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('is_warranty')
-                    ->label('Warranty')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('client')
+                    ->label('Cliente')
+                    ->alignCenter()
+                    ->state(fn($record) => $record->device->client->name." " .$record->device->client->surname)
+                    ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('store.name')
                     ->label('Tienda')
+                    ->alignCenter()
                     ->hidden(PermissionHelper::isNotAdmin())
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->label('Último Status')
-                    ->getStateUsing(function ($record) {
-                        return $record->statuses()->orderBy('created_at', 'desc')->first()->name ?? '-';
-                    })
-                    ->color(fn($record) => $record->is_warranty ? 'success' : 'default'),
+                Tables\Columns\TextColumn::make('Status')
+                    ->state(fn($record) => $record->statusWorkOrders->last()->status->name ?? 'Sin Estado')
+                    ->label('Estado'),
                 Tables\Columns\TextColumn::make('repairTime.name')
-                    ->color(fn($record) => $record->is_warranty ? 'success' : 'default')
-                    ->label('Repair Time'),
+                    ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default')
+                    ->label('Tiempo de reparación'),
             ])
             ->recordTitleAttribute('work_order_number')
             ->filters([
-                Filter::make('is_warranty')
+                Filter::make('warranty')
                     ->label('Mostrar solo garantías')
-                    ->query(fn(Builder $query): Builder => $query->where('is_warranty', true)),
+                    ->query(fn(Builder $query): Builder => $query->whereHas('work_order_number_warranty')),
                 Filter::make('created_at')
                     ->label('Fecha de creación')
                     ->form([
@@ -299,16 +274,6 @@ class WorkOrderResource extends Resource
                         }
                         return $query;
                     }),
-                Filter::make('status')
-                    ->label('Mostrar cancelados o completados')
-                    ->query(function (Builder $query): Builder {
-                        return $query->whereHas('statuses', function ($q) {
-                            $q->where(function ($query) {
-                                $query->where('name', 'like', '%cancelado%')
-                                    ->orWhere('name', 'like', '%completado%');
-                            });
-                        });
-                    }),
 
                 SelectFilter::make('stores')
                     ->label('Tienda')
@@ -318,6 +283,7 @@ class WorkOrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->label('Editar')
                     ->hidden(fn($record) => $record->created_at
                         ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
                         : true),
@@ -325,19 +291,19 @@ class WorkOrderResource extends Resource
             ->query(function () {
                 if (PermissionHelper::isNotAdmin()) {
                     return WorkOrder::query()
-                        ->where('store_id', session('store_id'))->orderBy('created_at', 'desc');
+                        ->where('store_id', session('store_id'))->orderBy('work_order_number', 'desc');
                 }
 
-                return WorkOrder::query();
+                return WorkOrder::query()->orderBy('work_order_number', 'desc');
 
             });
     }
     public static function getRelations(): array
     {
         return [
-            ItemsRelationManager::class,
+            ItemWorkOrdersRelationManager::class,
             InvoicesRelationManager::class,
-            StatusRelationManager::class,
+            StatusWorkOrdersRelationManager::class,
             ClosureRelationManager::class,
         ];
     }

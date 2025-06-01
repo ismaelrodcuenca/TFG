@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('test');
             $table->text('comment');
             $table->text('humidity');
+            $table->foreignId('work_order_id')->constrained('work_orders');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });

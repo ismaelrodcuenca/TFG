@@ -13,6 +13,9 @@ use App\Models\Item;
 use App\Models\Type;
 use constants;
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
@@ -27,7 +30,7 @@ class ItemResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-battery-0';
     public static ?string $navigationGroup = 'Catálogo';
-        public static function shouldRegisterNavigation(): bool
+    public static function shouldRegisterNavigation(): bool
     {
         return PermissionHelper::isSalesperson();
     }
@@ -57,6 +60,8 @@ class ItemResource extends Resource
                     ->relationship('category', 'name')
                     ->required()
                     ->label(constants::CATEGORY),
+                Placeholder::make('Aviso:')
+                    ->content("Recuerda que el item no se asocia a . "),
             ]);
     }
 
@@ -99,22 +104,39 @@ class ItemResource extends Resource
             ->filters([
                 SelectFilter::make('category_id')
                     ->label('Categorias')
-                    ->options(Category::all()->pluck('name', 'id')->toArray())
-                    ->default(3),
+                    ->options(Category::all()->pluck('name', 'id')->toArray()),
                 SelectFilter::make('type_id')
                     ->label('Tipo')
-                    ->options(Type::all()->pluck('name', 'id')->toArray())
-                    ->default(8),
-                SelectFilter::make('deviceModels')
-                    ->label('Modelos')
-                    ->options(
-                        DeviceModel::all()->pluck('name', 'id')->toArray()
-                    ),
-                Filter::make('name'),
-                Filter::make('price'),
-                Filter::make('costo')
-                    ->default(),
-                Filter::make('distributor'),
+                    ->options(Type::all()->pluck('name', 'id')->toArray()),
+                Filter::make('device_model_id')
+                    ->form([
+                        Select::make('brand_id')
+                            ->label('Marca')
+                            ->options(Brand::orderBy('name')->pluck('name', 'id')->toArray())
+                            ->searchable()
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set) {
+                                $set('device_model_id', null);
+                            }),
+                        Select::make('device_model_id')
+                            ->label('Modelo')
+                            ->options(function ($get) {
+                                $brandId = $get('brand_id');
+                                if ($brandId) {
+                                    return DeviceModel::where('brand_id', $brandId)->orderBy('name')->pluck('name', 'id')->toArray();
+                                }
+                                return [];
+                            })
+                            ->placeholder("Selecciona una marca")
+                            ->searchable(),
+                    ])
+                    ->query(function ($query, $data) {
+                        if (!empty($data['device_model_id'])) {
+                            $query->whereHas('deviceModels', function ($q) use ($data) {
+                                $q->where('device_models.id', $data['device_model_id']);
+                            });
+                        }
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -125,11 +147,10 @@ class ItemResource extends Resource
 
     public static function getRelations(): array
     {
-        //Permite filtrar el array de nulos
-        return array_filter([
+        return [
             DeviceModelsRelationManager::class,
             StoresRelationManager::class,
-        ]);
+        ];
     }
 
     public static function getPages(): array

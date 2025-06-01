@@ -120,7 +120,7 @@ class WorkOrdersRelationManager extends RelationManager
                     ->label('Work Order Number')
                     ->color(fn($record) => $record->is_warranty ? 'success' : 'default')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('store.name')
+                Tables\Columns\TextColumn::make('store.name')
                     ->label('Tienda')
                     ->sortable()
                     ->searchable()
@@ -131,7 +131,7 @@ class WorkOrdersRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('status')
                     ->label('Último Status')
                     ->getStateUsing(function ($record) {
-                        return $record->statuses()->orderBy('created_at', 'desc')->first()->name ?? '-';
+                        return $record->statusWorkOrders->last()->status->name ;
                     })
                     ->color(fn($record) => $record->is_warranty ? 'success' : 'default'),
                 Tables\Columns\TextColumn::make('repairTime.name')
@@ -294,9 +294,10 @@ class WorkOrdersRelationManager extends RelationManager
                     ])->label('Acciones masivas')
                 ])
             ->actions([
-                Tables\Actions\EditAction::make() ->hidden(fn($record) => $record->created_at
-                        ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                        : true),
+                Tables\Actions\EditAction::make()
+                ->hidden(fn($record) => $record->created_at
+                    ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
+                    : true),
             ]);
     }
 }

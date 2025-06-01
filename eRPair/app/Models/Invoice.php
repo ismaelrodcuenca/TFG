@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Filament\Forms\Components\BelongsToSelect;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,23 +33,64 @@ class Invoice extends Model
      */
     protected $fillable = [
         'invoice_number',
-        'taxes_full_amount',
-        'store_order_number',
-        'full_amount',
-        'down_payment_amount',
-        'comment',
+        'base',
+        'taxes',
+        'total',
+        'is_refund',
         'is_down_payment',
         'work_order_id',
         'client_id',
+        'store_id',
         'company_id',
         'payment_method_id',
-        'user_id'
+        'user_id',
+        'comment'
     ];
 
-
-    public function items(): BelongsToMany
+    protected static function booted()
     {
-        return $this->belongsToMany(Item::class)->withPivot('modified_amount');
+        static::creating(function ($invoice) {
+            $invoice->invoice_number = $invoice->is_refund ? $invoice->generateRefundInvoiceNumber($invoice->invoice_number) : $invoice->generateInvoiceNumber($invoice->work_order_id);
+            if (!$invoice->is_refund) {
+                $invoice->invoice_number = $invoice->generateInvoiceNumber($invoice->work_order_id);
+            }
+
+        });
+    }
+
+    public function generateInvoiceNumber(?int $workOrderId): string
+    {
+        $today = now()->format('Ymd');
+        if ($workOrderId) {
+            $count = DB::table('invoices')
+                ->where('work_order_id', $workOrderId)
+                ->where('store_id', $this->store_id)
+                ->count() + 1;
+            $workOrderNumber = DB::table('work_orders')
+                ->where('id', $workOrderId)
+                ->value('work_order_number');
+            return "W{$workOrderNumber}-{$count}-{$this->store_id}-{$today}";
+        } else {
+            $count = DB::table('invoices')
+                ->whereNull('work_order_id')
+                ->where('store_id', $this->store_id)
+                ->count() + 1;
+            return "S{$count}-{$this->store_id}-{$today}";
+        }
+    }
+    public function generateRefundInvoiceNumber(string $originalInvoiceNumber): string
+    {
+        $existingRefunds = DB::table('invoices')
+            ->where('invoice_number', 'like', "{$originalInvoiceNumber}-R%")
+            ->count();
+
+        $suffix = $existingRefunds > 0 ? '-R' . ($existingRefunds + 1) : '-R1';
+
+        return "{$originalInvoiceNumber}{$suffix}";
+    }
+    public function items(): hasMany
+    {
+        return $this->hasMany(Item::class)->withPivot('modified_amount');
     }
 
     public function user(): BelongsTo

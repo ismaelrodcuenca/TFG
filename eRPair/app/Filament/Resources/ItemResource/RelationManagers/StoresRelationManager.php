@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\AttachAction;
+use Filament\Tables\Actions\DetachAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -58,14 +59,8 @@ class StoresRelationManager extends RelationManager
             ])
             ->actions([
                 \Filament\Tables\Actions\EditAction::make()->hidden(PermissionHelper::isNotManager()),
-                AttachAction::make()->hidden(PermissionHelper::isNotManager()),
-            ])            
-            ->filters([
-                SelectFilter::make('stores.id')
-                ->options(
-                    auth()->user()->stores->pluck('name', 'id')->toArray()
-                )
-                ->visible(PermissionHelper::isAdmin()),
-            ]);
+                DetachAction::make()
+                    ->hidden(PermissionHelper::isNotAdmin())
+            ]) ;
     }
 }

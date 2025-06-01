@@ -31,14 +31,38 @@ class StoreResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre')
-                    ->required(),
-                Forms\Components\TextInput::make('address')
-                    ->label('Dirección')
-                    ->required(),
-            ]);
+           ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->label("Nombre")
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('address')
+                        ->required()
+                        ->label('Dirección')
+                        ->maxLength(255),
+                    Forms\Components\Toggle::make('active')
+                        ->label('¿Activa?')
+                        ->default(true)
+                        ->required(),
+                    Forms\Components\TextInput::make('prefix')
+                        ->required()
+                        ->label('Prefijo')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('number')
+                        ->required()
+                        ->label('Número de Teléfono')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('email')
+                        ->email()
+                        ->lable("Email")
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('schedule')
+                        ->label('Horario')
+                        ->required()
+                        ->maxLength(255),
+                ]);
+
     }
     public static function table(Table $table): Table
     {
@@ -52,9 +76,33 @@ class StoreResource extends Resource
                     ->label('Dirección')
                     ->searchable()
                     ->sortable(),
+                    Tables\Columns\TextColumn::make('active')
+                    ->label('¿Activa?')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('prefix')
+                    ->label('Prefijo')
+                    ->searchable()
+                    ->toggleable(true, true)
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('number')
+                    ->label('Número de Teléfono')
+                    ->searchable()
+                    ->toggleable(true, true)
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->toggleable(true, true)
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('schedule')
+                    ->label('Horario')
+                    ->toggleable(true, true),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                ->disabled(PermissionHelper::isNotAdmin())
+                ->hidden(PermissionHelper::isNotAdmin()),
             ])
             ->bulkActions([
             ]);
@@ -63,7 +111,7 @@ class StoreResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+
         ];
     }
 

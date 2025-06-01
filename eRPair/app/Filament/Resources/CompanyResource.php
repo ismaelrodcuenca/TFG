@@ -56,7 +56,8 @@ class CompanyResource extends Resource
                 Forms\Components\TextInput::make('discount')
                     ->label('Discount')
                     ->numeric()->minValue(0)->maxValue(100)
-                    ->default(0)->suffix('%'),
+                    ->default(0)
+                    ->suffix('%'),
             ]);
     }
 
@@ -65,33 +66,41 @@ class CompanyResource extends Resource
         return $table
             ->columns([
             Tables\Columns\TextColumn::make('cif')
-                ->label('CIF'),
+                ->label('CIF')
+                ->searchable()
+                ->toggleable(true),
             Tables\Columns\TextColumn::make('name')
-                ->label('Name'),
+                ->label('Name')
+                ->searchable()
+                ->toggleable(true),
             Tables\Columns\TextColumn::make('corporate_name')
-                ->label('Corporate Name'),
+                ->label('Corporate Name')
+                ->searchable()
+                ->toggleable(true),
             Tables\Columns\TextColumn::make('address')
-                ->label('Address'),
+                ->label('Address')
+                ->toggleable(true),
             Tables\Columns\TextColumn::make('postal_code')
-                ->label('Postal Code'),
+                ->label('Postal Code')
+                ->toggleable(true),
             Tables\Columns\TextColumn::make('locality')
-                ->label('Locality'),
+                ->label('Locality')
+                ->toggleable(true),
             Tables\Columns\TextColumn::make('province')
-                ->label('Province'),
+                ->label('Province')
+                ->toggleable(true),
             Tables\Columns\TextColumn::make('discount')
                 ->label('Discount')
+                ->toggleable(true)
+                ->suffix('%')
+                ->alignCenter()
                 ->numeric()
             ])
             ->filters([
-                //
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

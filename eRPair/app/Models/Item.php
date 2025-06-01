@@ -41,22 +41,23 @@ class Item extends Model
 
     protected static function boot()
     {
+        //deja boot tal cual 
         parent::boot();
 
         static::created(function ($item) {
-            //Si campos link_item activo linckea el item creado a al modelo del record que venga
+            if ($item->link_to_stores) {
+               $stores = Store::all();
+                foreach ($stores as $store) {
+                    $item->stores()->attach($store->id, ['quantity' => 0]);
+                } 
+            }
+            
             if ($item->link_item_device_model) {
                 $deviceModelId = request()->input('device_model_id');
                 if ($deviceModelId) {
                     $item->deviceModels()->syncWithoutDetaching([$deviceModelId]);
                 }
             }
-            //Agrega a todas las tiendas al item creado
-            $stores = Store::all();
-                foreach ($stores as $store) {
-                    $item->stores()->attach($store->id, ['quantity' => 0]);
-                }
-
         });
     }
     public function type(): BelongsTo
@@ -90,8 +91,8 @@ class Item extends Model
         return $this->belongsToMany(Invoice::class);
     }
 
-    public function workOrders(): BelongsToMany
+    public function workOrders(): HasMany
     {
-        return $this->belongsToMany(WorkOrder::class);
+        return $this->hasMany(ItemWorkOrder::class);
     }
 }

@@ -1,8 +1,11 @@
 <?php 
+
+use app\Helpers\PermissionHelper;
 define("ADMIN_ROL",1);
 define("SALESPERSON_ROL",2);
 define("TECHNICIAN_ROL",3);
 define("MANAGER_ROL",4 );
+define("USER_LABEL_RESOURCE","PACO");
 class constants{
     const NAME_TYPO = "Título";
     const NAME = "Nombre";
@@ -57,5 +60,5 @@ class constants{
     const COST = "Costo";
     const DISTRIBUTOR = "Distribuidor";
     const TYPE = "Tipo";
-    const CATEGORY = "Categoría";
+ public const CATEGORY = "Categoría";
  }

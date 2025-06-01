@@ -29,12 +29,9 @@ class DeviceModelResource extends Resource
 
     protected static ?string $label = 'Modelo';
 
-    public static ?string $navigationGroup = 'Miscelanea';
+    public static ?string $navigationGroup = 'Catálogo';
     
-    public static function shouldRegisterNavigation(): bool
-    {
-        return PermissionHelper::developMode();
-    }
+    public static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {

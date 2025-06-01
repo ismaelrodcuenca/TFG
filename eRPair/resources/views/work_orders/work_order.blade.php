@@ -205,22 +205,27 @@
     <div class="print-container">
         <!-- Cabecera Empresa -->
         <table class="table-bordered rounded-lg mb-1 avoid-break" style="border-collapse: separate; border-spacing: 0;">
-            
+
             <tr>
                 <td style="width: 50%; text-align: center; border: none;">
                     @php
                         $logoPath = public_path('images/logo.svg');
                         $svgBase64 = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($logoPath));
                     @endphp
-                    <img src="{{ $svgBase64 }}" style="height:40px; max-width: 100%; object-fit: contain; margin-bottom: 0%;" alt="Logo">
+                    <img src="{{ $svgBase64 }}"
+                        style="height:40px; max-width: 100%; object-fit: contain; margin-bottom: 0%;" alt="Logo">
 
                     <p style="margin-top:0%; margin-bottom: 1%;">{{ $store->name ?? 'Nombre de la tienda' }}</p>
-                    <p style="margin-top:0%; margin-bottom: 0%;" >Tel: {{ ($store->prefix . " " . $store->number) ?? '—' }}</p>
+                    <p style="margin-top:0%; margin-bottom: 0%;">Tel:
+                        {{ ($store->prefix . " " . $store->number) ?? '—' }}
+                    </p>
                 </td>
                 <td style="width: 50%; text-align: center; border: none;">
-                    <h1 class="text-xl font-bold text-primary" style=" margin-bottom: 1%;" >{{ $globalOption->name ?? 'Nombre empresa' }}</h1>
-                    <p style="margin-top:0%; margin-bottom: 1%;">{{ $globalOption->address ?? 'Dirección empresa' }}</p>
-                    <p style="margin-top:0%; margin-bottom: 1%;">C.I.F.: {{ $globalOption->CIF ?? 'CIF' }}</p>
+                    <h1 class="text-xl font-bold text-primary" style=" margin-bottom: 1%;">
+                        {{ $owner->name ?? 'Nombre empresa' }}
+                    </h1>
+                    <p style="margin-top:0%; margin-bottom: 1%;">{{ $owner->address ?? 'Dirección empresa' }}</p>
+                    <p style="margin-top:0%; margin-bottom: 1%;">C.I.F.: {{ $owner->CIF ?? 'CIF' }}</p>
                 </td>
             </tr>
         </table>
@@ -232,15 +237,16 @@
                 <td style="width: 48%; vertical-align: top; padding: 0; border: none;">
                     <div style="margin-right: 2%; margin-left: 1%;">
                         <table class="rounded-lg text-xs border" style="border-collapse: separate; border-spacing: 0;">
+                            <colgroup>
+                                <col style="width: 25%;">
+                                <col style="width: 75%;">
+                            </colgroup>
                             <thead class="highlight-primary" style="background-color: #e6f0f8;">
                                 <tr>
-                                    <th colspan="2" class="rounded-tl-lg rounded-tr-lg" style="">{{ $tipo_documento }}</th>
+                                    <th colspan="2" class="rounded-tl-lg rounded-tr-lg" style="">{{ $tipo_documento }}
+                                    </th>
                                 </tr>
                             </thead>
-                            <colgroup>
-                <col style="width: 25%;">
-                <col style="width: 75%;">
-            </colgroup>
                             <tbody>
                                 <tr>
                                     <td class="text-primary font-semibold " style="">Fecha:</td>
@@ -250,7 +256,8 @@
                                     <td class="text-primary font-semibold " style="">Dispositivo:</td>
                                     <td style="padding-left: 0; padding-right: 0;">
                                         {{ strtoupper($device->model->brand->name ?? '') }} -
-                                        {{ strtoupper($device->model->name ?? '') }}</td>
+                                        {{ strtoupper($device->model->name ?? '') }}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="text-primary font-semibold " style="">IMEI/SN:</td>
@@ -278,7 +285,7 @@
                 <td style="width: 48%; vertical-align: top; padding: 0; border: none;">
                     <div style="margin-right: 1%; margin-left: 2%;">
                         <table class="rounded-lg text-xs border" style="border-collapse: separate; border-spacing: 0;">
-                            <colgroup>
+                             <colgroup>
                                 <col style="width: 25%;">
                                 <col style="width: 75%;">
                             </colgroup>
@@ -288,10 +295,11 @@
                                         style="padding-left: 0; padding-right: 0;">Datos del Cliente</th>
                                 </tr>
                             </thead>
+                           
                             <tbody>
                                 <tr>
                                     <td class="text-primary font-semibold " style="">Cliente:</td>
-                                    <td style="padding-left: 0; padding-right: 0;">{{ $client->name }}</td>
+                                    <td style="padding-left: 0; padding-right: 0;">{{ $client->name }} {{ $client->surname }}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-primary font-semibold " style="">NIF:</td>
@@ -325,7 +333,7 @@
             </tr>
         </table>
         <!-- Información de Recepción -->
-        <div class="mb-6 table-bordered  p-info rounded-lg text-xs text-left avoid-break" >
+        <div class="mb-2 table-bordered  p-info rounded-lg text-xs text-left avoid-break">
             <h2 class="text-base font-bold text-primary border-b border-primary pb-1 mb-3 uppercase "
                 style="margin-top: 0%;">Información de Recepción</h2>
             <table class="w-full table-fixed">
@@ -363,58 +371,103 @@
 
         <!-- Conceptos y Totales -->
         <table class="w-full text-xs rounded-lg" style="border-spacing: 0;">
+            @if(!empty($invoices))
+                @foreach ($invoices as $invoice)
+                    <tr>
+                        <td><strong>Pagado - {{ $invoice->invoice_number }}</strong></td>
+                        <td style="text-align:center;"><strong>Método de Pago</strong></td>
+                        <td style="text-align:center;"><strong>{{ $invoice->paymentMethod->name }}</strong></td>
+                        <td style="text-align:center;" class="text-right">
+                            <strong>{{ number_format($invoice->total, 2, ',', '.') }}
+                                €</strong></td>
+                    </tr>
+                     <tr>
+                    @php
+                        $pendiente = \App\Http\Controllers\InvoiceController::calcularPendiente($workOrder->id);
+                    @endphp
+                    <td colspan="2">Pendiente por pagar:</td>
+                    <td></td>
+                    <td style="text-align:center;" class="text-right">{{ number_format($pendiente, 2, ',', '.') }} €
+                    </td>
+                </tr>
+                @endforeach
+               
+            @endif
             <thead class="highlight-primary">
                 <tr>
-                    <th class="rounded-tl-lg"  style="text-align:start;">Concepto</th>
-                    <th  style="text-align:center;">Base Imponible</th>
-                    <th  style="text-align:center;">I.V.A. 21%</th>
-                    <th class="rounded-tr-lg text-right"  style="text-align:center;">Total</th>
+                    <th class="rounded-tl-lg" style="text-align:start;">Concepto</th>
+                    <th style="text-align:center;">Base Imponible</th>
+                    <th style="text-align:center;">I.V.A. 21%</th>
+                    <th class="rounded-tr-lg text-right" style="text-align:center;">Total</th>
                 </tr>
             </thead>
             <tbody>
                 @php $base = 0; @endphp
-                @foreach ($items as $item)
-                    @php
-                        $precio = $item->pivot->modified_amount ?? $item->price;
-                        $ivaPorcentaje = $item->type->iva ?? 21;
-                        $baseSinIva = $precio / (1 + ($ivaPorcentaje / 100));
-                        $iva = $precio - $baseSinIva;
-                        $total = $precio;
 
-                        $base += $baseSinIva;
-                    @endphp
+                @if (empty($items))
+                    <tr>
+                        <td colspan="4" style="text-align:center;">
                     <tr class="bg-white">
-                        <td>{{ $item->name }}</td>
-                        <td style="text-align:center;">{{ number_format($baseSinIva, 2, ',', '.') }} €</td>
-                        <td style="text-align:center;">{{ number_format($iva, 2, ',', '.') }} €</td>
-                        <td  style="text-align:center;" class="text-right">{{ number_format($total, 2, ',', '.') }} €</td>
+                        <td>Sin items agregados</td>
+                        <td style="text-align:center;">0,00 €</td>
+                        <td style="text-align:center;">0,00 €</td>
+                        <td style="text-align:center;" class="text-right">0,00 €</td>
                     </tr>
-                @endforeach
-                <tr class="bg-gray-100" style="font-weight: bold;">
-                    <td class="rounded-bl-lg">Totales</td>
-                    <td  style="text-align:center;">{{ number_format($base, 2, ',', '.') }} €</td>
-                    <td  style="text-align:center;">{{ number_format($base * 0.21, 2, ',', '.') }} €</td>
-                    <td  style="text-align:center;" class="text-right rounded-br-lg">{{ number_format($base * 1.21, 2, ',', '.') }} €</td>
-                </tr>
-            </tbody>
-            
+                    </td>
+                    </tr>
+                    <tr class="bg-gray-100" style="font-weight: bold;">
+                        <td class="rounded-bl-lg">Totales</td>
+                        <td style="text-align:center;">0,00 €</td>
+                        <td style="text-align:center;">0,00 €</td>
+                        <td style="text-align:center;" class="text-right rounded-br-lg">0,00 €</td>
+                    </tr>
+                @else
+                    @foreach ($items as $item)
+                        @php
+                            $precio = $item->modified_amount ?? $item->item->price;
+                            $ivaPorcentaje = $item->type->iva ?? 21;
+                            $baseSinIva = $precio / (1 + ($ivaPorcentaje / 100));
+                            $iva = $precio - $baseSinIva;
+                            $total = $precio;
 
+                            $base += $baseSinIva;
+                        @endphp
+                        <tr class="bg-white">
+                            <td>{{ $item->item->name }}</td>
+                            <td style="text-align:center;">{{ number_format($baseSinIva, 2, ',', '.') }} €</td>
+                            <td style="text-align:center;">{{ number_format($iva, 2, ',', '.') }} €</td>
+                            <td style="text-align:center;" class="text-right">{{ number_format($total, 2, ',', '.') }} €</td>
+                        </tr>
+                    @endforeach
+                    <tr class="bg-gray-100" style="font-weight: bold;">
+                        <td class="rounded-bl-lg">Totales</td>
+                        <td style="text-align:center;">{{ number_format($base, 2, ',', '.') }} €</td>
+                        <td style="text-align:center;">{{ number_format($base * 0.21, 2, ',', '.') }} €</td>
+                        <td style="text-align:center;" class="text-right rounded-br-lg">
+                            {{ number_format($base * 1.21, 2, ',', '.') }} €
+                        </td>
+                    </tr>
+
+                @endif
+            </tbody>
         </table>
-       <footer style="position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; margin: 0%;padding: 0%;";>
-         <div
-            style="; background: white;box-sizing: border-box; padding: 10px 20px; font-family: 'Roboto', sans-serif;">
-            <div style="width: 100%; margin-left: 50%;display: flex; justify-content: end;">
-                <div
-                    style="border: 1px solid #083b5d; width: 300px; height: 60px; text-align: center; border-radius: 4px;">
-                    <p style="margin: 6px 0 0; font-size: 10px; color: #083b5d;">Firma del cliente</p>
+
+        <footer style="position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; margin: 0%;padding: 0%;" ;>
+            <div
+                style="; background: white;box-sizing: border-box; padding: 10px 20px; font-family: 'Roboto', sans-serif;">
+                <div style="width: 100%; margin-left: 50%;display: flex; justify-content: end;">
+                    <div
+                        style="border: 1px solid #083b5d; width: 300px; height: 60px; text-align: center; border-radius: 4px;">
+                        <p style="margin: 6px 0 0; font-size: 10px; color: #083b5d;">Firma del cliente</p>
+                    </div>
                 </div>
+
             </div>
-           
-        </div>
-         <div style="text-align: center;  width: 100%;">
-                <p style="font-size: 10px; color: #666; padding: 0; margin-right: 2% ;">Gracias por confiar en nosotros - {{ $globalOption->name }}</p>
+            <div style="text-align: center;  width: 100%;">
+                <p style="font-size: 10px; color: #666; padding: 0; margin-right: 2% ;">Gracias por confiar en nosotros
+                    - {{ $owner->name }}</p>
             </div>
-       </footer>
+        </footer>
     </div>
 </body>
 

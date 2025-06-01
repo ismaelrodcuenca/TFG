@@ -38,7 +38,9 @@ class BrandResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required()
+                TextInput::make('name')
+                ->required()
+                ->label(constants::NAME)
             ]);
     }
 
@@ -46,14 +48,14 @@ class BrandResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()->translateLabel(true)->sortable()
-                    ->label('Nombre')
-                    ->searchable()
+                TextColumn::make('name')->searchable()
+                ->sortable()
+                ->searchable()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-
-            ]);
+            ])
+            ->defaultSort('name', 'asc');
     }
 
     public static function getRelations(): array

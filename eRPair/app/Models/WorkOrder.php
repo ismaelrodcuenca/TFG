@@ -33,19 +33,18 @@ class WorkOrder extends Model
      */
     protected $fillable = [
         'work_order_number',
+        'work_order_number_warranty',
         'failure',
         'private_comment',
         'comment',
         'physical_condition',
         'humidity',
         'test',
-        'is_warranty',
         'user_id',
         'device_id',
-        'store_id',
-        'deliverer_id',
-        'closure_id',
         'repair_time_id',
+        'store_id',
+        'closure_id',
     ];
     /**
      * PENDIENTE DE VER SI FUNCIONA REALMENTE BIEN O NO
@@ -61,7 +60,6 @@ class WorkOrder extends Model
             if (!$store) {
                 throw new \Exception("Tienda no encontrada. \n Tienda Pedido: ". $workOrder->store_id. "\n Tienda Sesion: ". session('store_id'));
             }
-            // Asignar el número actual a la orden
             $workOrder->work_order_number = $store->work_order_number;
             });
         });
@@ -70,7 +68,7 @@ class WorkOrder extends Model
             DB::table('status_work_order')->insert([
             'work_order_id' => $workOrder->id,
             'status_id' => Status::where('name', 'pendiente')->value('id'),
-            'user_id' => auth()->user()->id,
+            'user_id' => $workOrder->user_id,
             'created_at' => now(),
             'updated_at' => now(),
             ]);
@@ -78,9 +76,9 @@ class WorkOrder extends Model
     }
 
 
-    public function items(): BelongsToMany
+    public function itemWorkOrders(): hasMany
     {
-        return $this->belongsToMany(Item::class, 'item_work_order')->withPivot('modified_amount', 'item_work_order_id');
+        return $this->hasMany(ItemWorkOrder::class);
     }
 
     public function invoices(): HasMany
@@ -88,9 +86,9 @@ class WorkOrder extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    public function closure(): BelongsTo
+    public function closure(): HasOne
     {
-        return $this->belongsTo(Closure::class);
+        return $this->hasOne(Closure::class);
     }
 
     public function user(): BelongsTo 
@@ -108,13 +106,15 @@ class WorkOrder extends Model
         return $this->belongsTo(RepairTime::class);
     }
 
-    public function statuses(): BelongsToMany
+    public function statusWorkOrders(): HasMany
     {
-        return $this->belongsToMany(Status::class)->withTimestamps();
+        return $this->hasMany(StatusWorkOrder::class);
     }
 
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);
     }
+
+
 }

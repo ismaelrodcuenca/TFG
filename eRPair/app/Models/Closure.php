@@ -29,13 +29,23 @@ class Closure extends Model
      */
     protected $fillable = ['test', 'comment', 'humidity', 'user_id'];
 
-    public function workOrder(): HasOne
+    protected static function boot()
     {
-        return $this->hasOne(WorkOrder::class);
+        parent::boot();
+
+        static::creating(function ($closure) {
+
+            $closure->user_id = auth()->user()->id;
+
+        });
+    }
+    public function workOrder(): BelongsTo
+    {
+        return $this->belongsTo(WorkOrder::class);
     }
 
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 }

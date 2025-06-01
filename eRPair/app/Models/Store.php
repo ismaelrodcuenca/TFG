@@ -31,6 +31,10 @@ class Store extends Model
     protected $fillable = [
         'name',
         'address',
+        'prefix',
+        'number',
+        'email',
+        'schedule',
         'work_order_number'
     ];
 

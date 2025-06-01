@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use app\Helpers\PermissionHelper;
 use App\Http\Middleware\EnsureStoreSelected;
 use App\Http\Middleware\ResourcesAccess;
 use Filament\Http\Middleware\Authenticate;
@@ -22,6 +23,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class DashboardPanelProvider extends PanelProvider
 {
+
     public function panel(Panel $panel): Panel
     {
         return $panel

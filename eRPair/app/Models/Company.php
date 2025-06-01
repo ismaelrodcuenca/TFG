@@ -9,6 +9,12 @@ class Company extends Model
 {
 
     /**
+     * Indica si la clave primaria es autoincremental.
+     *
+     * @var bool
+     */
+    public $incrementing = true;
+    /**
      * Especifica la tabla de la base de datos asociada con el modelo.
      *
      * @var string $table El nombre de la tabla de la base de datos.

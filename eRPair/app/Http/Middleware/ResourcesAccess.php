@@ -30,7 +30,8 @@ class ResourcesAccess
                 "types",
                 "stores",
                 "global-options",
-                "users"
+                "users",
+                "owners",
             ];
 
         $authorisedManagerURLs =
@@ -43,6 +44,18 @@ class ResourcesAccess
         $exist = in_array($currentResource, $authorisedAdminURLs);
         if (!$exist) {
             return $next($request);
+        }
+        if (PermissionHelper::isNotAdmin() && $currentResource == "users") {
+            $hasID = isset($segments[2]) && is_numeric($segments[2]);
+            $isEdit = isset($segments[3]) && $segments[3] == "edit";
+            if ($hasID) {
+                $userId = $segments[2];
+                if (auth()->user()->id == $userId) {
+                    return $next($request);
+                }
+            }else{
+                return $next($request);
+            }
         }
         if ($exist && PermissionHelper::isAdmin()) {
             return $next($request);

@@ -12,6 +12,7 @@ use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DetachAction;
+use Filament\Tables\Actions\DetachBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,30 +25,55 @@ class StoreRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form
+
             ->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
+                        ->maxLength(255)
+                        ->label("Nombre"),
+                    Forms\Components\TextInput::make('address')
+                        ->required()
+                        ->label("Dirección")
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('addres')
-                    ->required()
-                    ->maxLength(255),
-                    Forms\Components\TextInput::make('work_order_number')
-                    ->numeric()
-                    ->dehydrated(false)
+                    Forms\Components\TextInput::make('prefix')
+                        ->required()
+                        ->label("Prefijo")
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('number')
+                        ->required()
+                        ->tel()
+                        ->label('Número')
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('email')
+                        ->email()
+                        ->label('Correo Electrónico')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('schedule')
+                        ->required()
+                        ->label('Horario')
+                        ->maxLength(255),
                 ]);
-
-    }
+            }
 
     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('address'),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('prefix')
+                    ->toggleable(true, true),
+                Tables\Columns\TextColumn::make('number'),
+                Tables\Columns\TextColumn::make('schedule')
+                    ->toggleable(true, true),
             ])
             ->filters([
-                //
+
             ])
             ->headerActions([
                 CreateAction::make()
@@ -58,15 +84,12 @@ class StoreRelationManager extends RelationManager
             ->actions([
                 EditAction::make()
                 ->hidden(PermissionHelper::isNotAdmin()),
-                DeleteAction::make()
-                ->hidden(PermissionHelper::isNotAdmin()),
                 DetachAction::make()
                 ->hidden(PermissionHelper::isNotAdmin()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->hidden(PermissionHelper::isNotAdmin()),
+                    DetachBulkAction::make()->visible(PermissionHelper::isAdmin()),
                 ]),
             ]);
     }

@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class DeviceModelsRelationManager extends RelationManager
 {
     protected static string $relationship = 'device_models';
+
+    protected static ?string $title = 'Modelos';
     
     protected static ?string $label = constants::MODELO;
 
@@ -49,6 +51,7 @@ class DeviceModelsRelationManager extends RelationManager
                     ->icon('heroicon-o-pencil-square')
                     ->url(fn($record) => url("/dashboard/device-models/{$record->id}/edit"))
                     ->openUrlInNewTab(false),
-            ]);
+            ])
+            ->defaultSort('name', 'asc');
     }
 }

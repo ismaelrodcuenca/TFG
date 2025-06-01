@@ -52,5 +52,8 @@ class DeviceModel extends Model
     {
         return $this->hasMany(Device::class);
     }
-
+    public function getRecordTitleAttribute()
+    {
+        return "{$this->brand->name} - {$this->name}";
+    }
 }

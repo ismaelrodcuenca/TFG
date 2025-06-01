@@ -22,7 +22,7 @@ class StoreSelection extends Page implements HasForms
 
     public ?string $store_id = null;
     public ?string $rol_id = null;
-    
+
 
     public function mount(): void
     {
@@ -36,10 +36,22 @@ class StoreSelection extends Page implements HasForms
     }
 
 
+
     protected function getFormSchema(): array
     {
         $stores = auth()->user()->stores()->pluck('stores.name', 'stores.id')->toArray();
         $roles = auth()->user()->roles()->pluck('roles.name', 'roles.id')->toArray();
+        if (empty($stores)) {
+            $stores = ['' => 'No hay tiendas disponibles. Contacte al administrador'];
+        }
+        if (empty($roles)) {
+            $roles = ['' => 'No hay roles disponibles. Contacte al administrador'];
+        }
+        if (count($stores) === 1 && count($roles) === 1) {
+            session(['store_id' => array_key_first($stores)]);
+            session(['rol_id' => array_key_first($roles)]);
+            $this->redirect('/dashboard');
+        }
         return [
             Select::make('store_id')
                 ->label('Tienda')
@@ -51,7 +63,7 @@ class StoreSelection extends Page implements HasForms
                 ->placeholder('Selecciones un rol')
                 ->label('Rol')
                 ->options($roles)
-                ->default(array_key_first($stores) ?? null)
+                ->default(array_key_first($roles) ?? null)
                 ->required(),
         ];
     }
@@ -62,13 +74,11 @@ class StoreSelection extends Page implements HasForms
         $rolId = $this->form->getState()['rol_id'];
         session(['store_id' => $storeId]);
         session(['rol_id' => $rolId]);
-
         if (!session('store_id') || !session('rol_id')) {
             $notificationString = 'Seleccion requerida';
         }
-        $notificationString = 'Bienvenido, '.auth()->user()->name;
         Notification::make()
-            ->title('Tienda y perfil seleccionada correctamente')
+            ->title('Bienvenido, ' . auth()->user()->name)
             ->success()
             ->send();
 

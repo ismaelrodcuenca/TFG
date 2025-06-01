@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\WorkOrderResource\RelationManagers;
 
+use app\Helpers\PermissionHelper;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -13,29 +15,31 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ClosureRelationManager extends RelationManager
 {
     protected static string $relationship = 'closure';
-    
-     
+
+
+    protected static ?string $title = 'Cierre';
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-            Forms\Components\TextInput::make('test')
-                ->label('Test')
-                ->required(),
-            Forms\Components\Textarea::make('comment')
-                ->label('Comment')
-                ->required(),
-            Forms\Components\TextInput::make('humidity')
-                ->label('Humidity')
-                ->required(),
-            Forms\Components\Select::make('user_id')
-                ->label('User')
-                ->relationship('user', 'name')
-                ->required(),
+                Forms\Components\TextInput::make('test')
+                    ->label('Test')
+                    ->default("Test OK")
+                    ->required(),
+                Forms\Components\Textarea::make('comment')
+                    ->label('Comment')
+                    ->required(),
+                Forms\Components\TextInput::make('humidity')
+                    ->label('Humidity')
+                    ->default("NO se ha encontrado humedad en taller")
+                    ->required(),
+                Forms\Components\Select::make('user_id')
+                    ->hidden()
+                    ->dehydrated(true),
             ]);
-        }
+    }
 
-    
+
     public function table(Table $table): Table
     {
         return $table
@@ -57,8 +61,15 @@ class ClosureRelationManager extends RelationManager
                     ->sortable()
                     ->searchable(),
             ])
+            ->headerActions(
+                [CreateAction::make()
+            ->after(function ($record) {
+               
+            })->visible(PermissionHelper::isWorkOrderDelivered($this->getOwnerRecord()))],
+            )
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(PermissionHelper::isWorkOrderDelivered($this->getOwnerRecord())),
             ]);
     }
 }
