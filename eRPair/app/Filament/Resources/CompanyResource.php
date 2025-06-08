@@ -25,7 +25,7 @@ class CompanyResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return PermissionHelper::isAdmin();
+        return PermissionHelper::isManager();
     }
 
     public static function form(Form $form): Form

@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\WorkOrderResource\RelationManagers;
 
 use app\Helpers\PermissionHelper;
+use App\Models\Status;
+use App\Models\StatusWorkOrder;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -61,15 +63,12 @@ class ClosureRelationManager extends RelationManager
                     ->sortable()
                     ->searchable(),
             ])
-            ->headerActions(
-                [CreateAction::make()
-            ->after(function ($record) {
-               
-            })->visible(PermissionHelper::isWorkOrderDelivered($this->getOwnerRecord()))],
-            )
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(PermissionHelper::isWorkOrderDelivered($this->getOwnerRecord())),
+                    ->visible(PermissionHelper::canClosureBeEdited($this->getOwnerRecord()))
+                    ->after(function(){
+
+                    }),
             ]);
     }
 }

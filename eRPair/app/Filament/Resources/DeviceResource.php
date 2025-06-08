@@ -176,10 +176,12 @@ class DeviceResource extends Resource
                     ->label('Brand')
                     ->sortable()
                     ->searchable()
+                    ->alignCenter()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('model.name')
                     ->label(constants::MODELO)
                     ->sortable()
+                    ->alignCenter()
                     ->searchable()
                     ->toggleable(),
                 IconColumn::make('has_no_serial_or_imei')
@@ -187,11 +189,13 @@ class DeviceResource extends Resource
                     ->icon(fn($state): ?string => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
                     ->label('No SN o IMEI')
                     ->toggleable()
-                    ->alignment(Alignment::Center),
+                    ->searchable()
+                    ->alignCenter(),
                     
                 Tables\Columns\TextColumn::make('client.document')
                     ->label(constants::CLIENT)
                     ->sortable()
+                    ->alignCenter()
                     ->state(function ($record) {
                         if (!$record->client) {
                             return 'Sin cliente';
@@ -205,27 +209,32 @@ class DeviceResource extends Resource
                 Tables\Columns\TextColumn::make('serial_number')
                     ->label(constants::SERIAL_NUMBER)
                     ->sortable()
+                    ->alignCenter()
                     ->searchable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('IMEI')
                     ->label(constants::IMEI)
                     ->sortable()
                     ->searchable()
+                    ->alignCenter()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('colour')
                     ->label(constants::COLOUR)
                     ->sortable()
                     ->searchable()
+                    ->alignCenter()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('unlock_code')
                     ->label(constants::UNLOCK_CODE)
                     ->sortable()
                     ->searchable()
+                    ->alignCenter()
                     ->toggleable(true, true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->sortable()
                     ->searchable()
+                    ->alignCenter()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')

@@ -45,6 +45,10 @@ class Device extends Model
     protected $casts = ['has_no_serial_or_imei' => 'boolean'];
 
 
+    public function setColourAttribute($value)
+    {
+        $this->attributes['colour'] = strtoupper($value);
+    }
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);

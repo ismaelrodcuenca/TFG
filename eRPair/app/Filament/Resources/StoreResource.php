@@ -40,10 +40,6 @@ class StoreResource extends Resource
                         ->required()
                         ->label('Dirección')
                         ->maxLength(255),
-                    Forms\Components\Toggle::make('active')
-                        ->label('¿Activa?')
-                        ->default(true)
-                        ->required(),
                     Forms\Components\TextInput::make('prefix')
                         ->required()
                         ->label('Prefijo')
@@ -54,13 +50,17 @@ class StoreResource extends Resource
                         ->maxLength(255),
                     Forms\Components\TextInput::make('email')
                         ->email()
-                        ->lable("Email")
+                        ->label("Email")
                         ->required()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('schedule')
                         ->label('Horario')
                         ->required()
                         ->maxLength(255),
+                         Forms\Components\Toggle::make('active')
+                        ->label('¿Activa?')
+                        ->default(true)
+                        ->required(),
                 ]);
 
     }

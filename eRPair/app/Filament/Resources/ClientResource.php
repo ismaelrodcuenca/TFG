@@ -30,12 +30,12 @@ class ClientResource extends Resource
     } 
     public static function getGloballySearchableAttributes(): array
     {
-        return [
+        return PermissionHelper::hasRole() ? [
             'document',
             'name',
             'surname',
             'phone_number'
-        ];
+        ] : [];
     }
     public static function getGlobalSearchResultDetails(Model $record): array
     {

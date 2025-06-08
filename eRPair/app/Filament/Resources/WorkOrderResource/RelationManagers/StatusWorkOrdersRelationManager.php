@@ -23,34 +23,26 @@ class StatusWorkOrdersRelationManager extends RelationManager
                 Forms\Components\Select::make('status_id')
                     ->label('Estado')
                     ->relationship('status', 'name')
-                    ->required(), Forms\Components\Select::make('work_order_id')
+                    ->required(),
+                    Forms\Components\Select::make('work_order_id')
                     ->default($this->ownerRecord->id)
                     ->hidden(),
             ]);
     }
 
-    public function table(Table $table): Table
-    {
-        return $table
-            ->recordTitleAttribute('id')
-            ->columns([
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('status.name'),
-                Tables\Columns\TextColumn::make('user.name'),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                Tables\Actions\AttachAction::make("Agregar Estado")
-                ->visible(function(){
-                    $hasClosure = $this->getOwnerRecord()->closure()->exists();
-                    return PermissionHelper::isTechnician() && !$hasClosure;
-                } ),
-            ])
-            ->defaultSort('created_at', 'desc');
+        public function table(Table $table): Table
+        {
+            return $table
+                ->recordTitleAttribute('id')
+                ->columns([
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->label('Fecha de creación')
+                        ->dateTime(),
+                    Tables\Columns\TextColumn::make('status.name')
+                        ->label('Estado'),
+                    Tables\Columns\TextColumn::make('user.name')
+                        ->label('Usuario'),
+                ])
+                ->defaultSort('created_at', 'desc');
+        }
     }
-}

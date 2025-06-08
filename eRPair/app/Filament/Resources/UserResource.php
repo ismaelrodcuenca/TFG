@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\RelationManagers\RolesRelationManager;
 use App\Filament\Resources\UserResource\RelationManagers\StoreRelationManager;
 use App\Helpers\PermissionHelper;
 use App\Models\User;
@@ -32,7 +33,13 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+        public static function getNavigationIcon(): ?string
+        {
+            if(PermissionHelper::isNotAdmin()){
+                return 'heroicon-s-user-circle';
+            } 
+            return 'heroicon-s-user-group';
+        }
 
     public static function getLabel(): string
     {
@@ -42,7 +49,6 @@ class UserResource extends Resource
         return "Mi Usuario ";
     }
 
-    protected static ?string $navigationGroup = 'Recursos';
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -145,6 +151,7 @@ class UserResource extends Resource
     {
         return [
             StoreRelationManager::class,
+            RolesRelationManager::class,
         ];
     }
 

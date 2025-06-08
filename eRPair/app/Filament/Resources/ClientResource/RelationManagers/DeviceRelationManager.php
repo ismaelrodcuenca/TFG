@@ -202,9 +202,11 @@ class DeviceRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('model.name')
                     ->label(constants::MODELO),
                 Tables\Columns\TextColumn::make('serial_number')
-                    ->label(constants::SERIAL_NUMBER),
+                    ->label(constants::SERIAL_NUMBER)
+                    ->default('Sin Serial'),
                 Tables\Columns\TextColumn::make('IMEI')
-                    ->label(constants::IMEI),
+                    ->label(constants::IMEI)
+                    ->default('Sin IMEI'),
                 Tables\Columns\TextColumn::make('colour')
                     ->label(constants::COLOUR),
                 Tables\Columns\TextColumn::make('unlock_code')

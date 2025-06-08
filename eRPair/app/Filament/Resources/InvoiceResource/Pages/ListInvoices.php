@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\InvoiceResource\Pages;
 
+use App\Filament\Exports\InvoiceExporter;
 use App\Filament\Resources\InvoiceResource;
+use app\Helpers\PermissionHelper;
 use Filament\Actions;
+use Filament\Actions\ExportAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListInvoices extends ListRecords
@@ -13,7 +16,14 @@ class ListInvoices extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            ExportAction::make()
+            ->visible(PermissionHelper::isAdmin())
+                ->exporter(InvoiceExporter::class)
+                ->modifyQueryUsing(
+                    fn($query) =>
+                    $query->whereMonth('created_at', now()->month)
+                        ->whereYear('created_at', now()->year)
+                )
         ];
     }
 }

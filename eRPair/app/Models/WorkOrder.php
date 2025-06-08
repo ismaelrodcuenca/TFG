@@ -46,11 +46,32 @@ class WorkOrder extends Model
         'store_id',
         'closure_id',
     ];
-    /**
-     * PENDIENTE DE VER SI FUNCIONA REALMENTE BIEN O NO
-     * 
-     * Antes de realiza la inserccion en la BBDD, bloquea el recurso de Store a la que pertenece este WorkOrder para settearle el work_order_number de la tienda y posteriormente incrementarlo en la misma. 
-     */
+    
+    public function setFailureAttribute($value)
+    {
+        $this->attributes['failure'] = strtoupper($value);
+    }
+
+    public function setPrivateCommentAttribute($value)
+    {
+        $this->attributes['private_comment'] = strtoupper($value);
+    }
+
+    public function setCommentAttribute($value)
+    {
+        $this->attributes['comment'] = strtoupper($value);
+    }
+
+    public function setHumidityAttribute($value)
+    {
+        $this->attributes['humidity'] = strtoupper($value);
+    }
+
+    public function setTestAttribute($value)
+    {
+        $this->attributes['test'] = strtoupper($value);
+    }
+
     protected static function booted()
     {
         static::creating(function ($workOrder) {

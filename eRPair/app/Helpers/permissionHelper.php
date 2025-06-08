@@ -27,6 +27,11 @@ class PermissionHelper
     {
         return session('rol_id') != 0;
     }
+
+    public static function isDeveloper(): bool
+    {
+        return self::actualRol() === DEVELOPER_ROL;
+    }
     /**
      * Check if the current user has administrative privileges.
      *
@@ -37,6 +42,7 @@ class PermissionHelper
      */
     public static function isAdmin(): bool
     {
+        //dd(self::actualRol());
         return in_array(self::actualRol(), [ADMIN_ROL]);
     }
     /**
@@ -48,7 +54,10 @@ class PermissionHelper
     {
         return in_array(self::actualRol(), [TECHNICIAN_ROL, ADMIN_ROL]);
     }
-
+    public static function isStrictlyTechnician(): bool
+    {
+        return self::actualRol() === TECHNICIAN_ROL;
+    }
     /**
      * Checks if the current user has manager or upperlevel of permissions.
      *
@@ -111,6 +120,11 @@ class PermissionHelper
         return !self::isTechnician();
     }
 
+    public static function isNotStrictlyTechnician(): bool
+    {
+        return !self::isStrictlyTechnician();
+    }
+
     /**
      * Checks if the current user does not have manager or upper-level permissions.
      *
@@ -148,20 +162,66 @@ class PermissionHelper
     ];
 
     const CAN_ADD_WARRANTY_STATES = [
-        'ENTREGADO',
-        'FACTURADO',
+        'ENTREGADO'
     ];
 
     const CANT_CANCEL_STATES = [
         'FACTURADO',
         'ENTREGADO',
         'CANCELADO',
-        'DEVOLUCIÓN COMPLETADA',
+        'DEVOLUCIÓN COMPLETA',
     ];
     const CANT_BE_BILLED_STATES = [
         'ENTREGADO',
         'FACTURADO',
         'CANCELADO',
+        'DEVOLUCIÓN COMPLETA',
+        'DEVOLUCION PARCIAL',
+    ];
+
+    const CANT_ADD_CLOSURE = [
+        'PENDIENTE',
+        'PENDIENTE DE PIEZA',
+        'COMPLETADO',
+        'ENTREGADO',
+        'FACTURADO',
+        'CANCELADO',
+        'DEVOLUCIÓN COMPLETA',
+        'DEVOLUCION PARCIAL',
+    ];
+
+    const CANT_ADD_BACKORDER= [
+        'PENDIENTE DE PIEZA',
+        'COMPLETADO',
+        'ENTREGADO',
+        'FACTURADO',
+        'CANCELADO',
+        'DEVOLUCIÓN COMPLETA',
+        'DEVOLUCION PARCIAL',
+    ];
+    const INVOICE_CAN_BE_SEEN_STATES = [
+        'ENTREGADO',
+        'FACTURADO',
+        'CANCELADO',
+        'DEVOLUCIÓN COMPLETA',
+        'DEVOLUCION PARCIAL',
+    ];
+
+    const CANT_BE_ASSIGNED_STATES = [
+        'ENTREGADO',
+        'FACTURADO',
+        'CANCELADO',
+        'DEVOLUCIÓN COMPLETA',
+        'DEVOLUCION PARCIAL',
+    ];
+    const CANT_BE_REPAIRED_STATES = [
+        'PENDIENTE DE PIEZA',
+        'COMPLETADO',
+        'ENTREGADO',
+        'FACTURADO',
+        'CANCELADO',
+        'DEVOLUCIÓN COMPLETA',
+        'DEVOLUCION PARCIAL',
     ];
 
     public static function isOutsideStore($record): bool
@@ -195,15 +255,6 @@ class PermissionHelper
         return $status !== "PENDIENTE";
     }
 
-    public static function isWorkOrderInvoiced($workOrderRecord): bool
-    {
-        $status = $workOrderRecord->statusWorkOrders->last()->status->name ?? 'SIN ESTADO';
-        if ($status === "FACTURADO" || $status === "ENTREGADO") {
-            return true;
-        }
-        return false;
-    }
-
     public static function infoNotification($workOrderRecord): void
     {
         $isWarranty = $workOrderRecord->is_warranty ? "Sí" : "No";
@@ -229,12 +280,11 @@ class PermissionHelper
 
         $infoNotification->send();
         if (self::isOutsideStore($workOrderRecord)) {
-
             $editNotification->body('No se puede editar un pedido fuera de la tienda asignada.')
                 ->send();
         }
 
-        if (self::isWorkOrderProcessed($workOrderRecord)) {
+        if (!self::canBeCanceled($workOrderRecord)) {
             $editNotification->body('No se puede editar un pedido que ya ha sido procesado o que está fuera del tiempo permitido.')
                 ->send();
         }
@@ -244,43 +294,6 @@ class PermissionHelper
                 ->send();
         }
     }
-
-    public static function optionsAvailableOnWorkOrder($workOrderRecord): bool
-    {
-        if (self::isOutsideStore($workOrderRecord)) {
-            return true;
-        }
-
-        if (self::isWorkOrderProcessed($workOrderRecord)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static function isWorkOrderEditable($workOrderRecord): bool
-    {
-
-        if (self::isOutsideStore($workOrderRecord)) {
-            return true;
-        }
-
-        if (self::isWorkOrderProcessed($workOrderRecord)) {
-            return true;
-        }
-
-        if (self::isWorkOrderTooOld($workOrderRecord)) {
-            return true;
-        }
-
-        return false;
-    }
-    public function isWorkOrderFinished($workOrderRecord): bool
-    {
-        $status = $workOrderRecord->statusWorkOrders->last()->status->name;
-        return in_array($status, ['ENTREGADO', 'FACTURADO', 'CANCELADO', 'DEVOLUCION REALIZADA']);
-    }
-
     public static function isRefundAvailable($workOrderRecord): bool
     {
         $invoices = Invoice::where('work_order_id', $workOrderRecord->id)->count();
@@ -301,26 +314,31 @@ class PermissionHelper
         return !$items > 0;
     }
 
-    public static function isItemsOptionsAvailable($workOrderRecord): bool
+
+    public static function canBeRepaired($workOrderRecord): bool
     {
+        $last = self::lastStatus($workOrderRecord);
         if (self::isOutsideStore($workOrderRecord)) {
-            return true;
+            return false;
         }
-
-        if (self::isWorkOrderProcessed($workOrderRecord)) {
-            return true;
+        if (self::isNotStrictlyTechnician()) {
+            return false;
         }
-
-        return false;
+        if (in_array($last, self::CANT_ADD_CLOSURE)) {
+            return false;
+        }
+        return true;
     }
-
-    public static function isWorkOrderDelivered($workOrderRecord): bool
+    public static function canClosureBeEdited($workOrderRecord): bool
     {
-        $status = $workOrderRecord->statusWorkOrders->last()->status->name ?? 'SIN ESTADO';
-        if ($status === "ENTREGADO" || $status === "FACTURADO") {
-            return true;
+        $last = self::lastStatus($workOrderRecord);
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
         }
-        return false;
+        if (self::isNotStrictlyTechnician()) {
+            return false;
+        }
+        return self::canBeCanceled($workOrderRecord);
     }
 
     public static function lastStatus($workOrderRecord): string
@@ -328,9 +346,52 @@ class PermissionHelper
         $status = $workOrderRecord->statusWorkOrders->last()->status->name ?? 'SIN ESTADO';
         return $status;
     }
-    public static function canBeCanceled($workOrderRecord)
+
+    public static function canBeAssigned($workOrderRecord): bool
     {
         $last = self::lastStatus($workOrderRecord);
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
+        }
+        if (self::isNotStrictlyTechnician()) {
+            return false;
+        }
+        $lastOwner = $workOrderRecord->statusWorkOrders->last()->user->id ?? false;
+        if($last === "EN REPARACIÓN" && $lastOwner === auth()->user()->id){
+            return false;
+        }
+        if ( in_array($last, self::CANT_BE_ASSIGNED_STATES)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function canBeBackorder($workOrderRecord): bool
+    {
+        $last = self::lastStatus($workOrderRecord);
+        if($last === "PENDIENTE DE PIEZA"){
+            return false;
+        }
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
+        }
+        if (self::isNotStrictlyTechnician()) {
+            return false;
+        }
+        if(in_array($last, self::INVOICE_CAN_BE_SEEN_STATES) || $last === "PENDIENTE"){
+            return false;
+        }
+        $lastOwner = $workOrderRecord->statusWorkOrders->last()->user->id ?? false;
+        if ($lastOwner === auth()->user()->id && !in_array($last, self::CANT_ADD_BACKORDER)) {
+            return true;
+        }
+        return false;
+    }
+    public static function canBeCanceled($workOrderRecord)
+    {
+
+        $last = self::lastStatus($workOrderRecord);
+
         if (in_array($last, self::CANT_CANCEL_STATES)) {
             return false;
         }
@@ -340,7 +401,10 @@ class PermissionHelper
 
     public static function canAddWarranty($workOrderRecord): bool
     {
-        if(self::isOutsideStore($workOrderRecord)) {
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
+        }
+        if (self::isStrictlyTechnician()) {
             return false;
         }
         $last = self::lastStatus($workOrderRecord);
@@ -355,31 +419,46 @@ class PermissionHelper
         if (self::isOutsideStore($workOrderRecord)) {
             return false;
         }
-       return self::canBeCanceled($workOrderRecord);
+        if ($workOrderRecord->work_order_number_warranty != null) {
+            return false;
+        }
+        return self::canBeCanceled($workOrderRecord);
     }
 
     public static function canBeBilled($workOrderRecord): bool
     {
-        if(self::isOutsideStore($workOrderRecord)) {
+        if (self::isOutsideStore($workOrderRecord)) {
             return false;
         }
-       $last = self::lastStatus($workOrderRecord);
-        
+        if (self::isStrictlyTechnician()) {
+            return false;
+        }
+        if (InvoiceController::isFullyPayed($workOrderRecord->id)) {
+            return false;
+        }
+        $last = self::lastStatus($workOrderRecord);
+
         return !in_array($last, self::CANT_BE_BILLED_STATES);
     }
 
     public static function canBeRefunded($workOrderRecord): bool
     {
-        if(self::isOutsideStore($workOrderRecord)) {
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
+        }
+        if (self::isStrictlyTechnician()) {
+            return false;
+        }
+        if (InvoiceController::isFullyRefunded($workOrderRecord->id)) {
             return false;
         }
         $hasNoInvoices = Invoice::where('work_order_id', $workOrderRecord->id)->doesntExist();
-       
+
         $last = self::lastStatus($workOrderRecord);
         //Si tiene total devuelto != total facturado.
         $isNotFullyRefunded = !InvoiceController::isFullyRefunded($workOrderRecord->id);
-        
-        return  $isNotFullyRefunded && $hasNoInvoices ;
+
+        return $isNotFullyRefunded || $hasNoInvoices;
     }
 
     public static function canBeEdited($workOrderRecord): bool
@@ -388,20 +467,54 @@ class PermissionHelper
             return false;
         }
 
-        if (self::isWorkOrderTooOld($workOrderRecord)) {
+        if (!self::isWorkOrderTooOld($workOrderRecord)) {
             return false;
         }
 
         return true;
     }
 
-    public static function canBeDelivered($workOrderRecord): bool
+    public static function canBeDelivered($workOrderRecord = null): bool
     {
-        if(self::isOutsideStore($workOrderRecord)) {
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
+        }
+        if(self::isStrictlyTechnician()){
             return false;
         }
         $isFullyPayed = InvoiceController::isFullyPayed($workOrderRecord->id);
         $canDeliver = in_array(self::lastStatus($workOrderRecord), self::CAN_DELIVER_STATES);
         return $isFullyPayed && $canDeliver;
     }
+
+    public static function canCreateClosure($workOrderRecord): bool
+    {
+        $last = self::lastStatus($workOrderRecord);
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
+        }
+
+        if ($workOrderRecord->closure_id != null) {
+            return false;
+        }
+
+        if (self::isNotStrictlyTechnician()) {
+            return false;
+        }
+
+        if(in_array($last, self::CANT_ADD_CLOSURE)){
+            return false;
+        }
+        return true;
+    }
+
+    public static function hasBeenBilled($workOrderRecord): bool
+    {
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
+        }
+        $last = self::lastStatus($workOrderRecord);
+        return in_array($last, self::INVOICE_CAN_BE_SEEN_STATES) && $workOrderRecord->invoices->count() > 0;
+    }
+
 }

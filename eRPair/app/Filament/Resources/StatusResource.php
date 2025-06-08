@@ -28,9 +28,9 @@ class StatusResource extends Resource
     public static ?string $navigationGroup = 'Miscelanea';
     protected static ?string $label = 'Estado';
 
-    public static function shouldRegisterNavigation(): bool
+   public static function shouldRegisterNavigation(): bool
     {
-        return PermissionHelper::isAdmin();
+        return PermissionHelper::isDeveloper();
     }
     public static function form(Form $form): Form
     {

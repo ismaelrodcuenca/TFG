@@ -47,7 +47,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'active' => 'boolean',
         ];
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
     }
 
     public function stores(): BelongsToMany
@@ -55,14 +61,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Store::class, 'store_user');
     }
 
-    public function roles(): BelongsToMany
+    public function rolUser(): HasMany
     {
-        return $this->belongsToMany(Rol::class);
-    }
-
-    public function deliver(): HasMany
-    {
-        return $this->hasMany(Delivery::class);
+        return $this->hasMany(RolUser::class);
     }
 
     public function closures(): HasMany

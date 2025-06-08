@@ -6,6 +6,7 @@ use App\Filament\Resources\CashDeskResource\Pages;
 use App\Filament\Resources\CashDeskResource\RelationManagers;
 use App\Helpers\PermissionHelper;
 use App\Models\CashDesk;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
@@ -32,65 +33,19 @@ class CashDeskResource extends Resource
     {
         return $form
             ->schema([
-                Group::make()
-                    ->schema([
-                        /**
-                         * @category POSIBLE CAGADA
-                         */
-                        /**
-                         * @todo Logica calculo
-                         */
-                        Forms\Components\TextInput::make('measured_cash_amount')
-                            ->label('CALCULARLO')
-                            ->numeric()
-                            ->required(),
-                        /**
-                         * @todo Logica calculo
-                         */
-                        Forms\Components\TextInput::make('measured_card_amount')
-                            ->label('CALCULARLO')
-                            ->numeric()
-                            ->required(),
-                        /**
-                         * @todo Logica calculo
-                         */
-                        Forms\Components\TextInput::make('difference_in_cash_amount')
-                            ->label('CALCULARLO')
-                            ->numeric()
-                            ->required(),
-                        /**
-                         * @todo Logica calculo
-                         */
-                        Forms\Components\TextInput::make('difference_in_card_amount')
-                            ->label('CALCULARLO')
-                            ->numeric()
-                            ->required(),
-                        //USER LISTO
-                        Forms\Components\Select::make('user_id')
-                            ->label('User')
-                            ->relationship('user', 'name')
-                            ->required()
-                            ->default(auth()->user()->id),
-                        //STORE LISTA
-                        Forms\Components\Select::make('store_id')
-                            ->label('Store')
-                            ->relationship('store', 'name')
-                            ->required()
-                            ->default(session()->get('store_id')),
-                    ])
-                    ->hidden(),
+               
                 Group::make()
                     ->schema([
                         Forms\Components\TextInput::make('cash_float')
-                            ->label('Cash Float')
+                            ->label('Fondo')
                             ->numeric()
                             ->required(),
                         Forms\Components\TextInput::make('cash_amount')
-                            ->label('Cash Amount')
+                            ->label('Efectivo Contabilizado')
                             ->numeric()
                             ->required(),
                         Forms\Components\TextInput::make('card_amount')
-                            ->label('Card Amount')
+                            ->label('Totales datáfono')
                             ->numeric()
                             ->required(),
                         
@@ -107,41 +62,47 @@ class CashDeskResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha Cierre')
-                    ->dateTime('Y-m-d'),
+                    ->alignCenter()
+                    ->dateTime('Y/m/d - H:i'),
                 Tables\Columns\TextColumn::make('cash_float')
-                    ->label('Fondo'),
+                    ->label('Fondo')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('cash_amount')
-                    ->label('Efectivo'),
+                    ->label('Efectivo')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('card_amount')
-                    ->label('Tarjeta'),
+                    ->label('Tarjeta')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('measured_cash_amount')
-                    ->label('Ef. contado'),
+                    ->label('Ef. contado')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('measured_card_amount')
-                    ->label('Tar.contada'),
+                    ->label('Tar. contada')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('difference_in_cash_amount')
+                    ->alignCenter()
                     ->label('Diff. efectivo'),
                 Tables\Columns\TextColumn::make('difference_in_card_amount')
+                    ->alignCenter()
                     ->label('Diff. tarjeta'),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Creado por'),
+                    ->label('Creado por')
+                    ->alignCenter(),
             ])
             ->filters([
                 Filter::make('created_at')
-                    ->label('Created At')
+                    ->label('Fecha de Cierre')
                     ->default(now()->subDay()->format('Y-m-d')),
                 Filter::make('store_id')
                     ->default(session()->get('store_id'))
                     ->hidden(),
-
             ])
-            ->actions([
-            ])
-            ->query(function (Builder $query) {
-                if (PermissionHelper::isAdmin()) {
-                    return CashDesk::query();
+            ->query(function () {
+                if (PermissionHelper::isNotAdmin() && CashDesk::count() > 0) {
+                    return CashDesk::query()
+                        ->where('store_id', session('store_id'));
                 }
-                return CashDesk::query()->where('store_id', session()->get('store_id'))
-                ->latest('created_at')->first();
+                return CashDesk::query();
             })
             ->defaultSort('created_at', 'desc');
     }
@@ -156,7 +117,9 @@ class CashDeskResource extends Resource
     public static function getPages(): array
     {
         return [
+
             'index' => Pages\ListCashDesks::route('/'),
+            
             'create' => Pages\CreateCashDesk::route('/create'),
         ];
     }

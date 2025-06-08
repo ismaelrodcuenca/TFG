@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Closure;
 use App\Models\Owner;
 use App\Models\WorkOrder;
 use Dompdf\Options;
 use Dompdf\Dompdf;
 class WorkOrderController
 {
-    public function generateWorkOrderPDF(int $workOrderID)
+    public function generateWorkOrderPDF($workOrderID)
     {
 
         $workOrder = WorkOrder::findOrFail($workOrderID);
@@ -17,6 +18,13 @@ class WorkOrderController
         foreach ($itemsWorkOrder as $item) {
            $items[] = $item;
         } 
+        if($workOrder->closure){
+            $tipo = "Factura - ";
+        }
+        else{
+            $tipo = "Hoja de Trabajo - ";
+        }
+        $closure = Closure::where('work_order_id', $workOrder->id)->orderBy('created_at', 'desc')->first();
         $device = $workOrder->device;
         $store = $workOrder->store;
         $client = $device?->client;
@@ -28,7 +36,7 @@ class WorkOrderController
         $dompdf = new Dompdf($options);
         $dompdf->setPaper('A4', 'portrait');
         $html = view('work_orders.work_order', [
-            'tipo_documento' => 'Nº Hoja de Trabajo: ' . $workOrder->id,
+            'tipo_documento' => $tipo . $workOrder->id,
             'workOrder' => $workOrder,
             'items' => $items,
             'device' => $device,
@@ -37,6 +45,7 @@ class WorkOrderController
             'client' => $client,
             'repairTime' => $repairTime,
             'owner' => $owner,
+            'closure'=> $closure,
         ])->render();
 
         // Cargar el HTML en Dompdf

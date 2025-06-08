@@ -39,6 +39,20 @@ class Closure extends Model
 
         });
     }
+    public function setTestAttribute($value)
+    {
+        $this->attributes['test'] = strtoupper($value);
+    }
+
+    public function setCommentAttribute($value)
+    {
+        $this->attributes['comment'] = strtoupper($value);
+    }
+
+    public function setHumidityAttribute($value)
+    {
+        $this->attributes['humidity'] = strtoupper($value);
+    }
     public function workOrder(): BelongsTo
     {
         return $this->belongsTo(WorkOrder::class);

@@ -31,7 +31,7 @@ class RolResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return PermissionHelper::isAdmin();
+        return PermissionHelper::isDeveloper();
     }
     public static function form(Form $form): Form
     {

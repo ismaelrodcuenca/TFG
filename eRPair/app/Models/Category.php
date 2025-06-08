@@ -30,6 +30,10 @@ class Category extends Model
      */
     protected $fillable = ['name', 'tax_id'];
 
+    public function getNameAttribute($value)
+    {
+        return $this->attributes['name'] = strtoupper($value);
+    }
 
     public function canAccessFilament(): bool
     {

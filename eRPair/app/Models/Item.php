@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Arr;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,26 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Item extends Model
 {
-
-    /**
-     * Especifica la tabla de la base de datos asociada con el modelo.
-     *
-     * @var string $table El nombre de la tabla de la base de datos.
-     */
     protected $table = "items";
-
-    /**
-     * Propiedad protegida que define los atributos que no pueden ser asignados masivamente.
-     * 
-     * @var array $guarded Atributos protegidos contra asignación masiva.
-     */
     protected $guarded = ['id'];
-
-    /**
-     * Propiedad protegida que define los atributos que pueden ser asignados masivamente.
-     * 
-     * @var array $fillable Atributos permitidos para asignación masiva.
-     */
     protected $fillable = [
         'name',
         'cost',
@@ -38,28 +21,51 @@ class Item extends Model
         'type_id',
         'category_id'
     ];
-
-    protected static function boot()
+    public static function boot()
     {
-        //deja boot tal cual 
         parent::boot();
 
         static::created(function ($item) {
-            if ($item->link_to_stores) {
-               $stores = Store::all();
-                foreach ($stores as $store) {
-                    $item->stores()->attach($store->id, ['quantity' => 0]);
-                } 
-            }
-            
-            if ($item->link_item_device_model) {
-                $deviceModelId = request()->input('device_model_id');
-                if ($deviceModelId) {
-                    $item->deviceModels()->syncWithoutDetaching([$deviceModelId]);
+
+            $components = request()->input('components', []);
+            //dd($components);
+            $formData = [];
+            if (!empty($components) && isset($components[0]['snapshot'])) {
+                try {
+                    $snapshot = json_decode($components[0]['snapshot'], true);
+                  
+                    $formData = Arr::get($snapshot, 'data.data.0', []);
+                } catch (\Throwable $e) {
+                   
+                    $formData = [];
                 }
             }
+            $linkToStores = Arr::get($formData, 'link_to_stores', false);
+            $linkToDevice = Arr::get($formData, 'link_item_device_model', false);
+            $deviceModelId = Arr::get($formData, 'device_model_id', null);
+            //dd( $linkToDevice, $deviceModelId);
+            if ($linkToStores) {
+                $allStores = Store::all();
+                foreach ($allStores as $store) {
+                    $item->stores()->attach($store->id, ['quantity' => 0]);
+                }
+            }
+            if ($linkToDevice && $deviceModelId) {
+                $item->deviceModels()->syncWithoutDetaching([$deviceModelId]);
+            }
         });
+
     }
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
+
+    public function setDistributorAttribute($value)
+    {
+        $this->attributes['distributor'] = strtoupper($value);
+    }
+
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class);
@@ -86,9 +92,9 @@ class Item extends Model
     }
 
     //NO SE VA A USAR. 
-    public function invoices(): BelongsToMany
+    public function invoiceItems(): HasMany
     {
-        return $this->belongsToMany(Invoice::class);
+        return $this->hasMany(InvoiceItem::class);
     }
 
     public function workOrders(): HasMany

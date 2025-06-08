@@ -1,3 +1,9 @@
+<?php
+
+use App\Http\Controllers\InvoiceController;
+use app\Helpers\PermissionHelper;
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -33,6 +39,37 @@
             border-radius: 0.4rem;
         }
 
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 0.75rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mt-5 {
+            margin-top: 1.25rem;
+        }
+
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+
+        .mt-8 {
+            margin-top: 2rem;
+        }
+
+        .mt-0 {
+            margin-top: 0;
+        }
 
         .mb-4 {
             margin-bottom: 1rem;
@@ -285,7 +322,7 @@
                 <td style="width: 48%; vertical-align: top; padding: 0; border: none;">
                     <div style="margin-right: 1%; margin-left: 2%;">
                         <table class="rounded-lg text-xs border" style="border-collapse: separate; border-spacing: 0;">
-                             <colgroup>
+                            <colgroup>
                                 <col style="width: 25%;">
                                 <col style="width: 75%;">
                             </colgroup>
@@ -295,11 +332,13 @@
                                         style="padding-left: 0; padding-right: 0;">Datos del Cliente</th>
                                 </tr>
                             </thead>
-                           
+
                             <tbody>
                                 <tr>
                                     <td class="text-primary font-semibold " style="">Cliente:</td>
-                                    <td style="padding-left: 0; padding-right: 0;">{{ $client->name }} {{ $client->surname }}</td>
+                                    <td style="padding-left: 0; padding-right: 0;">{{ $client->name }}
+                                        {{ $client->surname }}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="text-primary font-semibold " style="">NIF:</td>
@@ -368,32 +407,38 @@
             </table>
         </div>
 
+        @if ($closure != null)
+            <!-- Información de Recepción -->
+            <div class="mb-2 table-bordered  p-info rounded-lg text-xs text-left avoid-break">
+                <h2 class="text-base font-bold text-primary border-b border-primary pb-1 mb-3 uppercase "
+                    style="margin-top: 0%;">Información de Cierre</h2>
+                <table class="w-full table-fixed">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 75%;">
+                    </colgroup>
+                    <tbody>
+                        <tr class="border-b border-gray-200">
+                            <td class="w-32 font-semibold text-primary align-top pr-2">TEST:</td>
+                            <td>{{ $closure->test ?? '—' }}</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="font-semibold text-primary align-top pr-2">COMENTARIO:</td>
+                            <td>{{ $closure->comment ?? '—' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold text-primary align-top pr-2">HUMEDAD:</td>
+                            <td>{{ $closure->humidity ?? '—' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        @endif
 
         <!-- Conceptos y Totales -->
         <table class="w-full text-xs rounded-lg" style="border-spacing: 0;">
-            @if(!empty($invoices))
-                @foreach ($invoices as $invoice)
-                    <tr>
-                        <td><strong>Pagado - {{ $invoice->invoice_number }}</strong></td>
-                        <td style="text-align:center;"><strong>Método de Pago</strong></td>
-                        <td style="text-align:center;"><strong>{{ $invoice->paymentMethod->name }}</strong></td>
-                        <td style="text-align:center;" class="text-right">
-                            <strong>{{ number_format($invoice->total, 2, ',', '.') }}
-                                €</strong></td>
-                    </tr>
-                     <tr>
-                    @php
-                        $pendiente = \App\Http\Controllers\InvoiceController::calcularPendiente($workOrder->id);
-                    @endphp
-                    <td colspan="2">Pendiente por pagar:</td>
-                    <td></td>
-                    <td style="text-align:center;" class="text-right">{{ number_format($pendiente, 2, ',', '.') }} €
-                    </td>
-                </tr>
-                @endforeach
-               
-            @endif
-            <thead class="highlight-primary">
+            <thead class="highlight-primary mt-2">
                 <tr>
                     <th class="rounded-tl-lg" style="text-align:start;">Concepto</th>
                     <th style="text-align:center;">Base Imponible</th>
@@ -452,21 +497,77 @@
             </tbody>
         </table>
 
-        <footer style="position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; margin: 0%;padding: 0%;" ;>
-            <div
-                style="; background: white;box-sizing: border-box; padding: 10px 20px; font-family: 'Roboto', sans-serif;">
-                <div style="width: 100%; margin-left: 50%;display: flex; justify-content: end;">
-                    <div
-                        style="border: 1px solid #083b5d; width: 300px; height: 60px; text-align: center; border-radius: 4px;">
-                        <p style="margin: 6px 0 0; font-size: 10px; color: #083b5d;">Firma del cliente</p>
-                    </div>
-                </div>
+        @if(!empty($invoices))
+            <div style="margin-top: 24px;">
+                <table class="w-full text-xs rounded-lg" style="border-spacing: 0;">
+                    <thead>
+                        <tr>zz
+                            <th class="rounded-tl-lg" style="text-align:start;">Facturado: </th>
+                            <th style="text-align:center;">Anticipo</th>
+                            <th style="text-align:center;">Método de págo</th>
+                            <th class="rounded-tr-lg text-right" style="text-align:center;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($invoices as $invoice)
+                            @if (!$invoice->is_refund)
+                                <tr>
+                                    <td style="text-align:center;"><strong>Pagado - {{ $invoice->invoice_number }}</strong></td>
+                                    <td style="text-align:center;">
+                                        <strong>{{ $invoice->is_down_payment ? "SÍ" : "NO" }}</strong>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <strong>{{ $invoice->paymentMethod->name }}</strong>
+                                    </td>
+
+                                    <td style="text-align:center;" class="text-right">
+                                        <strong>{{ number_format($invoice->total, 2, ',', '.') }} €</strong>
+                                    </td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td style="text-align:center;"><strong>Devolución - {{ $invoice->invoice_number }}</strong></td>
+                                    <td style="text-align:center;" <strong>-</strong>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <strong>{{ $invoice->paymentMethod->name }}</strong>
+                                    </td>
+
+                                    <td style="text-align:center;" class="text-right">
+                                        <strong>{{ number_format($invoice->total, 2, ',', '.') }} €</strong>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                        @php
+                            $pendiente = InvoiceController::calcularPendiente($workOrder->id);
+                        @endphp
+                        @if ($pendiente != 0)
+                            <tr>
+                                <td style="text-align:center;">Pendiente por pagar:</td>
+                                <td style="text-align:center;">----------</td>
+                                <td style="text-align:center;">----------</td>
+                                <td style="text-align:center;">
+                                    {{ number_format($pendiente, 2, ',', '.') }} €
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
 
             </div>
-            <div style="text-align: center;  width: 100%;">
-                <p style="font-size: 10px; color: #666; padding: 0; margin-right: 2% ;">Gracias por confiar en nosotros
-                    - {{ $owner->name }}</p>
+        @endif
+
+        <footer>
+            <div
+                style="margin-top: 40px; text-align: left; border: 1px solid #2f85b6; border-radius: 6px; padding:0%;padding-left:1%; marign: 0%; width: 35% ; position: fixed;bottom: 0; left: 60%;">
+                <p style="font-size: 8px; margin-bottom: 24px;"><strong>Firma del cliente:</strong></p>
+                <div style=" width: 250px; height: 40px;"></div>
             </div>
+            <p
+                style="margin-top: 32px; text-align: center; font-size: 8px; color:rgb(120, 131, 138); position: fixed; bottom: -5%; left: 0; width: 100%;">
+                <strong>¡Gracias por confiar en nosotros!</strong>
+            </p>
         </footer>
     </div>
 </body>

@@ -42,9 +42,9 @@ class WorkOrderResource extends Resource
     }
     public static function getGloballySearchableAttributes(): array
     {
-        return [
+        return PermissionHelper::hasRole() ? [
             'work_order_number',
-        ];
+        ] : [];
     }
     public static function getGlobalSearchResultDetails(Model $record): array
     {
@@ -98,10 +98,16 @@ class WorkOrderResource extends Resource
                                     ->schema([
                                         Placeholder::make("")
                                             ->content(function ($record) {
+                                                $lastStatusWorkOrder = $record->statusWorkOrders->last();
                                                 $lastStatus = $record->statusWorkOrders->last()->status->name ?? 'Sin Estado';
                                                 $hasInvoices = $record->invoices()->exists();
                                                 if ($lastStatus == "PENDIENTE" && $hasInvoices) {
-                                                    return "PENDIENTE - CON ANTICIPO";
+                                                    $lastStatus .= " - CON ANTICIPO";
+                                                }
+                                                if(!(auth()->user()->id === $lastStatusWorkOrder->user_id )) {
+                                                    $lastStatus .= " - " . $lastStatusWorkOrder->user->name;
+                                                }elseif (auth()->user()->id === $lastStatusWorkOrder->user_id) {
+                                                     $lastStatus .= " - TÚ";
                                                 }
                                                 return $lastStatus ?? 'Sin Estado';
                                             }),
@@ -177,38 +183,38 @@ class WorkOrderResource extends Resource
                     ->default(fn($record) => $record?->failure)
                     ->required()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
+                    ->disabled(fn($record) => PermissionHelper::canBeEdited($record)),
                 Forms\Components\Textarea::make('private_comment')
                     ->label('Comentario privado')
                     ->nullable()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
+                    ->disabled(fn($record) => PermissionHelper::canBeEdited($record)),
                 Forms\Components\Textarea::make('comment')
                     ->label('Comentario')
                     ->nullable()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
+                    ->disabled(fn($record) => PermissionHelper::canBeEdited($record)),
                 Forms\Components\Textarea::make('physical_condition')
                     ->label('Estado físico')
                     ->required()
                     ->columnSpan('full')
                     ->dehydrated(true)
-                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
+                    ->disabled(fn($record) => PermissionHelper::canBeEdited($record)),
                 Forms\Components\Textarea::make('humidity')
                     ->label('Humedad')
                     ->required()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
+                    ->disabled(fn($record) => PermissionHelper::canBeEdited($record)),
                 Forms\Components\Textarea::make('test')
                     ->label('Prueba')
                     ->required()
                     ->columnSpan('full')
-                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
+                    ->disabled(fn($record) => PermissionHelper::canBeEdited($record)),
                 Forms\Components\Select::make('repair_time_id')
                     ->label('Tiempo de reparación')
                     ->relationship('repairTime', 'name')
                     ->required()
-                    ->disabled(fn($record) => PermissionHelper::isWorkOrderEditable($record)),
+                    ->disabled(fn($record) => PermissionHelper::canBeEdited($record)),
 
             ]);
     }
@@ -233,26 +239,66 @@ class WorkOrderResource extends Resource
                 Tables\Columns\TextColumn::make('client')
                     ->label('Cliente')
                     ->alignCenter()
-                    ->state(fn($record) => $record->device->client->name." " .$record->device->client->surname)
+                    ->state(fn($record) => $record->device->client->name . " " . $record->device->client->surname)
+                    ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make("ownerDevice")
+                    ->label('Dispositivo')
+                    ->alignCenter()
+                    ->state(fn($record) => $record->device->model->brand->name .' '. $record->device->model->name)
                     ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('store.name')
                     ->label('Tienda')
                     ->alignCenter()
-                    ->hidden(PermissionHelper::isNotAdmin())
+                    ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default')
+                    ->visible(PermissionHelper::isAdmin())
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('Status')
                     ->state(fn($record) => $record->statusWorkOrders->last()->status->name ?? 'Sin Estado')
+                    ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default')
+                    ->alignCenter()
                     ->label('Estado'),
                 Tables\Columns\TextColumn::make('repairTime.name')
                     ->color(fn($record) => $record->work_order_number_warranty ? 'success' : 'default')
+                    ->alignCenter()
+                    ->state(function ($record) {
+                        $status = $record->repairTime->name ?? 'Sin Tiempo de Reparación';
+                        if (stripos($status, 'AVISAR') !== false) {
+                            return 'SE AVISARÁ...';
+                        }
+                        return $status;
+                    })
                     ->label('Tiempo de reparación'),
             ])
+
             ->recordTitleAttribute('work_order_number')
             ->filters([
+                Filter::make("waiting")
+                    ->label('Mostrar pendientes')
+                    ->default(true)
+                    ->query(function (Builder $query): Builder {
+                        $query->whereDoesntHave('closure')->whereDoesntHave('statusWorkOrders', function (Builder $query) {
+                            $query->whereIn('status_id', [3, 4, 5, 7, 8, 9]);
+                        });
+                        return $query;
+                    }),
                 Filter::make('warranty')
                     ->label('Mostrar solo garantías')
-                    ->query(fn(Builder $query): Builder => $query->whereHas('work_order_number_warranty')),
+                    ->query(fn(Builder $query): Builder => $query->whereNotNull('work_order_number_warranty')),
+
+                Filter::make('cancelled')
+                    ->label('Mostrar cancelados')
+                    ->query(function (Builder $query): Builder {
+                        return $query->whereHas('statusWorkOrders', function (Builder $query) {
+                            $query->where('status_id', 5);
+                        });
+                    }),
+                Filter::make('closed')
+                    ->label('Mostrar cerrados')
+                    ->query(function (Builder $query): Builder {
+                        return $query->whereHas('closure');
+                    }),
                 Filter::make('created_at')
                     ->label('Fecha de creación')
                     ->form([
@@ -278,8 +324,8 @@ class WorkOrderResource extends Resource
                 SelectFilter::make('stores')
                     ->label('Tienda')
                     ->relationship('store', 'name')
-                    ->options(auth()->user()->stores()->pluck('name', 'stores.id')->toArray())
-                    ->hidden(PermissionHelper::isNotAdmin()),
+                    ->visible(PermissionHelper::isAdmin())
+                    ->options(auth()->user()->stores()->pluck('name', 'stores.id')->toArray()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

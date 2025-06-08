@@ -10,6 +10,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\DeviceModel;
 use App\Models\Item;
+use App\Models\Store;
 use App\Models\Type;
 use constants;
 use Filament\Forms;
@@ -34,7 +35,6 @@ class ItemResource extends Resource
     {
         return PermissionHelper::isSalesperson();
     }
-
     public static function form(Form $form): Form
     {
         return $form
@@ -60,8 +60,35 @@ class ItemResource extends Resource
                     ->relationship('category', 'name')
                     ->required()
                     ->label(constants::CATEGORY),
-                Placeholder::make('Aviso:')
-                    ->content("Recuerda que el item no se asocia a . "),
+                Toggle::make('link_to_stores')
+                    ->label('Asociar a todas las tiendas')
+                    ->required()
+                    ->default(true)
+                    ->helperText("En caso de no querer asociarlo a todas las tiendas, desmarca esta opción y asocia manualmente en la pestaña de 'Tiendas'"),
+                Toggle::make('link_item_device_model')
+                    ->label('Asociar a un modelo de dispositivo')
+                    ->default(false)
+                    ->helperText("En caso de no querer asociarlo a un modelo de dispositivo, desmarca esta opción y asocia manualmente en la pestaña de 'Modelos '")
+                    ->reactive(),
+                Select::make('brand_id')
+                    ->label('Marca')
+                    ->options(Brand::orderBy('name')->pluck('name', 'id')->toArray())
+                    ->searchable()
+                    ->visible(fn($get) => $get('link_item_device_model') === true)
+                    ->reactive()
+                    ->required(fn($get) => $get('link_item_device_model') === true),
+                Select::make('device_model_id')
+                    ->label('Modelo')
+                    ->visible(fn($get) => $get('link_item_device_model') === true)
+                    ->options(function ($get) {
+                        $brandId = $get('brand_id');
+                        if ($brandId) {
+                            return DeviceModel::where('brand_id', $brandId)->orderBy('name')->pluck('name', 'id')->toArray();
+                        }
+                        return [];
+                    })
+                    ->required(fn($get) => $get('link_item_device_model') === true)
+                    ->placeholder("Selecciona una marca"),
             ]);
     }
 
@@ -73,41 +100,38 @@ class ItemResource extends Resource
                     ->label(constants::NAME_TYPO)
                     ->searchable()
                     ->toggleable()
+                    ->alignCenter()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->label(constants::PRICE)
                     ->sortable()
                     ->numeric()
-                    ->alignment(Alignment::Center)
+                    ->alignCenter()
                     ->suffix('€')
                     ->toggleable(true, false),
                 Tables\Columns\TextColumn::make('cost')
                     ->label('Coste')
                     ->sortable()
                     ->suffix('€')
-                    ->alignment(Alignment::Center)
+                    ->alignCenter()
                     ->toggleable(true),
                 Tables\Columns\TextColumn::make('distributor')
                     ->label(constants::DISTRIBUTOR)
                     ->searchable()
-                    ->alignment(Alignment::Center)
+                    ->alignCenter()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('type.name')
                     ->label(constants::TYPE)
                     ->sortable()
+                    ->alignCenter()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('category.name')
                     ->label(constants::CATEGORY)
                     ->sortable()
+                    ->alignCenter()
                     ->toggleable(),
             ])
             ->filters([
-                SelectFilter::make('category_id')
-                    ->label('Categorias')
-                    ->options(Category::all()->pluck('name', 'id')->toArray()),
-                SelectFilter::make('type_id')
-                    ->label('Tipo')
-                    ->options(Type::all()->pluck('name', 'id')->toArray()),
                 Filter::make('device_model_id')
                     ->form([
                         Select::make('brand_id')
@@ -137,9 +161,15 @@ class ItemResource extends Resource
                             });
                         }
                     }),
+                SelectFilter::make('category_id')
+                    ->label('Categorias')
+                    ->options(Category::all()->pluck('name', 'id')->toArray()),
+                SelectFilter::make('type_id')
+                    ->label('Tipo')
+                    ->options(Type::all()->pluck('name', 'id')->toArray()),
+
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->defaultSort('name', 'asc');

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\WorkOrderResource\Pages;
 
 use App\Filament\Resources\WorkOrderResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListWorkOrders extends ListRecords
@@ -13,7 +12,6 @@ class ListWorkOrders extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            
         ];
     }
 }

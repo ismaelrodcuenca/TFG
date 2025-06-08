@@ -3,13 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\PaymentMethod;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CashDeskController
 {
-    public function getTotales(){
-        $Invoices = Invoice::where('created_at','like', date('Y-m-d') . '%')
+
+    public static function getMeasuredCashAmount()
+    {
+
+        $cashMethod = PaymentMethod::where('name', '=', 'EFECTIVO')->first()->id;
+        $total =  Invoice::whereDate('created_at', Carbon::today())
+            ->where('payment_method_id', $cashMethod)
             ->where('store_id', session('store_id'))
-            ->get();
+            ->sum('total');
+            return $total;
+    }
+
+    public static function getMeasuredCardAmount()
+    {
+        $cardMethod = PaymentMethod::where('name', '=', 'TARJETA')->first()->id;
+        $total = Invoice::whereDate('created_at', Carbon::today())
+            ->where('payment_method_id', $cardMethod)
+            ->where('store_id', session('store_id'))
+            ->sum('total');
+        return $total;
+    }
+
+    public static function getDifferenceInCashAmount($cashRegistered, $cashFloat)
+    {
+        return $cashRegistered - (self::getMeasuredCashAmount() + $cashFloat);
+    }
+
+    public static function getDifferenceInCardAmount($cardRegistered, $cashFloat)
+    {
+        return $cardRegistered - self::getMeasuredCardAmount();
     }
 }

@@ -28,6 +28,12 @@ class PaymentMethod extends Model
    */
   protected $fillable = ['name'];
 
+
+  public function setNameAttribute($value)
+  {
+    $this->attributes['name'] = strtoupper($value);
+  }
+
   public function invoices(): HasMany
   {
     return $this->hasMany(Invoice::class);

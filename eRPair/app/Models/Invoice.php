@@ -47,14 +47,34 @@ class Invoice extends Model
         'comment'
     ];
 
+    
+    public function setCommentAttribute($value)
+    {
+        $this->attributes['comment'] = strtoupper($value);
+    }
+
     protected static function booted()
     {
         static::creating(function ($invoice) {
-            $invoice->invoice_number = $invoice->is_refund ? $invoice->generateRefundInvoiceNumber($invoice->invoice_number) : $invoice->generateInvoiceNumber($invoice->work_order_id);
             if (!$invoice->is_refund) {
                 $invoice->invoice_number = $invoice->generateInvoiceNumber($invoice->work_order_id);
             }
 
+        });
+        static::created(function ($invoice) {
+           
+            if ($invoice->workOrder) {
+                $workOrderItems = $invoice->workOrder->itemWorkOrders;
+                //dd($workOrderItems);
+               foreach ($workOrderItems as $item) {
+                    $invoiceItem = new InvoiceItem();
+                    $invoiceItem->invoice_id = $invoice->id;
+                    $invoiceItem->item_id = $item->id;
+                    $invoiceItem->modified_amount = $item->modified_amount ?? $item->item->price;
+                    $invoice->is_refund ?? $invoiceItem->modified_amount = $invoiceItem->modified_amount * -1;
+                    $invoiceItem->save();
+                }
+            }
         });
     }
 
@@ -78,19 +98,9 @@ class Invoice extends Model
             return "S{$count}-{$this->store_id}-{$today}";
         }
     }
-    public function generateRefundInvoiceNumber(string $originalInvoiceNumber): string
+    public function invoiceItems(): hasMany
     {
-        $existingRefunds = DB::table('invoices')
-            ->where('invoice_number', 'like', "{$originalInvoiceNumber}-R%")
-            ->count();
-
-        $suffix = $existingRefunds > 0 ? '-R' . ($existingRefunds + 1) : '-R1';
-
-        return "{$originalInvoiceNumber}{$suffix}";
-    }
-    public function items(): hasMany
-    {
-        return $this->hasMany(Item::class)->withPivot('modified_amount');
+        return $this->hasMany(InvoiceItem::class);
     }
 
     public function user(): BelongsTo

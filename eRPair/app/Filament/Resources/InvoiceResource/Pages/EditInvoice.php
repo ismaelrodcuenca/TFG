@@ -4,6 +4,7 @@ namespace App\Filament\Resources\InvoiceResource\Pages;
 
 use App\Filament\Resources\InvoiceResource;
 use Filament\Actions;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 
 class EditInvoice extends EditRecord
@@ -12,7 +13,8 @@ class EditInvoice extends EditRecord
 
    protected function getHeaderActions(): array
     {
-               return[];
+               return[
+               ];
 
     }
 }

@@ -5,6 +5,7 @@ define("ADMIN_ROL",1);
 define("SALESPERSON_ROL",2);
 define("TECHNICIAN_ROL",3);
 define("MANAGER_ROL",4 );
+define("DEVELOPER_ROL",5);
 define("USER_LABEL_RESOURCE","PACO");
 class constants{
     const NAME_TYPO = "Título";

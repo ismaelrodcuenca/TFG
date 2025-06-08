@@ -20,9 +20,9 @@ class DocumentTypeResource extends Resource
     public static ?string $navigationGroup = 'Miscelanea';
     protected static ?string $label = 'Tipo De Documento';
 
-    public static function shouldRegisterNavigation(): bool
+   public static function shouldRegisterNavigation(): bool
     {
-        return PermissionHelper::isAdmin();
+        return PermissionHelper::isDeveloper();
     }
     public static function form(Form $form): Form
     {

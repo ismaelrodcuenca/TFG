@@ -27,15 +27,21 @@ class Rol extends Model
      * 
      * @var array $fillable Atributos permitidos para asignación masiva.
      */
-    protected $fillable = ['name'];
+    
+    
+    
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    } protected $fillable = ['name'];
 
     /**
      * Relación muchos a muchos entre el modelo Rol y el modelo User.
      * 
      * @return HasMany Relación de usuarios asociados al rol.
      */
-    public function users(): HasMany
+    public function rolUser(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(RolUser::class);
     }
 }

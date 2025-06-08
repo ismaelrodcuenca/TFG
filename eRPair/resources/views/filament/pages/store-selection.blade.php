@@ -1,4 +1,4 @@
-<x-filament::page class="flex justify-center items-center h-[60vh]">
+<x-filament::page class="flex justify-center items-center h-full">
     
         <x-filament::card class="w-2/5">
             <div>

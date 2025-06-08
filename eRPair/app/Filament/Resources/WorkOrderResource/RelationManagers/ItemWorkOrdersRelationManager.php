@@ -4,6 +4,7 @@ namespace App\Filament\Resources\WorkOrderResource\RelationManagers;
 
 use App\Filament\Resources\ItemResource;
 use app\Helpers\PermissionHelper;
+use App\Http\Controllers\InvoiceController;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Type;
@@ -16,8 +17,10 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\EditAction;
+use Illuminate\Support\HtmlString;
 
 class ItemWorkOrdersRelationManager extends RelationManager
 {
@@ -55,11 +58,10 @@ class ItemWorkOrdersRelationManager extends RelationManager
                 TextInput::make('modified_amount')
                     ->label('Precio Modificado')
                     ->numeric()
-                    ->required()
                     ->columnSpan('full'),
             ])
-            ->label('Añadir Item')
-            ->columns(1),
+                ->label('Añadir Item')
+                ->columns(1),
         ]);
     }
 
@@ -71,30 +73,58 @@ class ItemWorkOrdersRelationManager extends RelationManager
                 TextColumn::make('modified_amount')->label('Precio')
                     ->state(fn($record) => $record->modified_amount ?? $record->item->price)
                     ->color(fn($record) => $record->modified_amount ? 'warning' : 'black')
-                    ->money("EUR"),
+                    ->money("EUR")
+                    ->summarize([
+                        Summarizer::make()
+                            ->label(function(){
+                                $total = InvoiceController::calcularTotal($this->getOwnerRecord()->id);
+                                return $total."€";
+                            })
+                    ]),
             ])
+            ->contentFooter(view('footer_items'))
             ->headerActions([
                 Action::make('crearNuevoItem')
                     ->label('Crear Item')
                     ->icon('heroicon-o-plus-circle')
                     ->form([
-                        TextInput::make('name')->label('Nombre')->required(),
-                        TextInput::make('price')->label('Precio')->numeric()->required(),
-                        TextInput::make('cost')->label('Coste')->numeric(),
-                        TextInput::make('distributor')->label('Distribuidor'),
-                        Select::make('type_id')
-                            ->label('Tipo')
-                            ->relationship('type', 'name') 
-                            ->options(Type::all()->pluck('name', 'id')) 
-                            ->required(),
-                        Select::make('category_id')
-                            ->label('Categoría')
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->label(constants::NAME_TYPO),
+                        Forms\Components\TextInput::make('cost')
+                            ->numeric()
+                            ->required()
+                            ->label(constants::COST),
+                        Forms\Components\TextInput::make('price')
+                            ->numeric()
+                            ->required()
+                            ->label(constants::PRICE),
+                        Forms\Components\TextInput::make('distributor')
+                            ->required()
+                            ->label(constants::DISTRIBUTOR),
+                        Forms\Components\Select::make('type_id')
+                            ->relationship('type', 'name')
+                            ->options(Type::orderBy('name')->pluck('name', 'id')->toArray())
+                            ->label(constants::TYPE),
+                        Forms\Components\Select::make('category_id')
                             ->relationship('category', 'name')
-                            ->options(Category::all()->pluck('name','id'))
-                            ->required(),
+                            ->options(Category::orderBy('name')->pluck('name','id')->toArray())
+                            ->required()
+                            ->label(constants::CATEGORY),
+                        Toggle::make('link_to_stores')
+                            ->label('Asociar a todas las tiendas')
+                            ->required()
+                            ->default(true)
+                            ->helperText("En caso de no querer asociarlo a todas las tiendas, desmarca esta opción y asocia manualmente en la pestaña de 'Tiendas'"),
                         Toggle::make('link_item_device_model')
-                            ->label('Agregar Item al Modelo del Dispositivo')
-                            ->default(true),
+                            ->label('Asociar a un modelo de dispositivo')
+                            ->default(false)
+                            ->helperText("En caso de no querer asociarlo a un modelo de dispositivo, desmarca esta opción y asocia manualmente en la pestaña de 'Modelos '")
+                            ->reactive(),
+                        TextInput::make('device_model_id')
+                            ->visible(false)
+                            ->default(fn($get)=> $get('link_item_device_model') ? null : $this->getOwnerRecord()->device?->model?->id),
+                        
                     ])
                     ->action(function (array $data, $livewire) {
                         $item = Item::create([
@@ -106,10 +136,15 @@ class ItemWorkOrdersRelationManager extends RelationManager
                             'category_id' => $data['category_id'],
                         ]);
                         if (!empty($data['link_item_device_model'])) {
-                            $parent = $livewire->getOwnerRecord();
-                            $device = $parent->device ?? null;
-                            if ($device && $device->model->id) {
-                                $item->deviceModels()->attach($device->model->id);
+                            $deviceModelId = $data['device_model_id'] ?? null;
+                            if ($deviceModelId) {
+                                $item->deviceModels()->attach($deviceModelId);
+                            } else {
+                                $parent = $livewire->getOwnerRecord();
+                                $device = $parent->device ?? null;
+                                if ($device && $device->model->id) {
+                                    $item->deviceModels()->attach($device->model->id);
+                                }
                             }
                         }
                         \Filament\Notifications\Notification::make()
@@ -117,14 +152,12 @@ class ItemWorkOrdersRelationManager extends RelationManager
                             ->body('El nuevo item ha sido creado correctamente.')
                             ->success()
                             ->send();
-                    })
-
-                ,
+                    }),
                 Tables\Actions\CreateAction::make()
                     ->label("Añadir Item")
                     ->icon('heroicon-o-plus')
-                    ->visible(function(){
-                        return PermissionHelper::optionsAvailableOnWorkOrder($this->getOwnerRecord());
+                    ->visible(function () {
+                        return PermissionHelper::canAddItems($this->getOwnerRecord());
                     }),
 
             ])
@@ -132,7 +165,7 @@ class ItemWorkOrdersRelationManager extends RelationManager
                 Tables\Actions\EditAction::make()
 
                     ->label("Modificar")
-                    ->disabled(fn($record) => PermissionHelper::optionsAvailableOnWorkOrder($this->getOwnerRecord()))
+                    ->visible(PermissionHelper::canAddItems($this->getOwnerRecord()))
                     ->icon('heroicon-o-currency-euro')
                     ->color('warning')
                     ->form([
@@ -147,7 +180,7 @@ class ItemWorkOrdersRelationManager extends RelationManager
                 Tables\Actions\DeleteAction::make()
                     ->label("Quitar")
                     ->icon('heroicon-o-trash')
-                    ->disabled(fn($record) => PermissionHelper::optionsAvailableOnWorkOrder($this->getOwnerRecord())),
-            ]);
+                    ->visible(fn($record) => PermissionHelper::canAddItems($this->getOwnerRecord())),
+                ]);
     }
 }

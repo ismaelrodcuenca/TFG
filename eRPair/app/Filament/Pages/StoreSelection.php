@@ -40,7 +40,8 @@ class StoreSelection extends Page implements HasForms
     protected function getFormSchema(): array
     {
         $stores = auth()->user()->stores()->pluck('stores.name', 'stores.id')->toArray();
-        $roles = auth()->user()->roles()->pluck('roles.name', 'roles.id')->toArray();
+        $roles = auth()->user()->rolUser()->pluck('rol_id', 'id')->toArray();
+        $roles = \App\Models\Rol::whereIn('id', $roles)->pluck('name', 'id')->toArray();
         if (empty($stores)) {
             $stores = ['' => 'No hay tiendas disponibles. Contacte al administrador'];
         }

@@ -49,7 +49,12 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('12345admin'),
             'active' => true,
         ]);
-
+        User::factory()->create([
+            'name' => 'DEVELOPER USER',
+            'email' => 'developer@admin.com',
+            'password' => bcrypt('12345developer'),
+            'active' => true,
+        ]);
         User::factory()->create([
             'name' => 'Salesman User',
             'email' => 'salesman@admin.com',
@@ -166,6 +171,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'DEPENDIENTE'],
             ['name' => 'TÉCNICO'],
             ['name' => 'ENCARGADO'],
+            ['name' => 'DESARROLLADOR'],
         ]);
 
         $this->command->info("Roles: OK");
@@ -178,7 +184,8 @@ class DatabaseSeeder extends Seeder
             ['name' => 'FLEX'],
             ['name' => 'LENTE'],
             ['name' => 'TAPA'],
-            ['name' => 'ACCESORIO'],
+            ['name' => 'CÁMARA'],
+            ['name' => 'REPARACIÓN DE PLACA'],
             ['name' => 'OTRO'],
         ]);
 
@@ -302,7 +309,7 @@ class DatabaseSeeder extends Seeder
                 'number' => '666 666 664',
                 'email' => 'plazamayor@tecnofix.es',
                 'schedule' => 'Lunes a Viernes 10:00-20:00',
-                'work_order_number' => 3,
+                'work_order_number' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -313,7 +320,7 @@ class DatabaseSeeder extends Seeder
                 'number' => '666 666 665',
                 'email' => 'poligonosb@tecnofix.es',
                 'schedule' => 'Lunes a Sábado 10:00-14:00 17:00-21:00',
-                'work_order_number' => 3,
+                'work_order_number' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -324,7 +331,7 @@ class DatabaseSeeder extends Seeder
                 'number' => '666 666 666 ',
                 'email' => 'vialia@tecnofix.es',
                 'schedule' => 'Lunes a Sábado 10:00-22:00',
-                'work_order_number' => 2,
+                'work_order_number' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -349,7 +356,22 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => '2 DAYS',
+                'name' => '1 DÍA',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => '2 DÍAS',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => '3 - 5 DÍAS LABORALES',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => '10 - 15 DÍAS LABORALES',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -482,6 +504,24 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'user_id' => 5,
+                'store_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 5,
+                'store_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 5,
+                'store_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
         ]);
 
         $this->command->info("Usuarios agregados a tiendas: OK ");
@@ -526,6 +566,36 @@ class DatabaseSeeder extends Seeder
             [
                 'user_id' => 4,
                 'rol_id' => 3, // TÉCNICO
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 5,
+                'rol_id' => 5, // DESARROLLADOR
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 5,
+                'rol_id' => 2, // DEPENDIENTE
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 5,
+                'rol_id' => 3, // TÉCNICO
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 5,
+                'rol_id' => 4, // ENCARGADO
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => 5,
+                'rol_id' => 1, // ADMIN
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -801,22 +871,6 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'work_order_number' => 4,
-                'work_order_number_warranty' => 2,
-                'failure' => 'Vuelve a fallar el botón de encendido.',
-                'private_comment' => 'Cliente habitual.',
-                'comment' => null,
-                'physical_condition' => 'Estado OK.',
-                'humidity' => 'No hay humedad.',
-                'test' => 'No responde al pulsarlo.',
-                'user_id' => 1,
-                'device_id' => 4,
-                'repair_time_id' => 5,
-                'store_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'work_order_number' => 5,
                 'work_order_number_warranty' => null,
                 'failure' => 'Problema de placa base.',
                 'private_comment' => null,

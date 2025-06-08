@@ -28,6 +28,12 @@ class RepairTime extends Model
      */
     protected $fillable = ['name'];
 
+    
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
+
     public function workOrders(): HasMany
     {
         return $this->hasMany(WorkOrder::class);

@@ -29,6 +29,11 @@ class DocumentType extends Model
      */
     protected $fillable = ['name'];
 
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
+
     public function clients(): HasMany
     {
         return $this->hasMany(Client::class);

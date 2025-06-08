@@ -30,9 +30,9 @@ class TaxResource extends Resource
     protected static ?string $label = 'Impuesto';
     public static ?string $navigationGroup = 'Miscelanea';
     
-    public static function shouldRegisterNavigation(): bool
+   public static function shouldRegisterNavigation(): bool
     {
-        return PermissionHelper::isAdmin();
+        return PermissionHelper::isDeveloper();
     }
 
     public static function form(Form $form): Form

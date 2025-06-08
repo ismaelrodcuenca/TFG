@@ -55,12 +55,13 @@ class StoresRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()
-                    ->hidden(PermissionHelper::isNotAdmin()),
+                    ->visible(PermissionHelper::isManager()),
             ])
             ->actions([
-                \Filament\Tables\Actions\EditAction::make()->hidden(PermissionHelper::isNotManager()),
+                \Filament\Tables\Actions\EditAction::make()
+                ->visible(PermissionHelper::isManager()),
                 DetachAction::make()
-                    ->hidden(PermissionHelper::isNotAdmin())
+                ->visible(PermissionHelper::isAdmin())
             ]) ;
     }
 }
