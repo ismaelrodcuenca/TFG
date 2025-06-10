@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Factura Proforma</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 12px;
+            color: #1f2937; /* gris-900 */
+            background: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .flex {
+            display: flex;
+        }
+        .justify-between {
+            justify-content: space-between;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        .border {
+            border: 1px solid #083b5d;
+        }
+        .rounded {
+            border-radius: 6px;
+        }
+        .p-4 {
+            padding: 1rem;
+        }
+        .p-2 {
+            padding: 0.5rem;
+        }
+        .text-primary {
+            color: #083b5d;
+        }
+        .bg-primary {
+            background-color: #083b5d;
+            color: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 6px 10px;
+        }
+        th {
+            background-color: #083b5d;
+            color: white;
+            font-weight: bold;
+        }
+        .bordered td, .bordered th {
+            border: 1px solid #083b5d;
+        }
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 250px;
+            height: 100px;
+            border: 1px solid #083b5d;
+            border-radius: 6px;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .footer span {
+            font-size: 10px;
+            color: #6b7280;
+        }
+        .signature-line {
+            margin-top: 40px;
+            border-top: 1px dashed #083b5d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabecera -->
+        <div class="flex justify-between items-center mb-4">
+            <div style="text-align: center;">
+                <img src="{{ public_path('assets TFG/Imagotipo-horizontal.svg') }}" alt="logo" height="50">
+                <p>Tienda VIALIA</p>
+                <p>Tel: 952 320 994</p>
+            </div>
+            <div style="text-align: center;">
+                <h2 class="text-primary">RoCuCode SL.</h2>
+                <p>C/EL CÓDIGO, 69, 29006 MÁLAGA</p>
+                <p>C.I.F.: B93291417</p>
+            </div>
+        </div>
+
+        <!-- Datos de factura y cliente -->
+        <div class="flex justify-between mb-4">
+            <div class="border rounded p-2" style="width: 48%;">
+                <table>
+                    <tr>
+                        <th colspan="2">Factura Proforma N°: <span style="float:right">MR-XXXX-XXX-XXXXX</span></th>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">Fecha:</td>
+                        <td>19/05/2025</td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">Dispositivo:</td>
+                        <td>XIAOMI - REDMI NOTE 9</td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">IMEI/SN:</td>
+                        <td>867678053503640</td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">Color:</td>
+                        <td>—</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="border rounded p-2" style="width: 48%;">
+                <table>
+                    <tr>
+                        <th colspan="2">Datos del Cliente</th>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">Cliente:</td>
+                        <td>MARÍA RODRIGUEZ LUQUE</td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">NIF:</td>
+                        <td>25661243M</td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">Dirección:</td>
+                        <td>CALLE PINOS 2, 4ºA, MÁLAGA</td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">Teléfono:</td>
+                        <td>615 075 019</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Información de Recepción -->
+        <div class="border rounded p-2 mb-4">
+            <h3 class="text-primary">Información de recepción</h3>
+            <table>
+                <tr>
+                    <td class="text-primary">Avería:</td>
+                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod...</td>
+                </tr>
+                <tr>
+                    <td class="text-primary">Comentario:</td>
+                    <td>APARIENCIA: BUEN ESTADO. CON USO.</td>
+                </tr>
+                <tr>
+                    <td class="text-primary">Humedad:</td>
+                    <td>NO SE APRECIA RESTOS DE HUMEDAD.</td>
+                </tr>
+                <tr>
+                    <td class="text-primary">Comprobación:</td>
+                    <td>NO ES POSIBLE COMPROBACIÓN. TERMINAL NO ENCIENDE.</td>
+                </tr>
+                <tr>
+                    <td class="text-primary">Tiempo:</td>
+                    <td>Inferior a 1 hora</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Conceptos y Totales -->
+        <table class="bordered mb-4">
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Base Imponible</th>
+                    <th>I.V.A. 21%</th>
+                    <th class="text-right">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Reparación placa base</td>
+                    <td>99,17 €</td>
+                    <td>20,83 €</td>
+                    <td class="text-right">120,00 €</td>
+                </tr>
+                <tr style="background: #f3f4f6; font-weight: bold;">
+                    <td>Totales</td>
+                    <td>99,17 €</td>
+                    <td>20,83 €</td>
+                    <td class="text-right">120,00 €</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Firma -->
+        <div class="footer">
+            <span>Firma del cliente</span>
+            <div class="signature-line"></div>
+        </div>
+    </div>
+</body>
+</html>

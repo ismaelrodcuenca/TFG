@@ -1,0 +1,7 @@
+RELACIONES HAS MANY THROUGH/HAS ONE THROUGH 
+https://laravel.com/docs/12.x/eloquent-relationships#has-many-through
+https://laravel.com/docs/12.x/eloquent-relationships#has-ONE-through
+
+//Este caso si podría dar en el caso de Dispositivo cuando queramos saber que marca tiene a través de modelo. 
+
+RELACIONES N:M: https://laravel.com/docs/12.x/eloquent-relationships#many-to-many
