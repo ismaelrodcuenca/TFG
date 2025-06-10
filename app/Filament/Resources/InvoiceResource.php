@@ -235,7 +235,7 @@ class InvoiceResource extends Resource
                         Toggle::make('is_refund')
                             ->label('¿Es reembolso?')
                             ->default(false)
-                            ->disabledOn(['create'])
+                            ->disabledOn(['create', "edit"])
                             ->columnSpan(1),
                     ]),
             ]);

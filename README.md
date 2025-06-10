@@ -66,8 +66,6 @@ El módulo de cajas permite llevar un control detallado de los movimientos de ef
 - Cerrar cajas diarias.
 - Registrar ingresos totales de efectivo y tarjeta.
 - Cálculo automático de ingresos totales.
-
-Este módulo facilita la gestión transparente y segura del flujo de caja en tu negocio.
 ---
 ## 👥 Clientes
 El módulo de clientes permite gestionar la información de tus clientes de manera eficiente.
@@ -85,28 +83,32 @@ El módulo de usuarios permite gestionar la información de los usuarios del sis
 - Editar la información de usuarios existentes.
 - Consultar o editar la lista de roles o tiendas asociados a cada usuario.
 
-En caso de no ser administrador, el usuario podrá editar únicamente su propia información.
+**En caso de no ser administrador, el usuario podrá editar únicamente su propia información.**
 ---
 
 ## 📝 Hoja de Pedidos
 
-El módulo de **Hoja de Pedidos** te ayuda a gestionar fácilmente todas las órdenes de trabajo.
+El módulo de **Hoja de Pedidos** te ayuda a gestionar fácilmente todas las órdenes de trabajo. 
 
 - Edita pedidos existentes antes de 30 minutos.
 - Consulta el estado.
 - Facturas asociadas.
 - Visualiza los estados, el cierre y los ítems incluidos en cada pedido.
-- 👷‍♂️ Si eres **técnico**, puedes: 
+- 👷‍♂️  **Técnico**, puede: 
    - Asignarte pedidos para gestionarlos.
     - Cambiar el estado del pedido a "Pendiente de Pieza" si es necesario.
     - Realizar un cierre (reparado)
-- 🧑‍💼 Si eres **dependiente/encargado/admin**  puedes:
+- 🧑‍💼 **Dependiente, encargado o admin**  puede:
+    - Crear nuevos pedidos a través del cliente.
     - Realizar cobros (anticipados o finales).
     - Agregar Devoluciones.
     - Agregar Garantías.
-    - Cambiar el estado del pedido:
-        - Cancelarlo (común).
-        - Una vez facturado y cerrado, pasa a "Facturado" y "Entregado".
+- 🧑‍💻 **Común:** 
+    - Consultar historial de facturas.
+    - Consultar historial de estatus.
+    - Consultar o modificar items asociados.
+    - Cancelar pedido.
+    - Acción de "info" para ver detalles del pedido.
 ---
 ## 🏷️ Marcas
 
@@ -138,7 +140,6 @@ El sistema incluye varias tablas tipo que permiten únicamente agregar o listar 
 - 💸 **Impuestos:** Gestiona los diferentes tipos de impuestos aplicables a las facturas.
 - 🏷️ **Tipo de ítems:** Clasifica los ítems según su naturaleza (por ejemplo, repuesto, accesorio, servicio, etc.).
 
-Estas tablas ayudan a mantener la información organizada y estandarizada en la plataforma.
 ---
 ## 🏢 Empresas
 El módulo de empresas permite gestionar la información de las empresas asociadas al sistema.
@@ -171,28 +172,48 @@ A continuación, se describen los pasos básicos para utilizar la plataforma **e
 
 ### 1. Iniciar sesión
 Accede con tus credenciales proporcionadas por el administrador.
+Una vez iniciado, elige la tienda y rol con el que deseas acceder.
 
 ### 2. Navegación principal
-Utiliza el menú lateral para acceder a los diferentes módulos: Pedidos, Clientes, Facturas, Cajas, etc.
+Utiliza el menú lateral para acceder a los diferentes módulos: Pedidos, Clientes, Facturas, Cajas, etc. El buscador te permite encontrar rápidamente pedidos o clientes.
 
-### 3. Crear una orden de trabajo
-- Dirígete al módulo **Hoja de Pedidos**.
-- Haz clic en "Nuevo Pedido".
-- Completa los datos requeridos y guarda.
+## 3. Modulos:
+ - Segun el tipo de rol que tenga el usuario podrá acceder a diferentes módulos y funcionalidades. A continuación, se detallan los módulos más relevantes:
+ - **DEPENDIENTE:** 
+    - Pagina de inicio / barra superior: En la barra superior te permitirá ver usuario y rol con el que has iniciado sesión, más solo en la pagina de inicio podrás ver la tienda en la que estas logueado.
+    - Accede a los módulos: **Cajas**, **Clientes**, **Mi Usuario**, **Hojas de Pedidos**, **Marcas**, **Marcas>Modelos** **Ítems** y **Facturas**.
 
-### 4. Gestionar clientes
-- Accede al módulo **Clientes**.
-- Añade, edita o consulta información de clientes y sus dispositivos.
+- **ENCARGADO:**
+    Tiene los mismo privilegios que el dependiente, pero además tiene acceso a **Tiendas** y **Dispositivos**
 
-### 5. Facturación
-- En el módulo **Facturas**, consulta, edita o exporta facturas.
-- Asocia facturas a pedidos y empresas.
+- **ADMIN:**
+    Tiene acceso a todos los módulos y funcionalidades del sistema, **excluyendo** los modulos de **Estados**, **Metodos de pago** y **Roles** para prevenir errores en la aplicación. Tambien tiene acceso a la exportacion de las facturas en PDF del mes junto con widgets de facturacion (efectivo hoy, tarjeta hoy, total mensual) 
 
-### 6. Cierre de caja
-- Ve al módulo **Cajas** para registrar ingresos y cerrar la caja diaria.
+- **TECNICO:**
+    - Pagina de inicio / barra superior: En la barra superior te permitirá ver usuario y rol con el que has iniciado sesión, más solo en la pagina de inicio podrás ver la tienda en la que estas logueado.
+    - Accede a los módulos: **Cajas**, **Clientes**, **Mi Usuario**, **Hojas de Pedidos**, **Marcas**, **Ítems** y **Facturas**.
+    - Podrá asignarse pedidos para gestionarlos, cambiar el estado del pedido a "Pendiente de Pieza" si es necesario y realizar un cierre (reparado) del pedido una vez se lo asigne.
 
-### 7. Configuración
-- Ajusta datos fiscales, tiendas, empresas y usuarios desde sus respectivos módulos.
+### 4. Crear una orden de trabajo:
+- Busca un cliente por nombre o documento de identidad en el buscador o en el modulo de Clientes. En caso de no existir, puedes crear uno nuevo.
+- Una vez creado, dentro del cliente, haz clic en **"Crear Dispositivo"**.
+- Dentro de dispositivo, podras encontrar los pedidos asociados o en su defecto **"Crear Pedido"**. Rellena los campos necesarios, una vez creado el pedido.
+**DEPENDIENTE, ENCARGADO o ADMIN**: Puedes realizar las siguientes acciones:
+  - Ver el PDF del pedido.  
+  - Registrar cobros anticipados o finales.
+  - Cancelar el pedido.
+  - En las secciones inferiores podras: 
+    - Añadir items.
+    - Ver las facturas asociadas.
+    - Consultar el historial de estados del pedido.
+    - En caso de estar cerrado, podrás ver el cierre del pedido.
+
+- **TECNICO**: Si eres un técnico, puedes:
+    - Ver PDF del pedido.
+    - Asignarte pedidos para cerrarlos.
+    - Cambiar el estado del pedido a "Pendiente de Pieza" si es necesario.
+    - Realizar un cierre (reparado) del pedido una ves te lo asignes.
+
 
 Para más detalles, consulta la documentación interna o contacta con el administrador del sistema.
 

@@ -195,7 +195,8 @@ class DeviceRelationManager extends RelationManager
     {
         return $table
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                ->label('Crear Dispositivo'),
             ])
             ->columns([
                 Tables\Columns\TextColumn::make('model.brand.name')

@@ -20,46 +20,139 @@ class ResourcesAccess
     {
         $authorisedAdminURLs =
             [
+                "cash-desks",
+                "clients",
+                "users",
+                "work-orders",
+                "brands",
+                "devices",
+                "items",
+                
                 "categories",
-                "document-types",
-                "payment-methods",
                 "repair-times",
-                "rols",
-                "statuses",
                 "taxes",
                 "types",
-                "stores",
-                "global-options",
-                "users",
+
+                "companies",
+                "invoices",
                 "owners",
+                "stores",
+                
             ];
 
         $authorisedManagerURLs =
             [
-                ""
+                "cash-desks",
+                "clients",
+                "users",
+                "work-orders",
+                "brands",
+                "devices",
+                "items",
+                "companies",
+                "invoices",
+                "stores",
+            ];
+        $authorisedSalespersonURLs =
+            [
+                "cash-desks",
+                "clients",
+                "users",
+                "work-orders",
+                "brands",
+                "items",
+                "companies",
+                "invoices",
+            ];
+
+        $authorisedTechnicianURLs =
+            [
+                "users",
+                "work-orders",
+            ];
+
+        $otherURLs =
+            [
+                "",
+                "devices",
+                "device-models",
+                "dashboard",
+                "login",
+                "logout",
+                "store-selection",
+                "changeLogInOptions"
             ];
         $requestURL = $request->path();
         $segments = explode('/', $requestURL);
-        $currentResource = $segments[1] ?? null; //Nombre del recurso sin el dashboard/
-        $exist = in_array($currentResource, $authorisedAdminURLs);
-        if (!$exist) {
-            return $next($request);
-        }
-        if (PermissionHelper::isNotAdmin() && $currentResource == "users") {
+        $currentResource = $segments[1] ?? null;
+
+        
+
+        if (((PermissionHelper::actualRol() != ADMIN_ROL) || (PermissionHelper::actualRol() != DEVELOPER_ROL)) && $currentResource == "users") {
+
             $hasID = isset($segments[2]) && is_numeric($segments[2]);
-            $isEdit = isset($segments[3]) && $segments[3] == "edit";
             if ($hasID) {
                 $userId = $segments[2];
                 if (auth()->user()->id == $userId) {
                     return $next($request);
                 }
-            }else{
+            } else {
                 return $next($request);
             }
         }
-        if ($exist && PermissionHelper::isAdmin()) {
+
+        if( in_array($currentResource, $otherURLs)) {
             return $next($request);
         }
-        abort(403, "No tiene permiso de administrador.");
+        if (PermissionHelper::actualRol() == DEVELOPER_ROL) {
+            return $next($request);
+        }
+
+        if (!in_array($currentResource, $authorisedAdminURLs) && !in_array($currentResource, $authorisedSalespersonURLs) && !in_array($currentResource, $authorisedTechnicianURLs)) {
+            abort(403, "No tiene permisos para acceder a este recurso.");
+        }
+        if (PermissionHelper::actualRol() == ADMIN_ROL) {
+            if (in_array($currentResource, $authorisedAdminURLs)) {
+                return $next($request);
+            } else {
+                abort(403, "No tiene permisos.");
+            }
+        }
+
+        if (!in_array($currentResource, $authorisedManagerURLs) && !in_array($currentResource, $authorisedSalespersonURLs) && !in_array($currentResource, $authorisedTechnicianURLs)) {
+            abort(403, "No tiene permisos para acceder a este recurso.");
+        }
+        if (PermissionHelper::isManager() == MANAGER_ROL) {
+            if (in_array($currentResource, $authorisedManagerURLs)) {
+                return $next($request);
+            } else {
+                abort(403, "No tiene permisos como encargado.");
+            }
+        }
+
+        if (!in_array($currentResource, $authorisedSalespersonURLs) && !in_array($currentResource, $authorisedSalespersonURLs) && !in_array($currentResource, $authorisedTechnicianURLs)) {
+            abort(403, "No tiene permisos para acceder a este recurso.");
+        }
+        if (PermissionHelper::isSalesperson() == SALESPERSON_ROL) {
+            if (in_array($currentResource, $authorisedSalespersonURLs)) {
+                return $next($request);
+            } else {
+                abort(403, "No tiene permisos como dependiente.");
+            }
+        }
+
+        if (!in_array($currentResource, $authorisedTechnicianURLs) && !in_array($currentResource, $authorisedSalespersonURLs) && !in_array($currentResource, $authorisedTechnicianURLs)) {
+            abort(403, "No tiene permisos para acceder a este recurso.");
+        }
+        if (PermissionHelper::actualRol() == TECHNICIAN_ROL) {
+            if (in_array($currentResource, $authorisedTechnicianURLs)) {
+                return $next($request);
+            } else {
+                abort(403, "No tiene permisos como técnico.");
+            }
+        }
+
+        abort(403, "No tiene permisos para acceder a este recurso.");
+
     }
 }

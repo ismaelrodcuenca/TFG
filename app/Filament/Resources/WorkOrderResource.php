@@ -35,6 +35,7 @@ class WorkOrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document';
 
+    
 
     public static function shouldRegisterNavigation(): bool
     {

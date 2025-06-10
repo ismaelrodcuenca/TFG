@@ -13,6 +13,10 @@ class Balance extends BaseWidget
 {
     protected ?string $heading = 'Resumen financiero';
 
+    public static function canView(): bool
+    {
+        return PermissionHelper::isAdmin();
+    }
     protected function getStats(): array
     {
         $cashMethodId = PaymentMethod::where('name', 'EFECTIVO')->value('id');
