@@ -23,15 +23,18 @@ class StoresRelationManager extends RelationManager
 {
     protected static string $relationship = 'stores';
 
+    public static ?string $title = 'Tiendas';
     public function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required()
                     ->maxLength(255)
                     ->disabled(),
                 Forms\Components\TextInput::make('quantity')
+                    ->label('Cantidad')
                     ->required()
                     ->numeric()
                     ->minValue(0)
@@ -50,8 +53,10 @@ class StoresRelationManager extends RelationManager
             })
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('quantity'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre'),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->label('Cantidad'),
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()

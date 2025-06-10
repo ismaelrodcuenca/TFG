@@ -20,19 +20,23 @@ class ItemsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                ->toggleable(),
+                    ->label('Nombre')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('cost')
+                    ->label('Costo')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('price')
+                    ->label('Precio')
                     ->toggleable()
                     ->suffix('€'),
                 Tables\Columns\TextColumn::make('distributor')
+                    ->label('Distribuidor')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('type.name')
-                    ->label('Type')
+                    ->label('Tipo')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('category.name')
-                    ->label('Category')
+                    ->label('Categoría')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('name', 'asc')

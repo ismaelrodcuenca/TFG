@@ -35,12 +35,9 @@ class DeviceModelsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                ->label(constants::NAME_TYPO)
+                ->label('Nombre')
                 ->searchable()
                 ->sortable(),
-            ])
-            ->filters([
-                //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),

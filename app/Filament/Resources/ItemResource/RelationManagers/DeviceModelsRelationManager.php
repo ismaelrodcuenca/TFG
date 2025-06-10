@@ -19,7 +19,9 @@ class DeviceModelsRelationManager extends RelationManager
 {
     protected static string $relationship = 'deviceModels';
 
-    public function form(Form $form): Form
+
+    public static ?string $title = 'Modelos';
+        public function form(Form $form): Form
     {
         return $form
             ->schema([

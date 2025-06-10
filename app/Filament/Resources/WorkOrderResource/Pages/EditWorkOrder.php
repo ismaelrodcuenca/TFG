@@ -111,8 +111,8 @@ class EditWorkOrder extends EditRecord
                             'test' => $data['test'] ?? null,
                             'user_id' => auth()->user()->id,
                             'repair_time_id' => $data['repair_time_id'] ?? null,
+                            'device_id' => $record->device_id,
                             'store_id' => session('store_id'),
-                            'closure_id' => null,
                         ]);
                     }
                 ),

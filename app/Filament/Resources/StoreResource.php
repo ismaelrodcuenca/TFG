@@ -57,10 +57,6 @@ class StoreResource extends Resource
                         ->label('Horario')
                         ->required()
                         ->maxLength(255),
-                         Forms\Components\Toggle::make('active')
-                        ->label('¿Activa?')
-                        ->default(true)
-                        ->required(),
                 ]);
 
     }
@@ -74,10 +70,6 @@ class StoreResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('address')
                     ->label('Dirección')
-                    ->searchable()
-                    ->sortable(),
-                    Tables\Columns\TextColumn::make('active')
-                    ->label('¿Activa?')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('prefix')

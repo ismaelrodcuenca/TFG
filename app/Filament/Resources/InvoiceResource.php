@@ -245,6 +245,11 @@ class InvoiceResource extends Resource
     {
         return $table
             ->columns([
+                
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de creación')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_down_payment')
                     ->label('Anticipo')
                     ->boolean(),
@@ -254,15 +259,11 @@ class InvoiceResource extends Resource
                     ->default("-")
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total')
-                    ->label('Importe a cobrar')
+                    ->label('Importe')
                     ->money('EUR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('paymentMethod.name')
-                    ->label('Método de pago')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha de creación')
-                    ->dateTime('d/m/Y H:i')
+                    ->label('Método')
                     ->sortable(),
             ])
             ->query(function(){

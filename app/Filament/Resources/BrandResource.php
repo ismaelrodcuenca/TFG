@@ -40,7 +40,7 @@ class BrandResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->required()
-                ->label(constants::NAME)
+                ->label("Nombre")
             ]);
     }
 
@@ -48,7 +48,9 @@ class BrandResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()
+                TextColumn::make('name')
+                ->label('Nombre')
+                ->searchable()
                 ->sortable()
                 ->searchable()
             ])

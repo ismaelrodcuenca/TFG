@@ -38,10 +38,10 @@ class DeviceModelResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label(constants::NAME_TYPO)
+                    ->label("Nombre")
                     ->required(),
                 Forms\Components\Select::make('brand_id')
-                    ->label(constants::MARCA)
+                    ->label("Marca")
                     ->relationship('brand', 'name')
                     ->required(),
             ]);
@@ -53,11 +53,11 @@ class DeviceModelResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('brand.name')
-                    ->label(constants::MARCA)
+                    ->label("Marca")
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->label(constants::MODELO)
+                    ->label('Nombre')
                     ->searchable()
                     ->sortable(),
             ])

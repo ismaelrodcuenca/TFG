@@ -36,25 +36,25 @@ class CompanyResource extends Resource
                     ->label('CIF')
                     ->required(),
                 Forms\Components\TextInput::make('name')
-                    ->label('Name')
+                    ->label('Nombre')
                     ->required(),
                 Forms\Components\TextInput::make('corporate_name')
-                    ->label('Corporate Name')
+                    ->label('Razón Social')
                     ->required(),
                 Forms\Components\TextInput::make('address')
-                    ->label('Address')
+                    ->label('Dirección')
                     ->required(),
                 Forms\Components\TextInput::make('postal_code')
-                    ->label('Postal Code')
+                    ->label('Código Postal')
                     ->required(),
                 Forms\Components\TextInput::make('locality')
-                    ->label('Locality')
+                    ->label('Localidad')
                     ->required(),
                 Forms\Components\TextInput::make('province')
-                    ->label('Province')
+                    ->label('Provincia')
                     ->required(),
                 Forms\Components\TextInput::make('discount')
-                    ->label('Discount')
+                    ->label('Descuento')
                     ->numeric()->minValue(0)->maxValue(100)
                     ->default(0)
                     ->suffix('%'),
@@ -65,39 +65,36 @@ class CompanyResource extends Resource
     {
         return $table
             ->columns([
-            Tables\Columns\TextColumn::make('cif')
-                ->label('CIF')
-                ->searchable()
-                ->toggleable(true),
-            Tables\Columns\TextColumn::make('name')
-                ->label('Name')
-                ->searchable()
-                ->toggleable(true),
-            Tables\Columns\TextColumn::make('corporate_name')
-                ->label('Corporate Name')
-                ->searchable()
-                ->toggleable(true),
-            Tables\Columns\TextColumn::make('address')
-                ->label('Address')
-                ->toggleable(true),
-            Tables\Columns\TextColumn::make('postal_code')
-                ->label('Postal Code')
-                ->toggleable(true),
-            Tables\Columns\TextColumn::make('locality')
-                ->label('Locality')
-                ->toggleable(true),
-            Tables\Columns\TextColumn::make('province')
-                ->label('Province')
-                ->toggleable(true),
-            Tables\Columns\TextColumn::make('discount')
-                ->label('Discount')
-                ->toggleable(true)
-                ->suffix('%')
-                ->alignCenter()
-                ->numeric()
-            ])
-            ->filters([
-                
+                Tables\Columns\TextColumn::make('cif')
+                    ->label('CIF')
+                    ->searchable()
+                    ->toggleable(true),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
+                    ->searchable()
+                    ->toggleable(true),
+                Tables\Columns\TextColumn::make('corporate_name')
+                    ->label('Razón Social')
+                    ->searchable()
+                    ->toggleable(true),
+                Tables\Columns\TextColumn::make('address')
+                    ->label('Dirección')
+                    ->toggleable(true),
+                Tables\Columns\TextColumn::make('postal_code')
+                    ->label('Código Postal')
+                    ->toggleable(true),
+                Tables\Columns\TextColumn::make('locality')
+                    ->label('Localidad')
+                    ->toggleable(true),
+                Tables\Columns\TextColumn::make('province')
+                    ->label('Provincia')
+                    ->toggleable(true),
+                Tables\Columns\TextColumn::make('discount')
+                    ->label('Descuento')
+                    ->toggleable(true)
+                    ->suffix('%')
+                    ->alignCenter()
+                    ->numeric()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

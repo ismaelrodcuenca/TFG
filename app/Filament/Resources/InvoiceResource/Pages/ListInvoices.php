@@ -19,6 +19,7 @@ class ListInvoices extends ListRecords
             ExportAction::make()
             ->visible(PermissionHelper::isAdmin())
                 ->exporter(InvoiceExporter::class)
+                ->label('Exportar')
                 ->modifyQueryUsing(
                     fn($query) =>
                     $query->whereMonth('created_at', now()->month)

@@ -31,7 +31,7 @@ class WorkOrdersRelationManager extends RelationManager
 {
     protected static string $relationship = 'workOrders';
 
-
+    protected static ?string $title = 'Hoja de Pedidos';
     public function form(Form $form): Form
     {
         return $form
@@ -117,7 +117,7 @@ class WorkOrdersRelationManager extends RelationManager
                     ->sortable()
                     ->color(fn($record) => $record->is_warranty ? 'success' : 'default'),
                 Tables\Columns\TextColumn::make('work_order_number')
-                    ->label('Work Order Number')
+                    ->label('Numero de Pedido')
                     ->color(fn($record) => $record->is_warranty ? 'success' : 'default')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('store.name')
@@ -125,8 +125,9 @@ class WorkOrdersRelationManager extends RelationManager
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
-                Tables\Columns\IconColumn::make('is_warranty')
-                    ->label('Warranty')
+                Tables\Columns\IconColumn::make('work_order_number_warranty')
+                    ->label('Pedido de Garantía')
+                    ->icon(fn($record) => $record->work_order_number_warranty ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Último Status')
@@ -136,13 +137,11 @@ class WorkOrdersRelationManager extends RelationManager
                     ->color(fn($record) => $record->is_warranty ? 'success' : 'default'),
                 Tables\Columns\TextColumn::make('repairTime.name')
                     ->color(fn($record) => $record->is_warranty ? 'success' : 'default')
-                    ->label('Repair Time'),
+                    ->label('Tiempo de Reparación'),
             ])
             ->recordUrl(fn($record) => url("/dashboard/work-orders/{$record->id}/edit"))
             ->recordTitleAttribute('work_order_number')
-            ->filters([
-                //
-            ])
+           
             ->headerActions([
                 CreateAction::make('create')
                     ->label('Crear Pedido')
@@ -250,25 +249,25 @@ class WorkOrdersRelationManager extends RelationManager
                         ]),
 
                         Textarea::make('failure')
-                            ->label('Failure')
+                            ->label('Avería')
                             ->default(fn($record) => $record?->failure)
                             ->required()
                             ->columnSpan('full'),
                         Textarea::make('private_comment')
-                            ->label('Private Comment')
+                            ->label('Comentario Privado')
                             ->nullable()
                             ->columnSpan('full'),
                         Textarea::make('comment')
-                            ->label('Comment')
+                            ->label('Comentario')
                             ->nullable()
                             ->columnSpan('full'),
                         Textarea::make('physical_condition')
-                            ->label('Physical Condition')
+                            ->label('Condición Física')
                             ->required()
                             ->columnSpan('full')
                             ->dehydrated(true),
                         Textarea::make('humidity')
-                            ->label('Humidity')
+                            ->label('Humedad')
                             ->required()
                             ->columnSpan('full'),
                         Textarea::make('test')
@@ -276,28 +275,18 @@ class WorkOrdersRelationManager extends RelationManager
                             ->required()
                             ->columnSpan('full'),
                         Select::make('repair_time_id')
-                            ->label('Repair Time')
+                            ->label('Tiempo de Reparación')
                             ->relationship('repairTime', 'name')
                             ->required(),
                     ])
                     ->action(function (array $data) {
                         WorkOrder::create($data);
                         Notification::make()
-                            ->title('Work Order created successfully.')
+                            ->title('Pedido creado correctamente.')
                             ->success()
                             ->send();
                     })
-                    ->modalHeading('Crear Work Order')
-            ])->bulkActions([
-                    Tables\Actions\BulkActionGroup::make([
-                        Tables\Actions\DeleteBulkAction::make(),
-                    ])->label('Acciones masivas')
-                ])
-            ->actions([
-                Tables\Actions\EditAction::make()
-                ->hidden(fn($record) => $record->created_at
-                    ? \Illuminate\Support\Carbon::parse($record->created_at)->diffInMinutes(now()) > 7
-                    : true),
+                    ->modalHeading('Crear Pedido')
             ]);
     }
 }

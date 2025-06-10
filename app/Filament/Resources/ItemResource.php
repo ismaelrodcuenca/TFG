@@ -63,10 +63,12 @@ class ItemResource extends Resource
                 Toggle::make('link_to_stores')
                     ->label('Asociar a todas las tiendas')
                     ->required()
+                    ->hiddenOn('edit')
                     ->default(true)
                     ->helperText("En caso de no querer asociarlo a todas las tiendas, desmarca esta opción y asocia manualmente en la pestaña de 'Tiendas'"),
                 Toggle::make('link_item_device_model')
                     ->label('Asociar a un modelo de dispositivo')
+                    ->hiddenOn('edit')
                     ->default(false)
                     ->helperText("En caso de no querer asociarlo a un modelo de dispositivo, desmarca esta opción y asocia manualmente en la pestaña de 'Modelos '")
                     ->reactive(),

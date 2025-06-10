@@ -32,7 +32,7 @@ class TaxResource extends Resource
     
    public static function shouldRegisterNavigation(): bool
     {
-        return PermissionHelper::isDeveloper();
+        return PermissionHelper::isAdmin();
     }
 
     public static function form(Form $form): Form

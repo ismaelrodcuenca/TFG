@@ -30,6 +30,7 @@ class DeviceRelationManager extends RelationManager
 {
     protected static string $relationship = 'devices';
 
+    public static ?string $title = 'Dispositivos';
     public function form(Form $form): Form
     {
         return $form
