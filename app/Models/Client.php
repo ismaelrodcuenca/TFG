@@ -46,28 +46,24 @@ class Client extends Model
             $this->attributes['name'] = strtoupper($value);
         }
     }
-
     public function setSurnameAttribute($value)
     {
         if (!is_null($value)) {
             $this->attributes['surname'] = strtoupper($value);
         }
     }
-
     public function setSurname2Attribute($value)
     {
         if (!is_null($value)) {
             $this->attributes['surname2'] = strtoupper($value);
         }
     }
-
     public function setAddressAttribute($value)
     {
         if (!is_null($value)) {
             $this->attributes['address'] = strtoupper($value);
         }
     }
-
     public function setDocumentAttribute($value)
     {
         if (!is_null($value)) {
@@ -76,12 +72,10 @@ class Client extends Model
     }
 
     //RELACIONES
-
     public function documentType(): BelongsTo
     {
         return $this->belongsTo(DocumentType::class);
     }
-
     public function devices(): HasMany
     {
         return $this->hasMany(Device::class);

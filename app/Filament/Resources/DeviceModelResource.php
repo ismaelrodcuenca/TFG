@@ -3,31 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DeviceModelResource\Pages;
-use App\Filament\Resources\DeviceModelResource\RelationManagers;
 use App\Filament\Resources\DeviceModelResource\RelationManagers\ItemsRelationManager;
-use App\Helpers\PermissionHelper;
-use App\Models\Brand;
 use App\Models\DeviceModel;
-use constants;
 use DB;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Pages\Dashboard\Actions\FilterAction;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
 class DeviceModelResource extends Resource
 {
     protected static ?string $model = DeviceModel::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube-transparent';
 
-    protected static ?string $label = 'Modelo';
+    protected static ?string $label = 'Modelos';
 
     public static ?string $navigationGroup = 'Catálogo';
     
