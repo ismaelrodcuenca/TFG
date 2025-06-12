@@ -2,6 +2,7 @@
 namespace App\Filament\Pages;
 
 use App\Http\Controllers\StoreController;
+use App\Models\Rol;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
 use Filament\Forms\Contracts\HasForms;
@@ -19,39 +20,27 @@ class StoreSelection extends Page implements HasForms
     protected static ?string $title = "";
     protected ?string $heading = 'Seleccionar Tienda';
     protected static ?string $routePath = 'store-selection';
-
     public ?string $store_id = null;
     public ?string $rol_id = null;
-
-
     public function mount(): void
     {
         $this->form->fill();
     }
-
     public function getHeading(): string
     {
         $this->userName = auth()->user()->name;
         return "Bienvenido, " . $this->userName;
     }
-
-
-
     protected function getFormSchema(): array
     {
         $stores = auth()->user()->stores()->pluck('stores.name', 'stores.id')->toArray();
         $roles = auth()->user()->rolUser()->pluck('rol_id', 'id')->toArray();
-        $roles = \App\Models\Rol::whereIn('id', $roles)->pluck('name', 'id')->toArray();
+        $roles = Rol::whereIn('id', $roles)->pluck('name', 'id')->toArray();
         if (empty($stores)) {
             $stores = ['' => 'No hay tiendas disponibles. Contacte al administrador'];
         }
         if (empty($roles)) {
             $roles = ['' => 'No hay roles disponibles. Contacte al administrador'];
-        }
-        if (count($stores) === 1 && count($roles) === 1) {
-            session(['store_id' => array_key_first($stores)]);
-            session(['rol_id' => array_key_first($roles)]);
-            $this->redirect('/dashboard');
         }
         return [
             Select::make('store_id')
@@ -75,9 +64,7 @@ class StoreSelection extends Page implements HasForms
         $rolId = $this->form->getState()['rol_id'];
         session(['store_id' => $storeId]);
         session(['rol_id' => $rolId]);
-        if (!session('store_id') || !session('rol_id')) {
-            $notificationString = 'Seleccion requerida';
-        }
+     
         Notification::make()
             ->title('Bienvenido, ' . auth()->user()->name)
             ->success()

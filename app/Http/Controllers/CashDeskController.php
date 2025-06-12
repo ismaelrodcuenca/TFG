@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\PaymentMethod;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class CashDeskController
 {
@@ -36,7 +35,7 @@ class CashDeskController
         return $cashRegistered - (self::getMeasuredCashAmount() + $cashFloat);
     }
 
-    public static function getDifferenceInCardAmount($cardRegistered, $cashFloat)
+    public static function getDifferenceInCardAmount($cardRegistered)
     {
         return $cardRegistered - self::getMeasuredCardAmount();
     }

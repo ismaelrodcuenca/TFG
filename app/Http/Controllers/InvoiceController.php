@@ -136,6 +136,7 @@ class InvoiceController
                 }
 
                 self::createRefundInvoice($invoice->id, array_merge($dataOverride, [
+                    'is_down_payment' => false,
                     'invoice_number' => $invoice->invoice_number . '-R',
                     'base'               => $invoice->base * -1,
                     'taxes'              => $invoice->taxes * -1,
@@ -175,8 +176,7 @@ class InvoiceController
                 ->send();
         }
 
-        $refundNumber = $dataOverrides['new_invoice_number'] 
-            ?? ($original->invoice_number . '-R');
+        $refundNumber = $original->invoice_number . '-R';
 
         $refundData = array_merge($original->toArray(), [
             'invoice_number'     => $refundNumber,
@@ -198,10 +198,4 @@ class InvoiceController
             ->send();
     }
 
-    public static function hasRefunds(int $workOrderId): bool
-    {
-        return Invoice::where('work_order_id', $workOrderId)
-            ->where('is_refund', true)
-            ->exists();
-    }
 }

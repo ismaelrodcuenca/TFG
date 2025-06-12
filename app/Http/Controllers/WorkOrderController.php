@@ -18,12 +18,7 @@ class WorkOrderController
         foreach ($itemsWorkOrder as $item) {
            $items[] = $item;
         } 
-        if($workOrder->closure){
-            $tipo = "Factura - ";
-        }
-        else{
-            $tipo = "Hoja de Trabajo - ";
-        }
+        $workOrder->closure ? $tipo = "Factura - " : $tipo = "Hoja de Trabajo - ";
         $closure = Closure::where('work_order_id', $workOrder->id)->orderBy('created_at', 'desc')->first();
         $device = $workOrder->device;
         $store = $workOrder->store;
@@ -48,7 +43,6 @@ class WorkOrderController
             'closure'=> $closure,
         ])->render();
 
-        // Cargar el HTML en Dompdf
         $dompdf->loadHtml($html);
         $dompdf->render();
         

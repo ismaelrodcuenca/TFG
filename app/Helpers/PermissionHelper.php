@@ -2,32 +2,46 @@
 
 namespace app\Helpers;
 
-
 use App\Http\Controllers\InvoiceController;
-use App\Models\Delivery;
 use App\Models\Invoice;
 use App\Models\ItemWorkOrder;
 use Carbon\Carbon;
-use DB;
 use Filament\Notifications\Notification;
 
 class PermissionHelper
 {
-
-    public static function developMode(): bool
-    {
-        return false;
-    }
+    /**
+     * Get the actual role of the user from the session.
+     *
+     * This method retrieves the role ID of the currently authenticated user
+     * from the session. If no role is set, it defaults to 0.
+     *
+     * @return int The role ID of the current user, or 0 if not set.
+     */
     public static function actualRol(): int
     {
         return session('rol_id', 0);
     }
-
+    /**
+     * Check if the current user has a role assigned.
+     *
+     * This method is used to determine if the user has any role other than the default
+     * role with ID 0, which typically indicates no specific role assigned.
+     *
+     * @return bool Returns true if the user has a role, false otherwise.
+     */
     public static function hasRole(): bool
     {
         return session('rol_id') != 0;
     }
-
+    /**
+     * Check if the current user has the role of a developer.
+     *
+     * This method is used to determine if the user has the necessary permissions
+     * to be considered a developer.
+     *
+     * @return bool Returns true if the user is a developer, false otherwise.
+     */
     public static function isDeveloper(): bool
     {
         return self::actualRol() === DEVELOPER_ROL;
@@ -53,7 +67,15 @@ class PermissionHelper
     public static function isTechnician(): bool
     {
         return in_array(self::actualRol(), [TECHNICIAN_ROL, ADMIN_ROL]);
-    }
+    } 
+    /**
+     * Checks if the current user has the role of a technician, strictly.
+     *
+     * This method is used to determine if the user is strictly a technician
+     * without any administrative or managerial privileges.
+     *
+     * @return bool Returns true if the user is strictly a technician, false otherwise.
+     */
     public static function isStrictlyTechnician(): bool
     {
         return self::actualRol() === TECHNICIAN_ROL;
@@ -65,10 +87,8 @@ class PermissionHelper
      */
     public static function isManager(): bool
     {
-        Notification::make('ROL ACTUAL: ' . self::actualRol());
         return in_array(self::actualRol(), [ADMIN_ROL, MANAGER_ROL]);
     }
-
     /**
      * Checks if the current user has the role of a salesperson or upper.
      *
@@ -76,27 +96,7 @@ class PermissionHelper
      */
     public static function isSalesperson(): bool
     {
-        return in_array(self::actualRol(), [SALESPERSON_ROL, MANAGER_ROL, ADMIN_ROL]);
-    }
-
-    /**
-     * Determines if the provided value satisfies the "something else" condition.
-     *
-     * @param int|string $else The value to be checked. It can be an integer or a string.
-     * @return bool Returns true if the condition is met, otherwise false.
-     */
-    public static function isSomethingElse(int|string $else): bool
-    {
-        if (is_int($else)) {
-            $rol = DB::table("roles")->where("id", $else)->first();
-        }
-        if (is_string($else)) {
-            $rol = DB::table("roles")->where("name", $else)->first();
-        }
-        if (!$rol) {
-            return in_array(self::actualRol(), [$rol->id]);
-        }
-        return false;
+        return in_array(self::actualRol(), [SALESPERSON_ROL, MANAGER_ROL, ADMIN_ROL, DEVELOPER_ROL]);
     }
 
 
@@ -145,26 +145,16 @@ class PermissionHelper
         return !self::isSalesperson();
     }
 
-
-    /**
-     * Checks if the current user is not allowed to access a record outside of their store.
-     * This method is used to restrict access to records based on the user's store association.
-     * @param mixed $record The record to check against the user's store.
-     * @return bool Returns true if the user is not allowed to access the record outside of their store, false otherwise.
-     */
-
-
     // Estados de las órdenes
+
     const CAN_DELIVER_STATES = [
         'COMPLETADO',
         'FACTURADO',
         'CANCELADO',
     ];
-
     const CAN_ADD_WARRANTY_STATES = [
         'ENTREGADO'
     ];
-
     const CANT_CANCEL_STATES = [
         'FACTURADO',
         'ENTREGADO',
@@ -178,7 +168,6 @@ class PermissionHelper
         'DEVOLUCIÓN COMPLETA',
         'DEVOLUCION PARCIAL',
     ];
-
     const CANT_ADD_CLOSURE = [
         'PENDIENTE',
         'PENDIENTE DE PIEZA',
@@ -189,7 +178,6 @@ class PermissionHelper
         'DEVOLUCIÓN COMPLETA',
         'DEVOLUCION PARCIAL',
     ];
-
     const CANT_ADD_BACKORDER= [
         'PENDIENTE DE PIEZA',
         'COMPLETADO',
@@ -206,7 +194,6 @@ class PermissionHelper
         'DEVOLUCIÓN COMPLETA',
         'DEVOLUCION PARCIAL',
     ];
-
     const CANT_BE_ASSIGNED_STATES = [
         'ENTREGADO',
         'FACTURADO',
@@ -214,16 +201,6 @@ class PermissionHelper
         'DEVOLUCIÓN COMPLETA',
         'DEVOLUCION PARCIAL',
     ];
-    const CANT_BE_REPAIRED_STATES = [
-        'PENDIENTE DE PIEZA',
-        'COMPLETADO',
-        'ENTREGADO',
-        'FACTURADO',
-        'CANCELADO',
-        'DEVOLUCIÓN COMPLETA',
-        'DEVOLUCION PARCIAL',
-    ];
-
     public static function isOutsideStore($record): bool
     {
         if (self::isAdmin()) {
@@ -236,25 +213,11 @@ class PermissionHelper
         }
         return session('store_id') != $storeID;
     }
-
     public static function isWorkOrderTooOld($workOrderRecord): bool
     {
         $date = Carbon::parse(time: $workOrderRecord->created_at);
         return $date < Carbon::now()->subMinutes(30);
     }
-
-    public static function isWorkOrderProcessed($workOrderRecord): bool
-    {
-        $status = $workOrderRecord->statusWorkOrders->last()->status->name ?? 'SIN ESTADO';
-        if (self::isTechnician()) {
-            if ($status === "FACTURADO" || $status === "ENTREGADO" || $status === "CANCELADO" || $status === "DEVOLUCION REALIZADA") {
-                return true;
-            }
-            return false;
-        }
-        return $status !== "PENDIENTE";
-    }
-
     public static function infoNotification($workOrderRecord): void
     {
         $isWarranty = $workOrderRecord->is_warranty ? "Sí" : "No";
@@ -294,27 +257,6 @@ class PermissionHelper
                 ->send();
         }
     }
-    public static function isRefundAvailable($workOrderRecord): bool
-    {
-        $invoices = Invoice::where('work_order_id', $workOrderRecord->id)->count();
-        if ($invoices != 0) {
-            if (InvoiceController::isFullyRefunded($workOrderRecord->id)) {
-                return false;
-            }
-            return true;
-        }
-
-        return true;
-    }
-
-    public static function isChargeAvailable($workOrderRecord): bool
-    {
-        $items = ItemWorkOrder::where('work_order_id', $workOrderRecord->id)
-            ->count();
-        return !$items > 0;
-    }
-
-
     public static function canBeRepaired($workOrderRecord): bool
     {
         $last = self::lastStatus($workOrderRecord);
@@ -340,13 +282,11 @@ class PermissionHelper
         }
         return self::canBeCanceled($workOrderRecord);
     }
-
     public static function lastStatus($workOrderRecord): string
     {
         $status = $workOrderRecord->statusWorkOrders->last()->status->name ?? 'SIN ESTADO';
         return $status;
     }
-
     public static function canBeAssigned($workOrderRecord): bool
     {
         $last = self::lastStatus($workOrderRecord);
@@ -365,7 +305,6 @@ class PermissionHelper
         }
         return true;
     }
-
     public static function canBeBackorder($workOrderRecord): bool
     {
         $last = self::lastStatus($workOrderRecord);
@@ -389,6 +328,9 @@ class PermissionHelper
     }
     public static function canBeCanceled($workOrderRecord)
     {
+        if (self::isOutsideStore($workOrderRecord)) {
+            return false;
+        }
 
         $last = self::lastStatus($workOrderRecord);
 
@@ -398,7 +340,6 @@ class PermissionHelper
         return true;
 
     }
-
     public static function canAddWarranty($workOrderRecord): bool
     {
         if (self::isOutsideStore($workOrderRecord)) {
@@ -413,7 +354,6 @@ class PermissionHelper
         }
         return false;
     }
-
     public static function canAddItems($workOrderRecord): bool
     {
         if (self::isOutsideStore($workOrderRecord)) {
@@ -424,7 +364,6 @@ class PermissionHelper
         }
         return self::canBeCanceled($workOrderRecord);
     }
-
     public static function canBeBilled($workOrderRecord): bool
     {
         if (self::isOutsideStore($workOrderRecord)) {
@@ -440,7 +379,6 @@ class PermissionHelper
 
         return !in_array($last, self::CANT_BE_BILLED_STATES);
     }
-
     public static function canBeRefunded($workOrderRecord): bool
     {
         if (self::isOutsideStore($workOrderRecord)) {
@@ -460,7 +398,6 @@ class PermissionHelper
 
         return $isNotFullyRefunded || $hasNoInvoices;
     }
-
     public static function canBeEdited($workOrderRecord): bool
     {
         if (self::isOutsideStore($workOrderRecord)) {
@@ -473,7 +410,6 @@ class PermissionHelper
 
         return true;
     }
-
     public static function canBeDelivered($workOrderRecord = null): bool
     {
         if (self::isOutsideStore($workOrderRecord)) {
@@ -487,34 +423,5 @@ class PermissionHelper
         return $isFullyPayed && $canDeliver;
     }
 
-    public static function canCreateClosure($workOrderRecord): bool
-    {
-        $last = self::lastStatus($workOrderRecord);
-        if (self::isOutsideStore($workOrderRecord)) {
-            return false;
-        }
-
-        if ($workOrderRecord->closure_id != null) {
-            return false;
-        }
-
-        if (self::isNotStrictlyTechnician()) {
-            return false;
-        }
-
-        if(in_array($last, self::CANT_ADD_CLOSURE)){
-            return false;
-        }
-        return true;
-    }
-
-    public static function hasBeenBilled($workOrderRecord): bool
-    {
-        if (self::isOutsideStore($workOrderRecord)) {
-            return false;
-        }
-        $last = self::lastStatus($workOrderRecord);
-        return in_array($last, self::INVOICE_CAN_BE_SEEN_STATES) && $workOrderRecord->invoices->count() > 0;
-    }
 
 }

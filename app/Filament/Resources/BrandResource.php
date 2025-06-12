@@ -27,7 +27,7 @@ class BrandResource extends Resource
     protected static ?string $model = Brand::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
-    protected static ?string $label = constants::MARCAS;
+    protected static ?string $label = "Marcas";
 
     public static ?string $navigationGroup = 'Catálogo';
     public static function shouldRegisterNavigation(): bool

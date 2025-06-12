@@ -2,22 +2,18 @@
 
 namespace App\Filament\Resources\BrandResource\RelationManagers;
 
-use constants;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
 class DeviceModelsRelationManager extends RelationManager
 {
     protected static string $relationship = 'device_models';
 
     protected static ?string $title = 'Modelos';
     
-    protected static ?string $label = constants::MODELO;
+    protected static ?string $label = "Modelos";
 
     public function form(Form $form): Form
     {

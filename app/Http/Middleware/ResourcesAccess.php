@@ -10,12 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResourcesAccess
 {
-
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $authorisedAdminURLs =
@@ -39,7 +33,6 @@ class ResourcesAccess
                 "stores",
                 
             ];
-
         $authorisedManagerURLs =
             [
                 "cash-desks",
@@ -64,13 +57,11 @@ class ResourcesAccess
                 "companies",
                 "invoices",
             ];
-
         $authorisedTechnicianURLs =
             [
                 "users",
                 "work-orders",
             ];
-
         $otherURLs =
             [
                 "",
@@ -85,9 +76,6 @@ class ResourcesAccess
         $requestURL = $request->path();
         $segments = explode('/', $requestURL);
         $currentResource = $segments[1] ?? null;
-
-        
-
         if (((PermissionHelper::actualRol() != ADMIN_ROL) || (PermissionHelper::actualRol() != DEVELOPER_ROL)) && $currentResource == "users") {
 
             $hasID = isset($segments[2]) && is_numeric($segments[2]);
@@ -100,7 +88,6 @@ class ResourcesAccess
                 return $next($request);
             }
         }
-
         if( in_array($currentResource, $otherURLs)) {
             return $next($request);
         }
@@ -118,7 +105,6 @@ class ResourcesAccess
                 abort(403, "No tiene permisos.");
             }
         }
-
         if (!in_array($currentResource, $authorisedManagerURLs) && !in_array($currentResource, $authorisedSalespersonURLs) && !in_array($currentResource, $authorisedTechnicianURLs)) {
             abort(403, "No tiene permisos para acceder a este recurso.");
         }
@@ -129,7 +115,6 @@ class ResourcesAccess
                 abort(403, "No tiene permisos como encargado.");
             }
         }
-
         if (!in_array($currentResource, $authorisedSalespersonURLs) && !in_array($currentResource, $authorisedSalespersonURLs) && !in_array($currentResource, $authorisedTechnicianURLs)) {
             abort(403, "No tiene permisos para acceder a este recurso.");
         }
